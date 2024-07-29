@@ -5,7 +5,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import SignUp from './pages/Signup'
 import CreateCourse from './pages/CreateCourse'
-import SideBar from './components/Sidebar';
+//import SideBar from './components/SideBar';
 
 function App() {
   return (

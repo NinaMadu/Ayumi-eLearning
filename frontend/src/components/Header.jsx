@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaSearch, FaBell, FaUserCircle, FaHeart } from 'react-icons/fa';
 import { GiHamburgerMenu } from 'react-icons/gi';
-import Sidebar from './Sidebar';
+import Sidebar from './SideBar';
 import logo from '../assets/logo.png';
 
 function Header() {
@@ -41,19 +41,19 @@ function Header() {
             <img src={logo} alt="Logo" className="h-8 sm:h-16" />
           </Link>
 
-          <form className="bg-white py-1 px-8 sm:px-8 rounded-xl flex items-center w-full sm:w-auto shadow-md hover:shadow-lg transition-shadow duration-300 mt-4 sm:mt-0 order-3 sm:order-none">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="bg-transparent focus:outline-none w-full sm:w-[24rem] p-2 text-sm sm:text-base border border-transparent transition-colors duration-300"
-            />
-            <button
-              type="submit"
-              className="text-slate-500 ml-2 p-2 hover:text-slate-700 flex items-center justify-center bg-blue-100 hover:bg-blue-200 rounded-full transition-colors duration-300"
-            >
-              <FaSearch />
-            </button>
-          </form>
+          <form className="bg-white py-1 px-4 sm:px-8 rounded-xl flex items-center w-full sm:w-auto shadow-md hover:shadow-lg transition-shadow duration-300 mt-4 sm:mt-0 order-3 sm:order-none">
+  <input
+    type="text"
+    placeholder="Search..."
+    className="bg-transparent focus:outline-none w-full sm:w-[24rem] md:w-[20rem] lg:w-[30rem] p-2 text-sm sm:text-base border border-transparent transition-colors duration-300"
+  />
+  <button
+    type="submit"
+    className="text-slate-500 ml-2 p-2 hover:text-slate-700 flex items-center justify-center bg-blue-100 hover:bg-blue-200 rounded-full transition-colors duration-300"
+  >
+    <FaSearch />
+  </button>
+</form>
 
           <ul className="sm:mt-4 sm:ml-56 sm:mb-4 flex flex-wrap gap-4 sm:gap-12 items-center w-full sm:w-auto mt-4 sm:mt-0 order-4 sm:order-none justify-end">
             <li>
