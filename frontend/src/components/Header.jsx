@@ -1,65 +1,62 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
+
 export default function Header() {
+  
   return (
-    <header className='bg-custom-pink w-full fixed top-0 z-10'>
-      <div className='flex flex-wrap justify-between items-center mx-auto px-4 sm:px-8 py-2'>
-        <Link to='/' className='flex items-center'>
-          <img src={logo} alt='Logo' className='h-8 sm:h-16' />
+    <header className='bg-custom-pink shadow-md'>
+      <div className='flex justify-between items-center max-w-6xl mx-auto p-3'>
+        <Link to='/'>
+        <img src={logo} alt="Logo" className="h-8 sm:h-16" />
+
         </Link>
-        
-        <form className='bg-white py-1 px-3 rounded-xl flex items-center w-full sm:w-auto'>
+        <form
+       
+          className='bg-white p-3 rounded-lg flex items-center'
+        >
           <input
             type='text'
             placeholder='Search...'
-            className='bg-transparent focus:outline-none w-full sm:w-64 p-2 text-sm sm:text-base'
+            className='bg-transparent focus:outline-none w-24 sm:w-64'
+          
+           
           />
-          <button type='submit' className='text-slate-500'>
-            <FaSearch />
+          <button>
+            <FaSearch className='text-slate-600' />
           </button>
         </form>
-
-        <ul className='flex flex-wrap gap-4 sm:gap-6 items-center w-full sm:w-auto mt-4 sm:mt-0 justify-end'>
-          <li>
-            <Link
-              to='/'
-              className='text-slate-700 font-semibold text-sm sm:text-base hover:text-custom-red transform hover:scale-105 transition-transform duration-300'
-            >
+        <ul className='flex gap-8 text-[#2B3090] font-medium '>
+          <Link to='/'>
+            <li className='hidden sm:inline hover:text-custom-red transform hover:scale-110 transition-transform duration-300 '>
               Home
-            </Link>
-          </li>
-          <li>
-            <Link
-              to='/courses'
-              className='text-slate-700 font-semibold text-sm sm:text-base hover:text-custom-red transform hover:scale-105 transition-transform duration-300'
-            >
+            </li>
+          </Link>
+          <Link to='/courses'>
+            <li className='hidden sm:inline hover:text-custom-red transform hover:scale-110 transition-transform duration-300' >
               Courses
-            </Link>
-          </li>
-          <li>
-            <Link
-              to='/about'
-              className='text-slate-700 font-semibold text-sm sm:text-base hover:text-custom-red transform hover:scale-105 transition-transform duration-300'
-            >
+            </li>
+          </Link>
+          <Link to='/about'>
+            <li className='hidden sm:inline hover:text-custom-red transform hover:scale-110 transition-transform duration-300 '>
               About
-            </Link>
-          </li>
-          <li>
-            <Link to='/sign-up'>
-              <span
-                className='text-white font-semibold border py-2 px-4 sm:py-2 sm:px-6 rounded-xl'
-                style={{
-                  background: 'linear-gradient(to right, #D16262, #C53B3B)',
-                }}
-              >
-                Get Started
-              </span>
-            </Link>
-          </li>
+            </li>
+          </Link>
+    
+          
+        <Link to="/sign-up">
+                  <span
+                    className="text-white font-semibold border py-2 px-4 sm:py-2 sm:px-6 rounded-xl hover:opacity-90"
+                    style={{
+                      background: 'linear-gradient(to right, #D16262, #C53B3B)',
+                    }}
+                  >
+                    Get Started
+                  </span>
+        </Link>
         </ul>
+
       </div>
     </header>
   );
