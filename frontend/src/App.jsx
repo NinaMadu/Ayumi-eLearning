@@ -11,7 +11,7 @@ function App() {
   return (
     <BrowserRouter>
     <Header/>
-    <Sidemenu /> 
+    { /*<Sidemenu /> */}
       
 
       <Routes>

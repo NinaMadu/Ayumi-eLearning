@@ -1,11 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Header from '../components/Header'
+//import Header from '../components/Header'
 
 export default function Signin() {
   return (
     <>
-    <Header/>
+    {/*<Header/>*/}
     <div class="flex items-center justify-end min-h-screen bg-cover bg-center bg-no-repeat " style={{ background: `url('../src/assets/bg2.jpg')`, opacity:0.9 }}>
       <div  class="bg-white bg-opacity-50 p-10 rounded-lg shadow-lg max-w-lg w-full h-full mr-40 " >
 
