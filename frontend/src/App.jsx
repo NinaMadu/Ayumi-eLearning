@@ -3,11 +3,20 @@ import { BrowserRouter , Routes, Route} from 'react-router-dom';
 import Header from './components/Header';
 import Home from './pages/Home';
 import About from './pages/About';
-import SignUp from './pages/Signup'
+import Signup from './pages/Signup';
+import Signin from './pages/Signin';
 
 function App() {
   return (
-    <BrowserRouter>
+    
+    <Signin/>
+  );
+}
+
+export default App;
+
+
+/*<BrowserRouter>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -15,8 +24,4 @@ function App() {
         <Route path="/about" element={<About />} />
       </Routes>
       
-    </BrowserRouter>
-  );
-}
-
-export default App;
+    </BrowserRouter>*/
