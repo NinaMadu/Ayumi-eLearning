@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 
+
 export default function Header() {
   
   return (
@@ -27,7 +28,7 @@ export default function Header() {
             <FaSearch className='text-slate-600' />
           </button>
         </form>
-        <ul className='flex gap-8 text-[#2B3090] font-medium '>
+        <ul className='flex gap-6 text-[#2B3090] font-medium '>
           <Link to='/'>
             <li className='hidden sm:inline hover:text-custom-red transform hover:scale-110 transition-transform duration-300 '>
               Home

@@ -10,8 +10,8 @@ function App() {
   return (
     <BrowserRouter>
     <Header/>
-    <Sidemenu /> 
-      {/* <Sidebar /> */}
+    {/* <Sidemenu />  */}
+     
 
       <Routes>
         <Route path="/" element={<Home />} />
