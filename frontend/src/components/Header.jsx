@@ -5,7 +5,7 @@ import logo from '../assets/logo.png';
 
 export default function Header() {
   return (
-    <header className='bg-custom-pink w-full fixed top-0 z-10'>
+    <header className='bg-white bg-opacity-80 w-full fixed top-0 z-10'>
       <div className='flex flex-wrap justify-between items-center mx-auto px-4 sm:px-8 py-2'>
         <Link to='/' className='flex items-center'>
           <img src={logo} alt='Logo' className='h-8 sm:h-16' />
@@ -26,7 +26,7 @@ export default function Header() {
           <li>
             <Link
               to='/'
-              className='text-slate-700 font-semibold text-sm sm:text-base hover:text-custom-red transform hover:scale-105 transition-transform duration-300'
+              className='text-blue-900 font-semibold text-sm sm:text-base hover:text-custom-red transform hover:scale-105 transition-transform duration-300'
             >
               Home
             </Link>
@@ -34,7 +34,7 @@ export default function Header() {
           <li>
             <Link
               to='/courses'
-              className='text-slate-700 font-semibold text-sm sm:text-base hover:text-custom-red transform hover:scale-105 transition-transform duration-300'
+              className='text-blue-900 font-semibold text-sm sm:text-base hover:text-custom-red transform hover:scale-105 transition-transform duration-300'
             >
               Courses
             </Link>
@@ -42,7 +42,7 @@ export default function Header() {
           <li>
             <Link
               to='/about'
-              className='text-slate-700 font-semibold text-sm sm:text-base hover:text-custom-red transform hover:scale-105 transition-transform duration-300'
+              className='text-blue-900 font-semibold text-sm sm:text-base hover:text-custom-red transform hover:scale-105 transition-transform duration-300'
             >
               About
             </Link>
