@@ -13,7 +13,7 @@ export default function Signin() {
       <div>
         <h1 class="text-4xl font-bold text-center mb-6 text-blue-900">Login</h1>
         <div class="mb-4">
-          <label htmlFor="" class="block text-sm font-medium text-blue-900 text-base" for="email">User Name</label>
+          <label htmlFor="" class="block text-sm font-medium text-blue-900 text-base" for="email">Email</label>
           <input type="email" id="email" class="mt-1 block w-full px-3 py-2 border border-blue-900 border-opacity-50 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Enter your User Name or Email"/>
         </div>
         <div >
@@ -38,7 +38,7 @@ export default function Signin() {
             </button>
       </div>
       <div class="mt-6 text-center">
-        <span  class="text-sm text-blue-900 opacity-80">Don't have an account? <Link to='/Signup' class="font-medium text-blue-900 hover:text-blue-600 text-base">Create an account</Link></span>
+        <span  class="text-sm text-blue-900 opacity-80">Don't have an account? <Link to='/Sign-up' class="font-medium text-blue-900 hover:text-blue-600 text-base">Create an account</Link></span>
       </div>
       </form>
       </div>     

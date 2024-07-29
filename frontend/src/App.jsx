@@ -12,7 +12,7 @@ function App() {
     <BrowserRouter>
     <Header/>
     <Sidemenu /> 
-      {/* <Sidebar /> */}
+      
 
       <Routes>
         <Route path="/" element={<Home />} />
