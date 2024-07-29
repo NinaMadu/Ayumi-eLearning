@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter , Routes, Route} from 'react-router-dom';
 import Header from './components/Header';
-import Sidebar from './components/Sidebar'
+import Sidemenu from './components/Sidemenu';
 import Home from './pages/Home';
 import About from './pages/About';
 import SignUp from './pages/Signup'
@@ -10,6 +10,7 @@ function App() {
   return (
     <BrowserRouter>
     <Header/>
+    <Sidemenu /> 
       {/* <Sidebar /> */}
 
       <Routes>

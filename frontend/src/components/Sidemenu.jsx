@@ -7,7 +7,7 @@ import { CgBell, CgHeart, CgHome, CgMenu, CgProfile } from 'react-icons/cg';
 import { FaRegComments } from 'react-icons/fa';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 
-export default function Sidebar() {
+export default function Sidemenu() {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
