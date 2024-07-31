@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 import authRouter from "./routes/auth.route.js";
 import cookieParser from "cookie-parser";
 
@@ -14,6 +15,11 @@ mongoose.connect(process.env.MONGO).then(() => {
 
 const app = express();
 app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:5173', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+    credentials: true, 
+  }));
 app.use(cookieParser());
 
 app.use('/api/auth', authRouter);
@@ -24,5 +30,11 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log("listening to port", PORT)
 })
+
+app.use((err, req, res, next) => {
+    const statusCode = err.status || 500;
+    const message = err.message || 'Internal Server Error';
+    res.status(statusCode).json({ success: false, message });
+  });
 
 
