@@ -68,7 +68,7 @@ export default function Signin() {
                   className="mt-1 block w-full px-3 py-2 border border-blue-900 border-opacity-50 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Enter your password" onChange={handleChange} />
               </div>
-
+                
             </div>
 
             <div className="flex items-center justify-between mb-6">
