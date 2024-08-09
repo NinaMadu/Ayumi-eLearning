@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaHeart, FaBell, FaUserCircle, FaSearch } from 'react-icons/fa';
+import { FaHeart, FaBell, FaUserCircle, FaSearch, FaCreditCard } from 'react-icons/fa';
 import logo from '../assets/logo.png';
-import { MdOutlineSettings, MdOutlineLogout, MdDelete } from 'react-icons/md';
-import { CgBell, CgHeart, CgHome, CgMenu, CgProfile } from 'react-icons/cg';
+import { MdOutlineSettings, MdOutlineLogout, MdDelete, MdDashboard, MdMenuBook, MdQuiz, MdAnnouncement } from 'react-icons/md';
+import { CgBell, CgHeart, CgHome, CgMenu, CgProfile, CgUser } from 'react-icons/cg';
 import { FaRegComments } from 'react-icons/fa';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 
@@ -38,24 +38,7 @@ export default function Sidemenu() {
             </button>
           </form>
           <ul className='flex gap-4 text-[#2B3090] font-medium md:gap-12 '>
-            <Link to='/'>
-              <li className='hidden sm:inline hover:text-custom-red transform hover:scale-110 transition-transform duration-300'>
-                Home
-              </li>
-            </Link>
-            <Link to='/courses'>
-              <li className='hidden sm:inline hover:text-custom-red transform hover:scale-110 transition-transform duration-300'>
-                Courses
-              </li>
-            </Link>
-            <Link to='/about'>
-              <li className='hidden sm:inline hover:text-custom-red transform hover:scale-110 transition-transform duration-300'>
-                About
-              </li>
-            </Link>
-            <li>
-              <FaHeart className="text-slate-500 h-6 w-6" />
-            </li>
+            
             <li>
               <FaBell className="text-slate-500 h-6 w-6" />
             </li>
@@ -68,43 +51,43 @@ export default function Sidemenu() {
       </header>
       
       {isOpen && (
-        <div className="fixed left-0 w-56 h-full bg-custom-pink z-50">
+        <div className="fixed left-0 w-52 h-full bg-custom-pink z-50">
           <div className="flex flex-col justify-start items-center">
             <div className="my-4 mt-4 border-b border-black pb-4 w-full">
               <div className="flex mb-2 justify-start items-center gap-4 pl-5 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300 p-2">
-                <CgProfile className="text-2xl text-gray-600 group-hover:text-white " />
+                <MdDashboard className="text-2xl text-gray-600 group-hover:text-white " />
                 <h3 className="text-base text-gray-800 group-hover:text-white font-semibold ">
-                  Profile
+                  Dashboard
                 </h3>
               </div>
               <div className="flex mb-2 justify-start items-center gap-4 pl-5 p-2 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300">
-                <CgHome className="text-2xl text-gray-600 group-hover:text-white" />
+                <CgUser className="text-2xl text-gray-600 group-hover:text-white" />
                 <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
-                  Home
+                  Users
                 </h3>
               </div>
               <div className="flex mb-2 justify-start items-center gap-4 pl-5 p-2 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300">
-                <CgBell className="text-2xl text-gray-600 group-hover:text-white" />
+                <MdMenuBook className="text-2xl text-gray-600 group-hover:text-white" />
                 <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
-                  Notifications
+                  Courses
                 </h3>
               </div>
               <div className="flex mb-2 justify-start items-center gap-4 pl-5 p-2 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300">
-                <FaRegComments className="text-2xl text-gray-600 group-hover:text-white" />
+                <MdQuiz className="text-2xl text-gray-600 group-hover:text-white" />
                 <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
-                  Discussion
+                  Quizzes
                 </h3>
               </div>
               <div className="flex mb-2 justify-start items-center gap-4 pl-5 p-2 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300">
-                <CgHeart className="text-2xl text-gray-600 group-hover:text-white" />
+                <MdAnnouncement className="text-2xl text-gray-600 group-hover:text-white" />
                 <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
-                  Favourites
+                  Notices
                 </h3>
               </div>
               <div className="flex mb-2 justify-start items-center gap-4 pl-5 p-2 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300">
-                <AiOutlineQuestionCircle className="text-2xl text-gray-600 group-hover:text-white" />
+                <FaCreditCard className="text-2xl text-gray-600 group-hover:text-white" />
                 <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
-                  Help and Support
+                  Payments
                 </h3>
               </div>
             </div>

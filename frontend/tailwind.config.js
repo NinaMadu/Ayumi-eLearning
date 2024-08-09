@@ -9,6 +9,7 @@ export default {
       colors: {
         'custom-pink': 'rgba(243, 184, 184, 0.15)',
         'custom-red': 'rgb(235, 104, 86)',
+        'custom-orange': 'rgb(241, 135, 99)'
       },
     },
   },
