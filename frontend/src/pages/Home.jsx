@@ -42,7 +42,7 @@ const Home = () => {
     return (
         <div className="container mx-auto">
             {/* Text and Image */}
-            <div className='flex justify-between items-center px-24 sm:px-8 sm:pt-8 sm:justify-center flex-wrap'>
+            <div className='flex justify-between items-center ml-12 sm:px-8 sm:pt-8 sm:justify-center flex-wrap'>
                 <div className='flex flex-col items-center'>
                     {/* Text */}
                     <p className='text-[#F61627] text-6xl font-semibold mb-8 text-center'>
@@ -53,8 +53,8 @@ const Home = () => {
                     </p>
 
                     <p className='text-[#2B3090] text-xl text-center font-medium'>
-                        At Ayumi Japanese Language Institute, we are <br />
-                        committed to providing quality, affordable language programs.<br />
+                        At Ayumi Japanese Language Institute, we are committed <br />
+                        to providing quality, affordable language programs.<br />
                         We guide our students through the process of learning <br />
                         a new language in an easy-to-understand manner.
                     </p>
