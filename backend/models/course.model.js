@@ -48,18 +48,19 @@ const courseSchema = new mongoose.Schema({
         type: [String],
 
     },
-    videos:{
-        type: [String],
+    playlist:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Playlist",
     },
 
     instructor:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Instructor',
+        ref: "Instructor",
     },
     
 
 },{timestamps: true});
 
-const Course = mongoose.model('Course', courseSchema);
+const Course = mongoose.model("Course", courseSchema);
 
 export default Course;

@@ -30,6 +30,6 @@ const instructorSchema = new mongoose.Schema(
 
     },{timestamps: true});
 
-const Instructor = mongoose.model('Instructor', instructorSchema);
+const Instructor = mongoose.model("Instructor", instructorSchema);
 
 export default Instructor;
