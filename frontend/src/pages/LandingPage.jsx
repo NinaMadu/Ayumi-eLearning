@@ -9,11 +9,11 @@ import Pic3 from '../assets/Pic3.jpeg';
 import Pic4 from '../assets/Pic4.jpg';
 import Pic5 from '../assets/Pic5.jpg';
 import Pic6 from '../assets/Pic6.jpg';
-import Sidemenu from '../components/Sidemenu';
+import Header from '../components/Header';
 
 const images = [Pic1, Pic6, Pic2, Pic3, Pic5, Pic4,];
 
-const Home = () => {
+const LandingPage = () => {
 
     const settings = {
         dots: true,
@@ -42,7 +42,7 @@ const Home = () => {
 
     return (
         <>
-        <Sidemenu />
+        <Header />
         <div className="container mx-auto">
             {/* Text and Image */}
             <div className='flex justify-between items-center px-24 sm:px-8 sm:pt-8 sm:justify-center flex-wrap'>
@@ -104,4 +104,4 @@ const Home = () => {
     );
 }
 
-export default Home;
+export default LandingPage;

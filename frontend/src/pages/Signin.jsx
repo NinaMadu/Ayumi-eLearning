@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { signInStart, signInSuccess, signInFailure } from '../redux/userSlice.js'
+import Header from '../components/Header.jsx';
 
 
 
@@ -33,7 +34,7 @@ export default function Signin() {
         throw new Error(data.message || 'Failed to sign in');
       }
       dispatch(signInSuccess(data));
-      navigate('/');
+      navigate('/home');
     } catch (err) {
       dispatch(signInFailure(err.message));
     }
@@ -42,6 +43,7 @@ export default function Signin() {
 
   return (
     <>
+    <Header/>
       <div className="flex items-center justify-end min-h-screen bg-cover bg-center bg-no-repeat " style={{ background: `url('../src/assets/bg2.jpg')`, opacity: 0.9 }}>
         <div className="bg-white bg-opacity-50 p-10 rounded-lg shadow-lg max-w-lg w-full h-full mr-40 " >
 
