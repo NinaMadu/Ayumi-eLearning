@@ -1,43 +1,41 @@
 import React, { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-import { useNavigate,Link } from 'react-router-dom';
-
-const [formData,  setFormData]= useState({
-  custom_duration :'',
-  duration :'hours',
-  enroll:'free',
-  custom_price:'',
-  price:'lkr',
-  visibility :'public',
-
-})
-
-const handleChange = (e)=>{
-  const {id} = e.target;
-  setFormData ({
-    ...formData,
-    [id]:value,
-  });
-};
-
-const handleSubmit = (e)=>{
-  e.preventDefault();
-}
-
-const handleCancel = (e)=>{
-  setFormData({
-    custom_duration :'',
-    duration :'hours',
-    enroll:'free',
-    custom_price:'',
-    price:'lkr',
-    visibility :'public',
-
-  })
-}
-
+import { useNavigate, Link } from 'react-router-dom';
 
 const CreateCourseThird = () => {
+  const [formData, setFormData] = useState({
+    custom_duration: '',
+    duration: 'hours',
+    enroll: 'free',
+    custom_price: '',
+    price: 'lkr',
+    visibility: 'public',
+  });
+
+  const handleChange = (e) => {
+    const { id, value } = e.target; // Added 'value' destructuring
+    setFormData({
+      ...formData,
+      [id]: value, // Corrected 'value' reference
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Add submission logic here if needed
+  };
+
+  const handleCancel = () => {
+    setFormData({
+      custom_duration: '',
+      duration: 'hours',
+      enroll: 'free',
+      custom_price: '',
+      price: 'lkr',
+      visibility: 'public',
+    });
+  };
+
   return (
     <div className="sm:pl-60 md:px-60 lg:px-60 py-4">
       <div className="flex flex-row justify-between w-full">
@@ -52,19 +50,21 @@ const CreateCourseThird = () => {
           </h1>
         </div>
         <form className="space-y-4 ml-16" onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
             <label className="col-span-1 whitespace-nowrap">Course Duration:</label>
             <div className="col-span-3 flex gap-2">
               <input
                 type="text"
                 id="custom_duration"
                 className="p-2 border border-slate-200 rounded-lg w-full"
-                onChange={handleChange} value={formData.custom_duration}
+                onChange={handleChange}
+                value={formData.custom_duration}
               />
               <select
                 id="duration"
                 className="p-2 border border-slate-200 rounded-lg flex-shrink-0"
-                onChange={handleChange} value={formData.duration}
+                onChange={handleChange}
+                value={formData.duration}
               >
                 <option value="hours">Hours</option>
                 <option value="days">Days</option>
@@ -75,8 +75,13 @@ const CreateCourseThird = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
-            <label className="col-span-1 whitespace-nowrap" htmlFor="difficulty">Enrollment Options:</label>
-            <select id="enroll" className="col-span-3 p-2 border border-slate-200 rounded-lg w-full" onChange={handleChange} value={formData.enroll}>
+            <label className="col-span-1 whitespace-nowrap" htmlFor="enroll">Enrollment Options:</label>
+            <select
+              id="enroll"
+              className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
+              onChange={handleChange}
+              value={formData.enroll}
+            >
               <option value="free">Free</option>
               <option value="paid">Paid</option>
             </select>
@@ -89,12 +94,14 @@ const CreateCourseThird = () => {
                 type="text"
                 id="custom_price"
                 className="p-2 border border-slate-200 rounded-lg w-full"
-                onChange={handleChange} value={formData.custom_price}
+                onChange={handleChange}
+                value={formData.custom_price}
               />
               <select
                 id="price"
                 className="p-2 border border-slate-200 rounded-lg flex-shrink-0"
-                onChange={handleChange} value={formData.price}
+                onChange={handleChange}
+                value={formData.price}
               >
                 <option value="lkr">LKR</option>
                 <option value="dollar">$</option>
@@ -102,16 +109,18 @@ const CreateCourseThird = () => {
             </div>
           </div>
 
-          
           <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
-            <label className="col-span-1 whitespace-nowrap" htmlFor="difficulty">Enrollment Options:</label>
-            <select id="visibility" className="col-span-3 p-2 border border-slate-200 rounded-lg w-full" onChange={handleChange} value={formData.enroll}>
+            <label className="col-span-1 whitespace-nowrap" htmlFor="visibility">Visibility:</label>
+            <select
+              id="visibility"
+              className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
+              onChange={handleChange}
+              value={formData.visibility}
+            >
               <option value="public">Public</option>
               <option value="private">Private</option>
             </select>
           </div>
-
-         
         </form>
       </div>
       <div className='flex flex-row'>
@@ -120,7 +129,7 @@ const CreateCourseThird = () => {
             <ChevronLeftIcon className="h-6 w-6" />
           </div>
         </Link>
-        
+
         <Link to={'/create-course-four'}>
           <div className="fixed bottom-3 right-4 bg-gray-400 text-white p-2 rounded-full shadow-lg">
             <ChevronRightIcon className="h-6 w-6" />
