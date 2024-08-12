@@ -16,8 +16,8 @@ export default function Sidemenu() {
 
   return (
     <>
-      <header className='bg-custom-pink '>
-        <div className='flex justify-between items-center max-w-6xl mx-auto p-3'>
+      <header className='bg-custom-pink'>
+        <div className='flex justify-between items-center max-w-6xl mx-auto p-3 '>
         <button
             onClick={toggleSidebar}
             className=""

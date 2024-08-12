@@ -1,13 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import { useNavigate,Link } from 'react-router-dom';
+
+const [formData, setFormData] = useState({
+  name:'',
+  bio:'',
+  contact:'',
+  experience:'',
+  qualifications:''
+})
+
+const handleChange = (e)=>{
+  const {id }=e.target;
+  setFormData ({
+    ...formData,
+    [id]:value,
+  });
+};
+
+const handleSubmit = (e) =>{
+  e.preventDefault();
+}
+
+const handleCancel = (e)=>{
+  setFormData({
+    name:'',
+    bio:'',
+    contact:'',
+    experience:'',
+    qualifications:''
+  })
+}
+
+
 
 const CreateCourseSecond = () => {
   return (
     <div className="sm:pl-60 md:px-60 lg:px-60 py-4">
       <div className="flex flex-row justify-between w-full">
         <h1 className="text-3xl font-semibold">Step 02</h1>
-        <button className="border p-2 bg-red-600 text-white font-medium rounded-lg">Cancel Process</button>
+        <button className="border p-2 bg-red-600 text-white font-medium rounded-lg" onClick={handleCancel}>Cancel Process</button>
       </div>
 
       <div className="my-4 border p-4 pt-0 pl-0 rounded-lg shadow-md">
@@ -16,29 +48,29 @@ const CreateCourseSecond = () => {
             Instructor Information
           </h1>
         </div>
-        <form className="space-y-4 ml-16">
+        <form className="space-y-4 ml-16" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
             <label className="col-span-1 whitespace-nowrap">Instructor Name:</label>
-            <input type="text" id="title" className="col-span-3 p-2 border border-slate-200 rounded-lg w-full" />
+            <input type="text" id="name" className="col-span-3 p-2 border border-slate-200 rounded-lg w-full" onChange={handleChange} value={formData.name}/>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
             <label className="col-span-1 whitespace-nowrap">Instructor Bio:</label>
-            <textarea id="description" className="col-span-3 p-2 border border-slate-200 rounded-lg w-full" />
+            <textarea id="bio" className="col-span-3 p-2 border border-slate-200 rounded-lg w-full" onChange={handleChange} value={formData.bio} />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
             <label className="col-span-1 whitespace-nowrap">Instructor Contact:</label>
-            <input type="text" id="category" className="col-span-3 p-2 border border-slate-200 rounded-lg w-full" />
+            <input type="text" id="contact" className="col-span-3 p-2 border border-slate-200 rounded-lg w-full" onChange={handleChange} value={formData.contact} />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
             <label className="col-span-1 whitespace-nowrap">Instructor Experience:</label>
-            <textarea type="text" id="prerequisites" className="col-span-3 p-2 border border-slate-200 rounded-lg w-full" />
+            <textarea type="text" id="experience" className="col-span-3 p-2 border border-slate-200 rounded-lg w-full" onChange={handleChange} value={formData.experience}/>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
             <label className="col-span-1 whitespace-nowrap">Instructor Qualifications:</label>
-            <textarea id="objectives" className="col-span-3 p-2 border border-slate-200 rounded-lg w-full" />
+            <textarea id="qualifications" className="col-span-3 p-2 border border-slate-200 rounded-lg w-full" onChange={handleChange} value={formData.qualifications} />
           </div>
 
         </form>
