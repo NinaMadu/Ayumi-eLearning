@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { signInStart, signInSuccess, signInFailure } from '../redux/userSlice.js'
@@ -7,12 +7,16 @@ import Header from '../components/Header.jsx';
 
 
 export default function Signin() {
-
+  
   const [formData, setFormData] = useState({});
   const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  useEffect(() => {
+    dispatch(signInFailure(null)); 
+  }, [dispatch]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -34,7 +38,13 @@ export default function Signin() {
         throw new Error(data.message || 'Failed to sign in');
       }
       dispatch(signInSuccess(data));
-      navigate('/home');
+
+      if (data.isInstructor) {
+        navigate('/instructor/dashboard');
+      } else {
+        navigate('/user/dashboard');
+      }
+      
     } catch (err) {
       dispatch(signInFailure(err.message));
     }
