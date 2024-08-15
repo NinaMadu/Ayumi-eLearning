@@ -7,25 +7,30 @@ const instructorSchema = new mongoose.Schema(
             type:String,
             required:true,
         },
-        bio:{
+        email:{
             type:String,
             required:true,
-
+            unique: true,
         },
-        contact:{
-            type:[String],  //["email", "phone number"]
+        password:{
+            type:String,
             required:true,
-
         },
+        bio:{
+            type:String,
+        },
+        phone:{
+            type:[String],            
+         },
         experience:{
             type:[String],
-            required:true,
-
         },
         qualifications:{
-            type:[String],
-            required:true,
-
+            type:[String],    
+        },
+        isAdmin: {
+            type: Boolean,
+            default: false,
         },
 
     },{timestamps: true});
