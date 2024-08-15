@@ -19,6 +19,11 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+
       try {
         setLoading(true)
         const res = await fetch(`${API_BASE_URL}/api/auth/signup`, {
@@ -38,7 +43,8 @@ export default function Signup() {
         }
 
         setLoading(false);
-        setError(error.message);
+        setError(null);
+        // setError(error.message);
         navigate("/sign-in");
 
 
@@ -59,6 +65,9 @@ export default function Signup() {
       <form onSubmit={handleSubmit} class="bg-white bg-opacity-100 p-8 rounded-lg shadow-lg max-w-3xl w-full h-50">
       <div>
         <h1 class="text-4xl font-bold text-center mb-6 text-blue-900">Create an account</h1>
+        <div>
+      {error && <p className='text-red-500 m'>{error}</p>}
+      </div>
         <div class="mb-4 flex space-x-4">
 
         <div class="w-1/2" >
@@ -139,7 +148,7 @@ export default function Signup() {
           for="test">Confirm Password</label>
           <input type="password" id="confirmPassword" 
           class="mt-1 block w-full px-3 py-2 border border-blue-900 border-opacity-50 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
-          placeholder="Enter your Confirm password" />
+          placeholder="Enter your Confirm password" onChange={handleChange}/>
         </div>
         </div>
       </div>
@@ -154,6 +163,7 @@ export default function Signup() {
         <span  class="text-sm text-blue-900 opacity-80">Already have an account?  <Link to='/Sign-in' class="font-medium text-blue-900 hover:text-blue-600 text-base">Login</Link></span>
       </div>
       </form>
+      
       </div>     
     </div>
     </>
