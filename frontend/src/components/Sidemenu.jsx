@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaHome, FaUser, FaBook, FaCog, FaBell, FaHeart, FaQuestionCircle, FaSignOutAlt, FaChevronCircleLeft } from 'react-icons/fa';
+import { FaHome, FaUser, FaBook, FaCog, FaBell, FaHeart, FaQuestionCircle, FaSignOutAlt, FaChevronCircleLeft, FaChevronCircleRight } from 'react-icons/fa';
 
 const Sidemenu = () => {
   const [open, setOpen] = useState(true);
@@ -19,9 +19,14 @@ const Sidemenu = () => {
   ];
 
   return (
-    <div className={`relative top-0 left-0 ${open ? 'w-48' : 'w-22'} bg-custom-pink p-4 pt-8 duration-300`}>
+    <div className={`relative top-0 left-0 ${open ? 'w-48' : 'w-20'} bg-custom-pink p-4 pt-2 duration-300`}>
       <div className="absolute top-3 right-0 cursor-pointer" onClick={() => setOpen(!open)}>
-        <FaChevronCircleLeft size={23} className='text-slate-600 ' />
+        {/* Change icon based on the sidebar state */}
+        {open ? (
+          <FaChevronCircleLeft size={23} className='text-slate-600' />
+        ) : (
+          <FaChevronCircleRight size={23} className='text-slate-600' />
+        )}
       </div>
       <div className="flex items-center gap-x-4">
         <div className={`flex items-center justify-center text-white ${open ? 'block' : 'hidden'}`}>
@@ -40,7 +45,7 @@ const Sidemenu = () => {
         </div>
 
         {/* Settings Menu */}
-        <div className="mt-32">
+        <div className="mt-20">
           {settingsMenu.map((menu, index) => (
             <li key={index} className={`flex items-center gap-x-4 p-2 text-slate-600 font-medium hover:bg-custom-gradient hover:text-white cursor-pointer rounded-md mt-2`}>
               <span className="text-xl">{menu.icon}</span>

@@ -3,13 +3,11 @@ import { Bars3BottomRightIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import logo from '../assets/logo.png';
 import { Link } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa';
-import { FaUserCircle } from 'react-icons/fa'; // Add this for the avatar icon
 import { useSelector } from 'react-redux';
 
 const Header = () => {
   const [open, setOpen] = useState(false);
-  const {currentUser} = useSelector(state => state.user);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Assume the user is logged in for this example
+  const { currentUser } = useSelector(state => state.user);
 
   let Links = [
     { name: "Home", link: "/" },
@@ -48,23 +46,29 @@ const Header = () => {
               <a href={link.link} className='text-gray-800 hover:text-custom-red transform hover:scale-110 transition-transform duration-300'>{link.name}</a>
             </li>
           ))}
-          <Link to="/sign-up">
+
+          {/* Login Button */}
+          <li className='md:ml-8 md:my-0 my-7 font-semibold'>
+            <Link to='/sign-in'>
               <span
-                className="text-white font-semibold md:ml-8 px-4 py-2 duration-500 md:static rounded-xl hover:opacity-90"
+                className='text-custom-red font-medium border px-9 py-1 rounded-lg border-rose-600 hover:bg-rose-100 transition-all duration-300'
+              >
+                Login
+              </span>
+            </Link>
+          </li>
+
+          {/* Get Started Button */}
+          <li className='md:ml-8 md:my-0 my-7 font-semibold'>
+            <Link to="/sign-up">
+              <span
+                className="text-white font-semibold px-4 py-2 duration-500 rounded-xl hover:opacity-90"
                 style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}
               >
                 Get Started
               </span>
             </Link>
-          {/* <Link to='/about' className='flex items-center text-white hover:text-gray-200'>
-            {currentUser ? (
-              <img className='rounded-full h-8 w-8 object-cover' src={currentUser.avatar} alt='profile' />
-            ) : (
-              <div className='hover:bg-white rounded-lg p-2'>
-                <Link to='/sign-in' className='hover:text-slate-900 font-semibold text-slate-800'>Sign in</Link>
-              </div>
-            )}
-          </Link> */}
+          </li>
         </ul>
       </div>
     </div>
