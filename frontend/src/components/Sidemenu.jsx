@@ -1,138 +1,61 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaHeart, FaBell, FaUserCircle, FaSearch } from 'react-icons/fa';
-import logo from '../assets/logo.png';
-import { MdOutlineSettings, MdOutlineLogout, MdDelete } from 'react-icons/md';
-import { CgBell, CgHeart, CgHome, CgMenu, CgProfile } from 'react-icons/cg';
-import { FaRegComments } from 'react-icons/fa';
-import { AiOutlineQuestionCircle } from 'react-icons/ai';
+import { FaHome, FaUser, FaBook, FaCog, FaBell, FaHeart, FaQuestionCircle, FaSignOutAlt, FaChevronCircleLeft, FaChevronCircleRight } from 'react-icons/fa';
 
-export default function Sidemenu() {
-  const [isOpen, setIsOpen] = useState(false);
+const Sidemenu = () => {
+  const [open, setOpen] = useState(true);
 
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
+  const mainMenu = [
+    { title: "Home", icon: <FaHome /> },
+    { title: "Profile", icon: <FaUser /> },
+    { title: "Notifications", icon: <FaBell /> },
+    { title: "Discussion", icon: <FaBook /> },
+    { title: "Favourites", icon: <FaHeart /> },
+    { title: "Help", icon: <FaQuestionCircle /> },
+  ];
+
+  const settingsMenu = [
+    { title: "Settings", icon: <FaCog /> },
+    { title: "Logout", icon: <FaSignOutAlt /> },
+  ];
 
   return (
-    <>
-      <header className='bg-custom-pink shadow-md'>
-        <div className='flex justify-between items-center max-w-6xl mx-auto p-3'>
-        <button
-            onClick={toggleSidebar}
-            className=""
-          >
-            <CgMenu className="text-2xl text-gray-600 group-hover:text-white" />
-          </button>
-          <Link to='/'>
-            <img src={logo} alt="Logo" className="h-8 sm:h-16" />
-          </Link>
-          <form className='bg-white p-3 rounded-lg flex items-center'>
-            <input
-              type='text'
-              placeholder='Search...'
-              className='bg-transparent focus:outline-none w-24 sm:w-64'
-            />
-            <button>
-              <FaSearch className='text-slate-600' />
-            </button>
-          </form>
-          <ul className='flex gap-4 text-[#2B3090] font-medium md:gap-12 '>
-            <Link to='/'>
-              <li className='hidden sm:inline hover:text-custom-red transform hover:scale-110 transition-transform duration-300'>
-                Home
-              </li>
-            </Link>
-            <Link to='/courses'>
-              <li className='hidden sm:inline hover:text-custom-red transform hover:scale-110 transition-transform duration-300'>
-                Courses
-              </li>
-            </Link>
-            <Link to='/about'>
-              <li className='hidden sm:inline hover:text-custom-red transform hover:scale-110 transition-transform duration-300'>
-                About
-              </li>
-            </Link>
-            <li>
-              <FaHeart className="text-slate-500 h-6 w-6" />
-            </li>
-            <li>
-              <FaBell className="text-slate-500 h-6 w-6" />
-            </li>
-            <li>
-              <FaUserCircle className="text-slate-500 h-6 w-6" />
-            </li>
-          </ul>
-          
+    <div className={`relative top-0 left-0 ${open ? 'w-48' : 'w-20'} bg-custom-pink p-4 pt-2 duration-300`}>
+      <div className="absolute top-3 right-0 cursor-pointer" onClick={() => setOpen(!open)}>
+        {/* Change icon based on the sidebar state */}
+        {open ? (
+          <FaChevronCircleLeft size={23} className='text-slate-600' />
+        ) : (
+          <FaChevronCircleRight size={23} className='text-slate-600' />
+        )}
+      </div>
+      <div className="flex items-center gap-x-4">
+        <div className={`flex items-center justify-center text-white ${open ? 'block' : 'hidden'}`}>
+          <h1 className="text-xl font-medium"></h1>
         </div>
-      </header>
-      
-      {isOpen && (
-        <div className="fixed left-0 w-56 h-full bg-custom-pink z-50">
-          <div className="flex flex-col justify-start items-center">
-            <div className="my-4 mt-12 border-b border-black pb-4 w-full">
-              <div className="flex mb-2 justify-start items-center gap-4 pl-5 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300 p-2">
-                <CgProfile className="text-2xl text-gray-600 group-hover:text-white " />
-                <h3 className="text-base text-gray-800 group-hover:text-white font-semibold ">
-                  Profile
-                </h3>
-              </div>
-              <div className="flex mb-2 justify-start items-center gap-4 pl-5 p-2 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300">
-                <CgHome className="text-2xl text-gray-600 group-hover:text-white" />
-                <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
-                  Home
-                </h3>
-              </div>
-              <div className="flex mb-2 justify-start items-center gap-4 pl-5 p-2 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300">
-                <CgBell className="text-2xl text-gray-600 group-hover:text-white" />
-                <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
-                  Notifications
-                </h3>
-              </div>
-              <div className="flex mb-2 justify-start items-center gap-4 pl-5 p-2 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300">
-                <FaRegComments className="text-2xl text-gray-600 group-hover:text-white" />
-                <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
-                  Discussion
-                </h3>
-              </div>
-              <div className="flex mb-2 justify-start items-center gap-4 pl-5 p-2 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300">
-                <CgHeart className="text-2xl text-gray-600 group-hover:text-white" />
-                <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
-                  Favourites
-                </h3>
-              </div>
-              <div className="flex mb-2 justify-start items-center gap-4 pl-5 p-2 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300">
-                <AiOutlineQuestionCircle className="text-2xl text-gray-600 group-hover:text-white" />
-                <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
-                  Help and Support
-                </h3>
-              </div>
-            </div>
-            <div className="my-4 border-b border-gray-100 pb-4 w-full">
-              <div className="flex mb-2 justify-start items-center gap-4 pl-5 p-2 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300">
-                <MdOutlineSettings className="text-2xl text-gray-600 group-hover:text-white" />
-                <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
-                  Settings
-                </h3>
-              </div>
-              <div className="flex mb-2 justify-start items-center gap-4 pl-5 p-2 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300">
-                <MdDelete className="text-2xl text-gray-600 group-hover:text-white" />
-                <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
-                  Delete Account
-                </h3>
-              </div>
-            </div>
-            <div className="my-4 border-b border-gray-100 pb-4 w-full">
-              <div className="flex mb-2 justify-start items-center gap-4 pl-5 p-2 rounded-md group cursor-pointer hover:bg-[#DC6F6F] hover:text-white transition-colors duration-300">
-                <MdOutlineLogout className="text-2xl text-gray-600 group-hover:text-white" />
-                <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
-                  Logout
-                </h3>
-              </div>
-            </div>
-          </div>
+      </div>
+      <ul className="pt-6">
+        {/* Main Menu */}
+        <div>
+          {mainMenu.map((menu, index) => (
+            <li key={index} className={`flex items-center gap-x-4 p-2 text-slate-600 font-medium hover:bg-custom-gradient hover:text-white cursor-pointer rounded-md mt-2`}>
+              <span className="text-xl">{menu.icon}</span>
+              <span className={`${!open && 'hidden'} origin-left duration-200`}>{menu.title}</span>
+            </li>
+          ))}
         </div>
-      )}
-    </>
+
+        {/* Settings Menu */}
+        <div className="mt-20">
+          {settingsMenu.map((menu, index) => (
+            <li key={index} className={`flex items-center gap-x-4 p-2 text-slate-600 font-medium hover:bg-custom-gradient hover:text-white cursor-pointer rounded-md mt-2`}>
+              <span className="text-xl">{menu.icon}</span>
+              <span className={`${!open && 'hidden'} origin-left duration-200`}>{menu.title}</span>
+            </li>
+          ))}
+        </div>
+      </ul>
+    </div>
   );
-}
+};
+
+export default Sidemenu;
