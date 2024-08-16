@@ -7,6 +7,9 @@ import About from './pages/About';
 import SignUp from './pages/Signup'
 import Signin from './pages/Signin';
 import LandingPage from './pages/LandingPage'
+import Success from './components/Success';
+
+
 
 function App() {
   return (
@@ -21,6 +24,10 @@ function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/about" element={<About />} />
         <Route path="/sign-in" element={<Signin />} />
+        <Route path="/sign-in" element={<Signin />} />
+        <Route path="/success" element={<Success />} />
+
+
       </Routes>
       
     </BrowserRouter>
