@@ -10,6 +10,7 @@ import Signin from './pages/Signin';
 import LandingPage from './pages/LandingPage'
 import { IDashboard } from './pages/Instructor/Dashboard';
 import { UDashboard } from './pages/User/Dashboard';
+import Error from './components/Error';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/about" element={<About />} />
         <Route path="/sign-in" element={<Signin />} />
+        <Route path="/error" element={<Error />} />
 
         <Route element={<PrivateRoute />}>
         <Route path='/user/dashboard' element={<UDashboard />} />
