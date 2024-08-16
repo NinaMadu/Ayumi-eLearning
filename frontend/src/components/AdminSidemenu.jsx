@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { FaHome, FaUser, FaBook, FaCog, FaBell, FaHeart, FaQuestionCircle, FaSignOutAlt, FaChevronCircleLeft, FaChevronCircleRight } from 'react-icons/fa';
+import { FaUser, FaBook, FaCog, FaSignOutAlt, FaChevronCircleLeft, FaChevronCircleRight, FaTachometerAlt, FaCreditCard, FaChartBar } from 'react-icons/fa';
+import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
+import AnnouncementIcon from '@mui/icons-material/Announcement';
 
-const Sidemenu = () => {
+const AdminSidemenu = () => {
   const [open, setOpen] = useState(true);
 
   const mainMenu = [
-    { title: "Home", icon: <FaHome /> },
-    { title: "Profile", icon: <FaUser /> },
-    { title: "Notifications", icon: <FaBell /> },
-    { title: "Discussion", icon: <FaBook /> },
-    { title: "Favourites", icon: <FaHeart /> },
-    { title: "Help", icon: <FaQuestionCircle /> },
+    { title: "Dashboard", icon: <FaTachometerAlt /> },
+    { title: "Users", icon: <FaUser /> },
+    { title: "Courses", icon: <FaBook /> },
+    { title: "Quizzes", icon: <LibraryBooksOutlinedIcon /> },
+    { title: "Notices", icon: <AnnouncementIcon /> },
+    { title: "Payment", icon: <FaCreditCard /> },
+    { title: "Statistics", icon: <FaChartBar /> },
   ];
 
   const settingsMenu = [
@@ -19,7 +22,7 @@ const Sidemenu = () => {
   ];
 
   return (
-    <div className={`relative ${open ? 'w-48' : 'w-20'} bg-custom-pink p-4 pt-0 duration-300`} style={{ height: '100vh' }}>
+    <div className={`relative ${open ? 'w-48' : 'w-20'} bg-custom-pink p-4 pt-2 duration-300`} style={{ height: '100vh' }}>
       <div className="absolute top-3 right-0 cursor-pointer" onClick={() => setOpen(!open)}>
         {open ? (
           <FaChevronCircleLeft size={23} className='text-slate-600' />
@@ -44,9 +47,9 @@ const Sidemenu = () => {
         </div>
 
         {/* Settings Menu */}
-        <div className="mt-24">
+        <div className="mt-16">
           {settingsMenu.map((menu, index) => (
-            <li key={index} className={`flex items-center gap-x-4 p-2 text-slate-600 font-medium hover:bg-custom-gradient hover:text-white cursor-pointer rounded-md mt-2`}>
+            <li key={index} className={`flex items-center gap-x-6 p-2 text-slate-600 font-medium hover:bg-custom-gradient hover:text-white cursor-pointer rounded-md mt-2`}>
               <span className="text-xl">{menu.icon}</span>
               <span className={`${!open && 'hidden'} origin-left duration-200`}>{menu.title}</span>
             </li>
@@ -57,4 +60,4 @@ const Sidemenu = () => {
   );
 };
 
-export default Sidemenu;
+export default AdminSidemenu;
