@@ -10,7 +10,7 @@ const CommonRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/home" element={<Home />} />
+      <Route path="/home" element={<Home />} /> 
       <Route path="/sign-up" element={<SignUp />} />
       <Route path="/about" element={<About />} />
       <Route path="/sign-in" element={<Signin />} />
