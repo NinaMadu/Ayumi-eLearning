@@ -1,7 +1,11 @@
 import React from 'react'
+import AdminLayout from '../../components/AdminLayout'
 
 export const IDashboard = () => {
   return (
-    <div>Instructor Dashboard</div>
+    <AdminLayout>
+
+      <div>Instructor Dashboard</div>
+    </AdminLayout>
   )
 }
