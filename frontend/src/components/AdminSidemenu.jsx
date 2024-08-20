@@ -14,7 +14,7 @@ const AdminSidemenu = () => {
   const mainMenu = [
     { title: "Dashboard", icon: <FaTachometerAlt />, path: "/instructor/dashboard" },
     { title: "Users", icon: <FaUser /> },
-    { title: "Courses", icon: <FaBook /> },
+    { title: "Courses", icon: <FaBook />, path: "/instructor/create-course"},
     { title: "Quizzes", icon: <LibraryBooksOutlinedIcon /> },
     { title: "Notices", icon: <AnnouncementIcon /> },
     { title: "Payment", icon: <FaCreditCard /> },
