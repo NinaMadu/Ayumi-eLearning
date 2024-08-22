@@ -104,7 +104,8 @@ const CreateCourseSecond = () => {
                   id="custom_price"
                   className="p-2 border border-slate-200 rounded-lg w-full"
                   onChange={handleChange}
-                  value={formData.custom_price}
+                  value={formData.enroll=='free'?formData.custom_price=0:formData.custom_price}
+
                 />
                 <select
                   id="price"
