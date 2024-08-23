@@ -52,8 +52,9 @@ const CreateCourseSecond = () => {
 
         <div className="bg-white shadow-md rounded-lg p-6">
           <div>
-          <h1 className="mb-6 text-xl font-medium border-2 rounded-lg p-3 bg-red-300 text-black justify-center flex">
-              Course Seetings
+          <h1 className="mb-6 text-xl font-medium border-2 rounded-lg p-3 text-white justify-center flex"
+          style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}>
+              Course Settings
             </h1>
           </div>
           <form className="space-y-6 mt-6" onSubmit={handleSubmit}>

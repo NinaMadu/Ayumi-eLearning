@@ -46,7 +46,8 @@ const CreateCourseThird = () => {
 
         <div className="bg-white shadow-md rounded-lg p-6">
           <div>
-            <h1 className="mb-6 text-xl font-medium border-2 rounded-lg p-3 bg-red-300 text-black justify-center flex">
+            <h1 className="mb-6 text-xl font-medium border-2 rounded-lg p-3 text-white justify-center flex"
+            style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}>
               Media and Resources
             </h1>
           </div>
@@ -87,10 +88,12 @@ const CreateCourseThird = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <label className="col-span-1 self-center">Upload Course Materials:</label>
               <input
-                type="text"
-                id="links"
+                type="file"
+                id="imagesandpdfs"
+                accept=".jpg,.jpeg,.png,.gif,.pdf" 
+                multiple
                 className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
-                onChange={handleChange}
+             
                 
               />
             </div>

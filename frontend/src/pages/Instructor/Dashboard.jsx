@@ -70,23 +70,31 @@ function Dashboard() {
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+        <Link to={'/instructor/user-management'}>
         <button className="bg-gradient-to-r from-blue-400 via-blue-900 to-blue-600 text-white p-3 sm:p-4 rounded-lg shadow-md hover:bg-blue-800 transition">
           Manage Users
         </button>
+        </Link>
         <Link to={'/instructor/create-course'}>
         <button className="bg-gradient-to-r from-blue-400 via-blue-900 to-blue-600 text-white p-3 sm:p-4 rounded-lg shadow-md hover:bg-blue-800 transition">
           Manage Courses
         </button>
         </Link>
+        <Link to={'/instructor/create-quiz'} >
         <button className="bg-gradient-to-r from-blue-400 via-blue-900 to-blue-600 text-white p-3 sm:p-4 rounded-lg shadow-md hover:bg-blue-800 transition">
           Manage Quizzes
         </button>
+        </Link>
+        <Link to={'/instructor/notice-management'}>
         <button className="bg-gradient-to-r from-blue-400 via-blue-900 to-blue-600 text-white p-3 sm:p-4 rounded-lg shadow-md hover:bg-blue-800 transition">
           Manage Notices
         </button>
+        </Link>
+        <Link to={'/instructor/payment-management'}>
         <button className="bg-gradient-to-r from-blue-400 via-blue-900 to-blue-600 text-white p-3 sm:p-4 rounded-lg shadow-md hover:bg-blue-800 transition">
           Manage Payments
         </button>
+        </Link>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Enrollment Trends */}

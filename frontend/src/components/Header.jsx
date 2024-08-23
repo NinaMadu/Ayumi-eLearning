@@ -4,16 +4,46 @@ import logo from '../assets/logo.png';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { signOutUserStart, signOutUserSuccess, signInFailure } from '../redux/userSlice';
+import { useDispatch } from 'react-redux';
 
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { currentUser } = useSelector(state => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   let Links = [
     { name: "Home", link: "/" },
     { name: "About", link: "/about" },
   ];
+
+  const handleLogout = async () => {
+    dispatch(signOutUserStart());  
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/signout`, {
+            method: 'GET',
+            credentials: 'include',  
+        });
+
+        if (response.ok) {
+            dispatch(signOutUserSuccess()); 
+            console.log('logout')
+            navigate('/');  
+        } else {
+            const errorData = await response.json();
+            dispatch(signInFailure(errorData.message || 'Failed to logout. Please try again.'));
+        }
+    } catch (error) {
+        dispatch(signInFailure(error.message || 'An unexpected error occurred.'));
+    }
+  };
+  
+  
+ 
 
   return (
     <div className='shadow-md w-full fixed top-0 left-0 z-20 bg-red-50'>
@@ -72,19 +102,23 @@ const Header = () => {
 
               {/* Dropdown menu */}
               {dropdownOpen && (
-                <ul className='absolute left-1/2 transform -translate-x-1/2 mt-32 w-32 bg-white rounded-xl shadow-lg z-10 right-2 '>
-                  <li className=' hover:bg-custom-gradient hover:rounded-lg hover:text-white  flex flex-col justify-center items-center '>
-                    <Link to="/profile" className='block px-4 py-2 text-gray-700 hover:bg-custom-gradient hover:text-white '>
-                      Profile
-                    </Link>
-                  </li>
-                  <li className='hover:bg-custom-gradient hover:rounded-lg hover:text-white  flex flex-col justify-center items-center'>
-                    <Link to="/" className='block px-4 py-2 text-gray-700 hover:bg-custom-gradient hover:text-white '>
-                      Logout
-                    </Link>
-                  </li>
-                </ul>
-              )}
+              <ul className='absolute left-1/2 transform -translate-x-1/2 mt-32 w-32 bg-white rounded-xl shadow-lg z-10 right-2'>
+                <li className='hover:bg-custom-gradient hover:rounded-lg hover:text-white flex flex-col justify-center items-center'>
+                  <Link to="/profile" className='block px-4 py-2 text-gray-700 hover:bg-custom-gradient hover:text-white'>
+                    Profile
+                  </Link>
+                </li>
+                <li 
+                  className='hover:bg-custom-gradient hover:rounded-lg hover:text-white flex flex-col justify-center items-center'
+                  onClick={handleLogout}
+                >
+                  <span className='block px-4 py-2 text-gray-700 hover:bg-custom-gradient hover:text-white cursor-pointer'>
+                    Logout
+                  </span>
+                </li>
+              </ul>
+            )}
+
             </li>
           ) : (
             <>

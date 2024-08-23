@@ -51,7 +51,8 @@ const CreateCourseFirst = () => {
           </div>
 
           <div className="my-4 border p-4 pt-0 rounded-lg shadow-md">
-            <h1 className="mb-6 text-xl font-medium border-2 rounded-lg p-3 bg-red-300 text-black justify-center flex">
+            <h1 className="mb-6 text-xl font-medium border-2 rounded-lg p-3  text-white justify-center flex"
+            style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}>
               Course Information
             </h1>
             <form className="space-y-4" onSubmit={handleSubmit}>
