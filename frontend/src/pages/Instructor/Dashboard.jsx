@@ -18,6 +18,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import AdminLayout from '../../components/AdminLayout';
+import { Link } from 'react-router-dom';
 
 
 function Dashboard() {
@@ -72,9 +73,11 @@ function Dashboard() {
         <button className="bg-gradient-to-r from-blue-400 via-blue-900 to-blue-600 text-white p-3 sm:p-4 rounded-lg shadow-md hover:bg-blue-800 transition">
           Manage Users
         </button>
+        <Link to={'/instructor/create-course'}>
         <button className="bg-gradient-to-r from-blue-400 via-blue-900 to-blue-600 text-white p-3 sm:p-4 rounded-lg shadow-md hover:bg-blue-800 transition">
           Manage Courses
         </button>
+        </Link>
         <button className="bg-gradient-to-r from-blue-400 via-blue-900 to-blue-600 text-white p-3 sm:p-4 rounded-lg shadow-md hover:bg-blue-800 transition">
           Manage Quizzes
         </button>
