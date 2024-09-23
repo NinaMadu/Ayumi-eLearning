@@ -55,22 +55,26 @@ const CreateCourseThird = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <label className="col-span-1 self-center">Course Introduction Image:</label>
               <input
-                type="text"
-                id="image"
+                type="file"
+                id="images"
+                accept=".jpg,.jpeg,.png" 
+                multiple
                 className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
-                onChange={handleChange}
-                value={formData.image}
+             
+                
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <label className="col-span-1 self-center">Course Introduction Video:</label>
               <input
-                type="text"
-                id="video"
+                type="file"
+                id="videos"
+                accept=".mp3" 
+                multiple
                 className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
-                onChange={handleChange}
-                value={formData.video}
+             
+                
               />
             </div>
 
