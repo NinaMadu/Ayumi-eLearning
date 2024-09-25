@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import AdminLayout from '../../components/AdminLayout';
 
 const CreateCourseThird = () => {
   const [formData, setFormData] = useState({
+    image: '',
+    video: '',
     links: '',
   });
 
@@ -18,105 +20,120 @@ const CreateCourseThird = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add submit logic here
+    console.log('Form submitted:', formData);
   };
 
   const handleCancel = () => {
     setFormData({
+      image: '',
+      video: '',
       links: '',
     });
   };
 
   return (
     <AdminLayout>
+      <div className="px-4 sm:px-8 md:px-12 lg:px-24 py-4">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-3xl font-semibold">Step 03</h1>
+          <button
+            className="border p-2 bg-red-600 text-white font-medium rounded-lg"
+            onClick={handleCancel}
+          >
+            Cancel Process
+          </button>
+        </div>
 
-      
-        <div className="sm:pl-60 md:px-60 lg:px-60 py-4">
-          <div className="flex flex-row justify-between w-full">
-            <h1 className="text-3xl font-semibold">Step 03</h1>
-            <button
-              className="border p-2 bg-red-600 text-white font-medium rounded-lg"
-              onClick={handleCancel}
-            >
-              Cancel Process
-            </button>
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <div>
+            <h1 className="mb-6 text-xl font-medium border-2 rounded-lg p-3 text-white justify-center flex"
+            style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}>
+              Media and Resources
+            </h1>
           </div>
-    
-          <div className="my-4 border p-4 pt-0 pl-0 rounded-lg shadow-md">
-            <div>
-              <h1 className="mb-6 text-xl font-medium border-2 rounded-r-full p-3 bg-custom-orange text-white w-2/12 sm:w-8/12 md:w-2/3 lg:w-1/2">
-                Media and Resources
-              </h1>
+          <form className="space-y-6 mt-6" onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <label className="col-span-1 self-center">Course Introduction Image:</label>
+              <input
+                type="file"
+                id="images"
+                accept=".jpg,.jpeg,.png" 
+                multiple
+                className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
+             
+                
+              />
             </div>
-            <form className="space-y-4 ml-16" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
-                <label className="col-span-1 whitespace-nowrap">
-                  Course Introduction Image:
-                </label>
-                <input
-                  type="text"
-                  id="image"
-                  className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
-                />
-              </div>
-    
-              <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
-                <label className="col-span-1 whitespace-nowrap">
-                  Course Introduction Video:
-                </label>
-                <input
-                  type="text"
-                  id="video"
-                  className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
-                />
-              </div>
-    
-              <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
-                <label className="col-span-1 whitespace-nowrap">Course Materials:</label>
-                <div className="col-span-3 flex gap-2">
-                  <button className="p-2 border border-slate-200 rounded-lg w-full bg-green-700 hover:opacity-85 text-white font-semibold md:w-2/4">
-                    Upload
-                  </button>
-                </div>
-              </div>
-    
-              <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
-                <label className="col-span-1 whitespace-nowrap">Embed Media:</label>
-                <div className="col-span-3 flex gap-2">
-                  <button className="p-2 border border-slate-200 rounded-lg w-full bg-green-700 hover:opacity-85 text-white font-semibold md:w-2/4">
-                    Upload
-                  </button>
-                </div>
-              </div>
-    
-              <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
-                <label className="col-span-1 whitespace-nowrap">
-                  Links to External Resources:
-                </label>
-                <input
-                  type="text"
-                  id="links"
-                  className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
-                  onChange={handleChange}
-                  value={formData.links}
-                />
-              </div>
-            </form>
-    
-            <div className="flex justify-center mt-8">
-              <button className="p-2 border border-slate-200 rounded-lg bg-blue-900 hover:opacity-85 text-white font-semibold w-1/2 sm:w-1/3 md:w-2/4">
-                Create Course
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <label className="col-span-1 self-center">Course Introduction Video:</label>
+              <input
+                type="file"
+                id="videos"
+                accept=".mp3" 
+                multiple
+                className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
+             
+                
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <label className="col-span-1 self-center">Links to External Resources:</label>
+              <input
+                type="text"
+                id="links"
+                className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
+                onChange={handleChange}
+                value={formData.links}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <label className="col-span-1 self-center">Upload Course Materials:</label>
+              <input
+                type="file"
+                id="imagesandpdfs"
+                accept=".jpg,.jpeg,.png,.gif,.pdf" 
+                multiple
+                className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
+             
+                
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <label className="col-span-1 self-center">Embed Media:</label>
+              <button
+                type="button"
+                className="col-span-3 p-2 border border-slate-200 rounded-lg bg-slate-400 hover:opacity-85 text-white font-semibold"
+              >
+                Upload
               </button>
             </div>
-          </div>
-    
+          </form>
+        </div>
+          <button
+                type="button"
+                className="flex mt-8 justify-center w-full  p-2 border border-slate-200 rounded-lg bg-blue-900 hover:opacity-85 text-white font-semibold"
+              >
+                Create Course
+              </button>
+
+        <div className="flex justify-between mt-6">
           <Link to={'/instructor/create-course-second'}>
-            <div className="fixed bottom-3 left-60 bg-gray-400 text-white p-2 rounded-full shadow-lg">
+            <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
               <ChevronLeftIcon className="h-6 w-6" />
             </div>
           </Link>
+
+          <Link to={'/instructor/create-course-fourth'}>
+            <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
+              <ChevronRightIcon className="h-6 w-6" />
+            </div>
+          </Link>
         </div>
-      
+      </div>
     </AdminLayout>
   );
 };
