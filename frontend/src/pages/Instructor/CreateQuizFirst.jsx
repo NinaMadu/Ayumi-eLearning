@@ -74,7 +74,7 @@ const CreateQuizFirst = () => {
 
         <div className="my-4 border p-4 pt-0 pl-0 rounded-lg shadow-md">
           <div>
-            <h1 className="mb-6 text-xl font-medium border-2 rounded-r-full p-3 bg-orange-200 text-black w-2/12 sm:w-8/12 md:w-2/3 lg:w-1/2">
+            <h1 className="mb-6 text-xl font-medium border-2 rounded-r-full p-3 bg-orange-200 text-black w-2/12 sm:w-8/12 md:w-2/3 lg:w-1/2" style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}>
               Quiz Information
             </h1>
           </div>
