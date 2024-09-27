@@ -44,7 +44,7 @@ const CreateQuizFirst = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your form submission logic here
+    
   };
 
   const handleCancel = () => {
@@ -55,7 +55,7 @@ const CreateQuizFirst = () => {
       difficulty: 'beginner',
       questions: [],
     });
-    navigate('/instructor/create-quiz'); // Use navigate to redirect
+    navigate('/instructor/create-quiz'); 
   };
 
   return (

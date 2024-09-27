@@ -4,7 +4,7 @@ import AdminLayout from '../../components/AdminLayout';
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/20/solid';
 
 const CreateQuizThird = () => {
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate(); 
   const [formData, setFormData] = useState({
     pointValue: '',
     passingScore: '',
@@ -22,7 +22,7 @@ const CreateQuizThird = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle the form submission here
+    
   };
 
   const handleCancel = () => {
@@ -32,7 +32,7 @@ const CreateQuizThird = () => {
       intermediateFeedback: '',
       overallFeedback: '',
     });
-    navigate('/instructor/create-quiz'); // Navigate to the Create Quiz page
+    navigate('/instructor/create-quiz'); 
   };
 
   return (
