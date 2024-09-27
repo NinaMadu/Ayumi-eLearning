@@ -15,7 +15,7 @@ const AdminSidemenu = () => {
     { title: "Dashboard", icon: <FaTachometerAlt />, path: "/instructor/dashboard" },
     { title: "Users", icon: <FaUser /> },
     { title: "Courses", icon: <FaBook />, path: "/instructor/create-course"},
-    { title: "Quizzes", icon: <LibraryBooksOutlinedIcon /> },
+    { title: "Quizzes", icon: <LibraryBooksOutlinedIcon /> ,path:"/instructor/create-quiz" },
     { title: "Notices", icon: <AnnouncementIcon /> },
     { title: "Payment", icon: <FaCreditCard /> },
     { title: "Statistics", icon: <FaChartBar /> },
