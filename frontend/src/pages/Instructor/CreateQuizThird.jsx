@@ -22,7 +22,7 @@ const CreateQuizThird = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+    // Handle form submission logic here
   };
 
   const handleCancel = () => {
@@ -32,32 +32,37 @@ const CreateQuizThird = () => {
       intermediateFeedback: '',
       overallFeedback: '',
     });
-    navigate('/instructor/create-quiz'); 
+    navigate('/instructor/create-quiz');
   };
 
   return (
     <AdminLayout>
-      <div className="sm:pl-60 md:px-60 lg:px-60 py-4">
-        <div className="flex flex-row justify-between w-full">
-          <h1 className="text-3xl font-semibold">Step 03</h1>
-          <button
-            className="border p-2 bg-red-600 text-white font-medium rounded-lg"
-            onClick={handleCancel}style={{
-              background: 'linear-gradient(to right, #DC7676, #C53B3B )',
-          }}>
-            Cancel Process
-          </button>
-        </div>
+      <div className="px-4 sm:px-8 md:px-12 lg:px-24 py-4">
 
-        <div className="my-4 border p-4 pt-0 pl-0 rounded-lg shadow-md">
+        <div className="flex flex-row justify-between w-full mb-4">
+            <h1 className="text-3xl font-semibold">Step 03</h1>
+            <button
+              className="border p-2 bg-red-600 text-white font-medium rounded-lg"
+              onClick={handleCancel}
+            >
+              Cancel Process
+            </button>
+          </div>
+
+        {/* Form Section */}
+        <div className="my-4 border p-4 pt-0 rounded-lg shadow-md">
           <div>
-            <h1 className="mb-6 text-xl font-medium border-2 rounded-r-full p-3  bg-orange-200 text-black w-2/12 sm:w-8/12 md:w-2/3 lg:w-1/2" style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}>
+          <h1
+              className="mb-6 text-xl font-medium border-2 rounded-lg p-3 text-white justify-center flex"
+              style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}
+            >
               Scoring and Publish
             </h1>
           </div>
-          <form className="space-y-4 ml-16" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
-              <label className="col-span-1 whitespace-nowrap">Point Value:</label>
+          <form className="space-y-4 ml-8" onSubmit={handleSubmit}>
+            {/* Point Value */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
+              <label className="col-span-1">Point Value:</label>
               <input
                 type="text"
                 id="pointValue"
@@ -67,8 +72,9 @@ const CreateQuizThird = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
-              <label className="col-span-1 whitespace-nowrap">Passing Score:</label>
+            {/* Passing Score */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
+              <label className="col-span-1">Passing Score:</label>
               <input
                 type="text"
                 id="passingScore"
@@ -78,8 +84,9 @@ const CreateQuizThird = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
-              <label className="col-span-1 whitespace-nowrap">Intermediate Feedback:</label>
+            {/* Intermediate Feedback */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
+              <label className="col-span-1">Intermediate Feedback:</label>
               <input
                 type="text"
                 id="intermediateFeedback"
@@ -89,8 +96,9 @@ const CreateQuizThird = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
-              <label className="col-span-1 whitespace-nowrap">Overall Feedback:</label>
+            {/* Overall Feedback */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
+              <label className="col-span-1">Overall Feedback:</label>
               <input
                 type="text"
                 id="overallFeedback"
@@ -99,17 +107,40 @@ const CreateQuizThird = () => {
                 value={formData.overallFeedback}
               />
             </div>
-            <Link to={'/instructor/create-quiz-second'}>
-          <div className="fixed bottom-4 left-20 bg-gray-400 text-white p-2 rounded-full shadow-lg z-10">
-            <ChevronLeftIcon className="h-6 w-6" />
-          </div>
-        </Link>
           </form>
+
+         
         </div>
-        <div className="space-y-4 text-center mt-4 flex flex-col items-center">
-          <button className="bg-blue-600 text-white py-2 px-4 rounded-lg w-1/3"style={{background: 'linear-gradient(to right, #2B3090, #8487BE )'}}>Review Quiz</button>
-          <button className="bg-blue-600 text-white py-2 px-4 rounded-lg w-1/3" style={{background: 'linear-gradient(to right, #2B3090, #8487BE )'}}>Edit Quiz</button>
-          <button className="bg-blue-600 text-white py-2 px-4 rounded-lg w-1/3" style={{background: 'linear-gradient(to right, #2B3090, #8487BE )'}}>Publish Quiz</button>
+
+      
+        <div className="space-y text-center mt-4 flex gap-4 items-center">
+          <button
+            className="text-white font-semibold py-2 px-4 rounded-lg w-1/3 bg-blue-900"
+            
+          >
+            Review Quiz
+          </button>
+          <button
+            className="text-white font-semibold py-2 px-4 rounded-lg w-1/3 bg-blue-900"
+            
+          >
+            Edit Quiz
+          </button>
+          <button
+            className="text-white font-semibold bg-blue-900 py-2 px-4 rounded-lg w-1/3"
+            
+          >
+            Publish Quiz
+          </button>
+        </div>
+        <div className="flex justify-between mt-6">
+          <Link to={'/instructor/create-quiz-second'}>
+  
+            <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg flex pr-4">
+              <ChevronLeftIcon className="h-6 w-6" />
+              <p>Back</p>
+            </div>
+          </Link>
         </div>
       </div>
     </AdminLayout>
