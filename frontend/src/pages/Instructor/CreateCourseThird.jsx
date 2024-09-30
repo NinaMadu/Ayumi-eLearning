@@ -127,7 +127,8 @@ const CreateCourseThird = () => {
             <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
               <div className='flex '>
               <p>
-                Back
+                Go Backward
+                
               </p>
               <ChevronLeftIcon className="h-6 w-6" />
               </div>
