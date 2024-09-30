@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRightIcon } from '@heroicons/react/20/solid';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import { useNavigate, Link } from 'react-router-dom';
 import AdminLayout from '../../components/AdminLayout';
 
@@ -129,15 +129,18 @@ const CreateCourseFirst = () => {
           </form>
         </div>
 
-        <Link to={'/instructor/create-course-second'}>
-          <div className="fixed bottom-4 right-4 bg-gray-400 text-white p-2 rounded-full shadow-lg">
-            <div className="flex ">
+        <div className="flex justify-end mt-6  right-4">
+  <Link to={'/instructor/create-course-second'}>
+    <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
+      <div className='flex items-center pl-2'>
+        <p className="mr-2">Next</p>
+        <ChevronRightIcon className="h-6 w-6" />
+      </div>
+    </div>
+  </Link>
+</div>
 
-            <p>Next</p>
-            <ChevronRightIcon className="h-6 w-6" />
-            </div>
-          </div>
-        </Link>
+
       </div>
     </AdminLayout>
   );

@@ -126,11 +126,10 @@ const CreateCourseThird = () => {
           <Link to={'/instructor/create-course-second'}>
             <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
               <div className='flex '>
-              <p>
-                Go Backward
-                
-              </p>
               <ChevronLeftIcon className="h-6 w-6" />
+              <p className='pr-2'>
+                Back
+              </p>
               </div>
             </div>
           </Link>
