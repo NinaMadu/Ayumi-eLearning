@@ -61,7 +61,7 @@ export default function VideoUpload() {
                 const videoUrl = await handleUpload(videoFile);
                 setFormData({ ...formData, thumbnailUrl, videoUrl });
                 setUploading(false);
-                navigate('/success-page'); // Redirect on successful upload
+                navigate('/success-page'); 
             } catch (error) {
                 console.error('Upload error:', error);
                 setError('Failed to upload files');
@@ -72,7 +72,7 @@ export default function VideoUpload() {
         }
     };
     return (
-        <AdminLayout>
+        //<AdminLayout>
             <div className="container mx-auto px-4">
                 <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <h1 className="text-xl mb-4 font-semibold">Upload Videos from Here</h1>
@@ -112,6 +112,6 @@ export default function VideoUpload() {
                     </form>
                 </div>
             </div>
-        </AdminLayout>
+        //</AdminLayout>
     );
 }
