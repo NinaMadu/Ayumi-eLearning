@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
-import { FaHome, FaUser, FaBook, FaCog, FaBell, FaHeart, FaQuestionCircle, FaSignOutAlt, FaChevronCircleLeft, FaChevronCircleRight } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { FaHome, FaUser, FaBook, FaCog, FaBell, FaHeart, FaQuestionCircle, FaSignOutAlt, FaChevronCircleLeft, FaChevronCircleRight, FaBookOpen } from 'react-icons/fa';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { signOutUserStart, signOutUserSuccess, signInFailure } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
 
 const Sidemenu = () => {
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation(); // This hook provides access to the current path
   const dispatch = useDispatch();
 
   const mainMenu = [
     { title: "Home", icon: <FaHome />, path: "/" },
     { title: "Profile", icon: <FaUser />, path:"/user/dashboard" },
     { title: "Notifications", icon: <FaBell /> },
-    { title: "Discussion", icon: <FaBook /> },
+    { title: "Discussion", icon: <FaBookOpen /> },
     { title: "Favourites", icon: <FaHeart /> },
     { title: "Help", icon: <FaQuestionCircle /> },
+    { title: "Courses", icon: <FaBook />, path: "/instructor/create-course" }, // Ensure path matches the one in the location
   ];
 
   const settingsMenu = [
@@ -71,8 +73,13 @@ const Sidemenu = () => {
         {/* Main Menu */}
         <div className="flex-grow">
           {mainMenu.map((menu, index) => (
-            <li key={index} className={`flex items-center gap-x-4 p-2 text-slate-600 font-medium hover:bg-custom-gradient hover:text-white cursor-pointer rounded-md mt-2`}
-            onClick={() => handleMenuClick(menu)}>
+            <li 
+              key={index} 
+              className={`flex items-center gap-x-4 p-2 font-medium hover:bg-custom-gradient hover:text-white cursor-pointer rounded-md mt-2 ${
+                location.pathname === menu.path ? 'bg-red-500 text-white' : 'text-slate-600'
+              }`}
+              onClick={() => handleMenuClick(menu)}
+            >
               <span className="text-xl">{menu.icon}</span>
               <span className={`${!open && 'hidden'} origin-left duration-200`}>{menu.title}</span>
             </li>
@@ -82,8 +89,13 @@ const Sidemenu = () => {
         {/* Settings Menu */}
         <div className="mt-24">
           {settingsMenu.map((menu, index) => (
-            <li key={index} className={`flex items-center gap-x-4 p-2 text-slate-600 font-medium hover:bg-custom-gradient hover:text-white cursor-pointer rounded-md mt-2`}
-            onClick={() => handleMenuClick(menu)}>
+            <li 
+              key={index} 
+              className={`flex items-center gap-x-4 p-2 font-medium hover:bg-custom-gradient hover:text-white cursor-pointer rounded-md mt-2 ${
+                location.pathname === menu.path ? 'bg-red-500 text-white' : 'text-slate-600'
+              }`}
+              onClick={() => handleMenuClick(menu)}
+            >
               <span className="text-xl">{menu.icon}</span>
               <span className={`${!open && 'hidden'} origin-left duration-200`}>{menu.title}</span>
             </li>

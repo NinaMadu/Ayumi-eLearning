@@ -7,17 +7,17 @@ import { signOutUserStart, signOutUserSuccess, signInFailure } from '../redux/us
 import { useDispatch } from 'react-redux';
 
 const AdminSidemenu = () => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const mainMenu = [
     { title: "Dashboard", icon: <FaTachometerAlt />, path: "/instructor/dashboard" },
-    { title: "Users", icon: <FaUser /> },
+    { title: "Users", icon: <FaUser />,  path: "/instructor/user-management" },
     { title: "Courses", icon: <FaBook />, path: "/instructor/create-course"},
-    { title: "Quizzes", icon: <LibraryBooksOutlinedIcon /> ,path:"/instructor/create-quiz" },
-    { title: "Notices", icon: <AnnouncementIcon /> },
-    { title: "Payment", icon: <FaCreditCard /> },
+    { title: "Quizzes", icon: <LibraryBooksOutlinedIcon />,  path: "/instructor/create-quiz" },
+    { title: "Notices", icon: <AnnouncementIcon /> ,  path: "/instructor/notice-management"},
+    { title: "Payment", icon: <FaCreditCard />,  path: "/instructor/payment-management" },
     { title: "Statistics", icon: <FaChartBar /> },
   ];
 
