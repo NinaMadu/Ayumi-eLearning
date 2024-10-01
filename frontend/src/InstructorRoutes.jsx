@@ -12,6 +12,8 @@ import NoticeManagement from './pages/Instructor/NoticeManagement';
 import PaymentManagement from './pages/Instructor/PaymentManagement';
 import CreateNotice from './pages/Instructor/CreateNotice';
 import EditNotice from './pages/Instructor/EditNotice';
+import VideoUpload from './pages/Instructor/VideoUpload';
+import AddVideos from './pages/Instructor/AddVideos';
 
 
 const InstructorRoutes = () => {
@@ -29,6 +31,9 @@ const InstructorRoutes = () => {
         <Route path="/instructor/create-notice" element={<CreateNotice/>} />
         <Route path="/instructor/payment-management" element={<PaymentManagement/>} />
         <Route path="/instructor/edit-notice/:id" element={<EditNotice />} />
+        <Route path="/instructor/add-videos" element={<AddVideos/>} />
+        <Route path="/instructor/video-upload" element={<VideoUpload/>} />
+      
       </Route>
     </Routes>
   );

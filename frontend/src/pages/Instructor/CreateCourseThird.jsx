@@ -104,12 +104,14 @@ const CreateCourseThird = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <label className="col-span-1 self-center">Embed Media:</label>
-              <button
-                type="button"
-                className="col-span-3 p-2 border border-slate-200 rounded-lg bg-slate-400 hover:opacity-85 text-white font-semibold"
-              >
-                Upload
-              </button>
+              <Link to={'/instructor/add-videos'}>
+                <button
+                  type="button"
+                  className="col-span-3 p-2 border border-slate-200 rounded-lg bg-slate-400 hover:opacity-85 text-white font-semibold"
+                >
+                  Upload
+                </button>
+              </Link>
             </div>
           </form>
         </div>
@@ -123,13 +125,12 @@ const CreateCourseThird = () => {
         <div className="flex justify-between mt-6">
           <Link to={'/instructor/create-course-second'}>
             <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
+              <div className='flex '>
               <ChevronLeftIcon className="h-6 w-6" />
-            </div>
-          </Link>
-
-          <Link to={'/instructor/create-course-fourth'}>
-            <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
-              <ChevronRightIcon className="h-6 w-6" />
+              <p className='pr-2'>
+                Back
+              </p>
+              </div>
             </div>
           </Link>
         </div>

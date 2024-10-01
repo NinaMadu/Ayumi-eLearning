@@ -140,13 +140,19 @@ const CreateCourseSecond = () => {
         <div className="flex justify-between mt-6">
           <Link to={'/instructor/create-course-first'}>
             <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
+              <div className='flex'>
               <ChevronLeftIcon className="h-6 w-6" />
+              <p className='pr-2'>Back</p>
+              </div>
             </div>
           </Link>
 
           <Link to={'/instructor/create-course-third'}>
             <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
+              <div className='flex pl-2'>
+              <p>Next</p>
               <ChevronRightIcon className="h-6 w-6" />
+              </div>
             </div>
           </Link>
         </div>
