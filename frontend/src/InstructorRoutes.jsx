@@ -10,6 +10,7 @@ import UserManagement from './pages/Instructor/UserManagement';
 import CreateQuiz from './pages/Instructor/CreateQuiz';
 import NoticeManagement from './pages/Instructor/NoticeManagement';
 import PaymentManagement from './pages/Instructor/PaymentManagement';
+import CreateNotice from './pages/Instructor/CreateNotice';
 
 
 const InstructorRoutes = () => {
@@ -24,6 +25,7 @@ const InstructorRoutes = () => {
         <Route path='/instructor/user-management' element={<UserManagement/>} />
         <Route path="/instructor/create-quiz" element={<CreateQuiz/>} />
         <Route path="/instructor/notice-management" element={<NoticeManagement/>} />
+        <Route path="/instructor/create-notice" element={<CreateNotice/>} />
         <Route path="/instructor/payment-management" element={<PaymentManagement/>} />
       </Route>
     </Routes>
