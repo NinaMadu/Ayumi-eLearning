@@ -13,6 +13,8 @@ import CreateQuiz from './pages/Instructor/CreateQuiz';
 import CreateQuizFirst from './pages/Instructor/CreateQuizFirst';
 import CreateQuizSecond from './pages/Instructor/CreateQuizSecond';
 import CreateQuizThird from './pages/Instructor/CreateQuizThird';
+import CreateNotice from './pages/Instructor/CreateNotice';
+import EditNotice from './pages/Instructor/EditNotice';
 
 
 const InstructorRoutes = () => {
@@ -27,7 +29,9 @@ const InstructorRoutes = () => {
         <Route path="/instructor/create-course-third" element={<CreateCourseThird/>} />
         <Route path='/instructor/user-management' element={<UserManagement/>} />
         <Route path="/instructor/notice-management" element={<NoticeManagement/>} />
+        <Route path="/instructor/create-notice" element={<CreateNotice/>} />
         <Route path="/instructor/payment-management" element={<PaymentManagement/>} />
+        <Route path="/instructor/edit-notice/:id" element={<EditNotice />} />
         <Route path="/instructor/create-quiz" element={<CreateQuiz/>} />
         <Route path="/instructor/create-quiz-first" element={<CreateQuizFirst/>} />
         <Route path="/instructor/create-quiz-Second" element={<CreateQuizSecond/>} />

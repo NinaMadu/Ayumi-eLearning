@@ -7,10 +7,12 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signOutUserStart, signOutUserSuccess, signInFailure } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
+import LogoutConfirmation from './LogoutConfirmation'; // Import the LogoutConfirmation component
 
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // state for modal
   const { currentUser } = useSelector(state => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -21,29 +23,31 @@ const Header = () => {
   ];
 
   const handleLogout = async () => {
-    dispatch(signOutUserStart());  
+    dispatch(signOutUserStart());
 
     try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/signout`, {
-            method: 'GET',
-            credentials: 'include',  
-        });
+      const response = await fetch(`${API_BASE_URL}/api/auth/signout`, {
+        method: 'GET',
+        credentials: 'include',
+      });
 
-        if (response.ok) {
-            dispatch(signOutUserSuccess()); 
-            console.log('logout')
-            navigate('/');  
-        } else {
-            const errorData = await response.json();
-            dispatch(signInFailure(errorData.message || 'Failed to logout. Please try again.'));
-        }
+      if (response.ok) {
+        dispatch(signOutUserSuccess());
+        console.log('Logged out successfully');
+        navigate('/');
+      } else {
+        const errorData = await response.json();
+        dispatch(signInFailure(errorData.message || 'Failed to log out. Please try again.'));
+      }
     } catch (error) {
-        dispatch(signInFailure(error.message || 'An unexpected error occurred.'));
+      dispatch(signInFailure(error.message || 'An unexpected error occurred.'));
     }
   };
-  
-  
- 
+
+  const handleConfirmLogout = () => {
+    handleLogout();
+    setShowLogoutModal(false); 
+  };
 
   return (
     <div className='shadow-md w-full fixed top-0 left-0 z-20 bg-red-50'>
@@ -102,23 +106,22 @@ const Header = () => {
 
               {/* Dropdown menu */}
               {dropdownOpen && (
-              <ul className='absolute left-1/2 transform -translate-x-1/2 mt-32 w-32 bg-white rounded-xl shadow-lg z-10 right-2'>
-                <li className='hover:bg-custom-gradient hover:rounded-lg hover:text-white flex flex-col justify-center items-center'>
-                  <Link to="/profile" className='block px-4 py-2 text-gray-700 hover:bg-custom-gradient hover:text-white'>
-                    Profile
-                  </Link>
-                </li>
-                <li 
-                  className='hover:bg-custom-gradient hover:rounded-lg hover:text-white flex flex-col justify-center items-center'
-                  onClick={handleLogout}
-                >
-                  <span className='block px-4 py-2 text-gray-700 hover:bg-custom-gradient hover:text-white cursor-pointer'>
-                    Logout
-                  </span>
-                </li>
-              </ul>
-            )}
-
+                <ul className='absolute left-1/2 transform -translate-x-1/2 mt-32 w-32 bg-white rounded-xl shadow-lg z-10 right-2'>
+                  <li className='hover:bg-custom-gradient hover:rounded-lg hover:text-white flex flex-col justify-center items-center'>
+                    <Link to="/profile" className='block px-4 py-2 text-gray-700 hover:bg-custom-gradient hover:text-white'>
+                      Profile
+                    </Link>
+                  </li>
+                  <li
+                    className='hover:bg-custom-gradient hover:rounded-lg hover:text-white flex flex-col justify-center items-center'
+                    onClick={() => setShowLogoutModal(true)} // Trigger modal on logout click
+                  >
+                    <span className='block px-4 py-2 text-gray-700 hover:bg-custom-gradient hover:text-white cursor-pointer'>
+                      Logout
+                    </span>
+                  </li>
+                </ul>
+              )}
             </li>
           ) : (
             <>
@@ -148,6 +151,14 @@ const Header = () => {
           )}
         </ul>
       </div>
+
+      {/* Logout confirmation modal */}
+      {showLogoutModal && (
+        <LogoutConfirmation
+          onConfirm={handleConfirmLogout} // Logout user if confirmed
+          onCancel={() => setShowLogoutModal(false)} // Close modal if canceled
+        />
+      )}
     </div>
   );
 };
