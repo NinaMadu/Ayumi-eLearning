@@ -54,3 +54,48 @@ export const getAllNotices = async (req, res) => {
   };
   
 
+  // Update an existing notice
+export const editNotice = async (req, res) => {
+    try {
+      const { id } = req.params; // Get the notice ID from the request parameters
+      const { title, description, imageUrl } = req.body; // Receive updated data from the frontend
+  
+      // Find the notice by ID and update it
+      const updatedNotice = await Notice.findByIdAndUpdate(
+        id,
+        { title, description, image: imageUrl }, // Update the notice with new data
+        { new: true } // Option to return the updated document
+      );
+  
+      // Check if the notice was found and updated
+      if (!updatedNotice) {
+        return res.status(404).json({ message: "Notice not found" });
+      }
+  
+      res.status(200).json({ message: "Notice updated successfully", notice: updatedNotice });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error updating notice", error });
+    }
+  };
+  
+
+  export const getNoticeById = async (req, res) => {
+    const { id } = req.params; // Get the notice ID from the request parameters
+  
+    try {
+      // Retrieve the notice by ID from the database
+      const notice = await Notice.findById(id);
+  
+      // Check if the notice exists
+      if (!notice) {
+        return res.status(404).json({ message: "Notice not found" });
+      }
+  
+      // Return the notice
+      res.status(200).json({ message: "Notice retrieved successfully", notice });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error retrieving notice", error });
+    }
+  };
