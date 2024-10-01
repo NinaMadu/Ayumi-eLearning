@@ -101,20 +101,20 @@ const CreateNotice = () => {
   return (
     <AdminLayout>
       <div className="px-4 sm:px-8 md:px-12 lg:px-24 py-4">
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1
-              className="text-xl md:text-xl lg:text-xl p-2 font-bold text-white rounded-lg"
-              style={{ background: 'linear-gradient(to left, #D16262, #C53B3B)' }}
-            >
-              Create Notices
-            </h1>
+        <div className="flex flex-row justify-end w-full mb-4 ">
             <button
               className="border p-2 bg-red-600 text-white font-medium rounded-lg"
               onClick={handleCancel}
             >
               Cancel Process
             </button>
+          </div>
+        <div className="bg-white shadow-md rounded-lg px-6 pb-6">
+          <div>
+            <h1 className="mb-6 text-xl font-medium border-2 rounded-lg p-3 text-white justify-center flex"
+            style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}>
+              Create Notice
+            </h1>
           </div>
 
           {error && <p className="text-red-500">{error}</p>}
