@@ -1,10 +1,25 @@
 import React, { useState } from 'react';
+// import 'dotenv/config';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import AdminLayout from '../../components/AdminLayout';
 import { useSelector } from 'react-redux';
+import { Upload } from "tus-js-client";
+import { storage } from '../../firebase.js';
+// import {app} from '../../firebase.js';
+import { ref, uploadBytesResumable, getDownloadURL  } from '@firebase/storage';
+
+const accessToken = import.meta.env.VITE_ACCESS_TOKEN;
+
+
+const headerPost = {
+    Accept: 'application/vnd.vimeo.*+json;version=3.4',
+    Authorization: `bearer ${accessToken}`,
+    'Content-Type': 'application/json'
+};
 
 export default function VideoUpload() {
-    const { currentUser } = useSelector(state => state.user);
+    const { currentUser } = useSelector((state) => state.user);
     const navigate = useNavigate();
 
     const [thumbnailFile, setThumbnailFile] = useState(null);
@@ -13,7 +28,7 @@ export default function VideoUpload() {
         title: '',
         description: '',
         thumbnailUrl: '',
-        videoUrl: ''
+        videoId: ''
     });
 
     const [error, setError] = useState(false);
@@ -26,15 +41,24 @@ export default function VideoUpload() {
         } else if (id === 'video') {
             setVideoFile(files[0]);
         } else {
-            setFormData({
-                ...formData,
-                [id]: value
-            });
+            setFormData((prev)=>({
+                ...prev,
+                [id]: value,
+            }));
         }
     };
 
-    const handleUpload = async (file) => {
-        const storage = getStorage(app);
+
+    //this is for thumbnail.
+    const handleUploadThumbnail = (file) => {
+        // const storage = getStorage();
+        console.log("File being uploaded:", file);
+        if(!file)
+        {
+            console.error("No file was provided for upload");
+            return;
+        }
+
         const fileName = `${new Date().getTime()}-${file.name}`; 
         const storageRef = ref(storage, `uploads/${fileName}`);
         const uploadTask = uploadBytesResumable(storageRef, file);
@@ -45,23 +69,121 @@ export default function VideoUpload() {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     console.log(`Upload is ${progress}% done`);
                 },
-                reject,
+                (error)=>{
+                    console.error("Upload failed", error);
+                    reject(error);
+                },
+                
                 () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then(resolve);
+                    getDownloadURL(uploadTask.snapshot.ref)
+                    .then(resolve)
+                    .catch(reject);
                 }
             );
         });
     };
 
-    const handleImageSubmit = async () => {
+
+
+    //videoupload here
+    const handleVideoUpload = async (vfile,title)=>{
+
+    const file = vfile;
+    const fileSize = file.size.toString();
+
+    try{
+
+        const response = await axios.post(
+            'https://api.vimeo.com/me/videos',
+            { 
+    
+                
+                
+               
+                    upload:{
+                        approach:'tus',
+                        size: fileSize,
+                    },
+                    name:title,},
+                    {
+                        headers:headerPost,
+                    }               
+            
+        );
+    
+        const videoUri = response.data.uri;
+        const videoId = videoUri.split('/').pop();
+    
+        const upload = new Upload(file,{
+            endpoint:'https://api.vimeo.com/me/videos',
+            uploadUrl:response.data.upload.upload_link,
+    
+            retryDelays: [0, 3000, 5000, 10000, 20000],
+          metadata: {
+            filename: file.originalname,
+            filetype: file.mimetype
+          },
+          headers: {},
+          onError: function(error) {
+            console.log('Failed because: ' + error);
+          },
+          onProgress: function(bytesUploaded, bytesTotal) {
+            let percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
+            console.log(bytesUploaded, bytesTotal, percentage + '%');
+          },
+          onSuccess: function() {
+            console.log('Download %s from %s', upload.file.name, upload.url);
+            
+          }
+        });
+    
+        
+       upload.start();
+    
+       console.log(videoId);    
+       return videoId;
+
+    } catch(error){
+        console.log(error);
+        throw error;
+    }
+   
+
+        
+    }
+
+
+
+    const handleSubmit = async () => {
         if (thumbnailFile && videoFile) {
+
+            //here the error
             setUploading(true);
             try {
-                const thumbnailUrl = await handleUpload(thumbnailFile);
-                const videoUrl = await handleUpload(videoFile);
-                setFormData({ ...formData, thumbnailUrl, videoUrl });
+                const thumbnailUrl = await handleUploadThumbnail(thumbnailFile);
+                console.log("Thumbnail URL:",thumbnailUrl);
+                //video upload here
+                const videoId = await handleVideoUpload(videoFile,formData.title);
+                console.log("Video ID:",videoId);
+                //const videoUrl = `https://vimeo.com/${videoId}`;
+                setFormData({ ...formData, thumbnailUrl, videoId });
+
+                const videoData = {
+                    title: formData.title,
+                    description: formData.description,
+                    thumbnailUrl,
+                    videoId
+                };
+
+                await axios.post('/api/videoUpload', videoData,{
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
                 setUploading(false);
                 navigate('/success-page'); 
+
+
             } catch (error) {
                 console.error('Upload error:', error);
                 setError('Failed to upload files');
@@ -73,43 +195,60 @@ export default function VideoUpload() {
     };
     return (
         //<AdminLayout>
-            <div className="container mx-auto px-4">
-                <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                    <h1 className="text-xl mb-4 font-semibold">Upload Videos from Here</h1>
+            <div className="container px-4 mx-auto">
+                <div className="px-8 pt-6 pb-8 mb-4 bg-white rounded shadow-md">
+                    <h1 className="mb-4 text-xl font-semibold">Upload Videos from Here</h1>
                     <form>
                         <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="title">
+                            <label className="block mb-2 text-sm font-semibold text-gray-700" htmlFor="title">
                                 Title:
                             </label>
-                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="title" type="text" />
+                            <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
+                            id="title" 
+                            type="text"
+                            onChange={handleInputChange} />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="description">
+                            <label className="block mb-2 text-sm font-semibold text-gray-700" htmlFor="description">
                                 Description:
                             </label>
-                            <textarea className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="description" ></textarea>
+                            <textarea className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
+                            id="description"
+                            onChange={handleInputChange} ></textarea>
                         </div>
                         <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="thumbnail">
+                            <label className="block mb-2 text-sm font-semibold text-gray-700" htmlFor="thumbnail">
                                 Thumbnail:
                             </label>
-                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="thumbnail" type="file" />
-                            <div className="flex items-center justify-start space-x-2 mt-2">
+                            <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
+                            id="thumbnail" 
+                            type="file" 
+                            onChange={handleInputChange}/>
+                            <div className="flex items-center justify-start mt-2 space-x-2">
                                
                             </div>
                         </div>
                         <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="video">
+                            <label className="block mb-2 text-sm font-semibold text-gray-700" htmlFor="video">
                                 Upload video:
                             </label>
-                            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="video" type="file" />
+                            <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
+                            id="video" 
+                            type="file" 
+                            onChange={handleInputChange}/>
                         </div>
                         <div className="flex items-center justify-between">
-                            <button type="button" className="flex mt-8 justify-center w-full  p-2 border border-slate-200 rounded-lg bg-blue-900 hover:opacity-85 text-white font-semibold">
-                                Publish Video
+                            <button 
+                            type="button" 
+                            className="flex justify-center w-full p-2 mt-8 font-semibold text-white bg-blue-900 border rounded-lg border-slate-200 hover:opacity-85"
+                            onClick={handleSubmit}
+                            disabled = {uploading}
+                            >
+                                {uploading ? 'Uploading...' : 'Publish Video'}
                             </button>
                         </div>
                     </form>
+                    {error && <p className="text-red-500">{error}</p>}
                 </div>
             </div>
         //</AdminLayout>

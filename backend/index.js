@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import authRouter from "./routes/auth.route.js";
-import noticeRoutes from "./routes/admin.routes/notice.routes.js"; 
+import videoRouter from "./routes/video.route.js";
+
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -24,8 +25,7 @@ app.use(cors({
 app.use(cookieParser());
 
 app.use('/api/auth', authRouter);
-app.use('/api/notices', noticeRoutes);
-
+app.use('/api',videoRouter);
 
 
 const PORT = process.env.PORT || 5000;
