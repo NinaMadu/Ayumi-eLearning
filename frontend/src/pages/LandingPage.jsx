@@ -11,6 +11,7 @@ import Pic5 from '../assets/Pic5.jpg';
 import Pic6 from '../assets/Pic6.jpg';
 import Sidemenu from '../components/Sidemenu';
 import Header from '../components/Header';
+import Footer from '../components/Footer'; 
 
 const images = [Pic1, Pic6, Pic2, Pic3, Pic5, Pic4];
 
@@ -105,6 +106,7 @@ const Home = () => {
                     </div>
                 </div>
             </div>
+            <Footer />
         </>
     );
 }
