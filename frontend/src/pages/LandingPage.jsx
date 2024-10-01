@@ -11,6 +11,8 @@ import Pic5 from '../assets/Pic5.jpg';
 import Pic6 from '../assets/Pic6.jpg';
 import Sidemenu from '../components/Sidemenu';
 import Header from '../components/Header';
+import Footer from '../components/Footer'; 
+import Notices from '../components/Notices';
 
 const images = [Pic1, Pic6, Pic2, Pic3, Pic5, Pic4];
 
@@ -88,9 +90,15 @@ const Home = () => {
                             <img src={logo} alt='logo' className='h-auto max-h-80 md:max-h-96 lg:max-h-[450px] object-contain w-full max-w-sm md:max-w-md lg:max-w-lg' />
                         </div>
                     </div>
-
+                    <div className='mb-4'>
+                        <h1 className='text-2xl font-semibold flex justify-center '>Latest Notices</h1>
+                        <Notices />
+                    </div>
+                    
+                    <h1 className='text-2xl font-semibold flex justify-center'>Image Gallery</h1>
                     {/* Image Slider */}
                     <div className='px-4 py-8 max-w-4xl mx-auto p-8 bg-slate-200 rounded-2xl'>
+                        
                         <Slider {...settings}>
                             {images.map((src, index) => (
                                 <div key={index} className='px-2'>
@@ -105,6 +113,7 @@ const Home = () => {
                     </div>
                 </div>
             </div>
+            <Footer />
         </>
     );
 }
