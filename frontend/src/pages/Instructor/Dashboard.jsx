@@ -41,30 +41,6 @@ function Dashboard() {
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
-  const [totalUsers, setTotalUsers] = useState(0);
-  const [error,setError]=useState(false); // State for total users
-
-  const fetchTotalUsers = async () => {
-    try {
-      // Fetching total user count
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/total-users`
-      );
-      const data = await res.json();
-
-      if (res.ok) {
-        setTotalUsers(data.totalUsers);
-      } else {
-        setError("Failed to fetch total users");
-      }
-    } catch (err) {
-      setError("Error fetching total users");
-    }
-  };
-
-  fetchTotalUsers(); // Call the total user fetch
-
-
   return (
     <AdminLayout>
       <div className="min-h-screen bg-gray-100 p-8">
@@ -75,7 +51,7 @@ function Dashboard() {
               <div className="text-xl sm:text-2xl font-semibold">
                 Total Users
               </div>
-              <div className="text-xl sm:text-xl font-bold">{totalUsers}</div>
+              <div className="text-xl sm:text-xl font-bold"></div>
             </div>
           </div>
           <div className="bg-gradient-to-r bg-blue-200 text-black p-4 rounded-lg shadow-md h-40">
@@ -127,85 +103,7 @@ function Dashboard() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Enrollment Trends */}
-          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
-            <div className="text-lg font-semibold mb-4">Enrollment Trends</div>
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="users"
-                  stroke="#8884d8"
-                  activeDot={{ r: 8 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* User Activities */}
-          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
-            <div className="text-lg font-semibold mb-4">User Activities</div>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="courses" fill="#82ca9d" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Payment Distribution */}
-          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
-            <div className="text-lg font-semibold mb-4">
-              Payment Distribution
-            </div>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={50}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Course Completion */}
-          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
-            <div className="text-lg font-semibold mb-4">
-              Course Completion Rates
-            </div>
-            <ResponsiveContainer width="100%" height={200}>
-              <AreaChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Area
-                  type="monotone"
-                  dataKey="amt"
-                  stroke="#ffc658"
-                  fill="#ffc658"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          
         </div>
       </div>
     </AdminLayout>
