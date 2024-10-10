@@ -32,21 +32,30 @@ const courseSchema = new mongoose.Schema({
         required: true,
     },
     enrollmentOptions: {
-        //may be changed
         type: String,
         required: true,
     },
-    Pricing: {
-        type: number,
+    pricing: {
+        type: mongoose.Schema.Types.Decimal128,
         required: true,
     },
     courseVisibility:{
         type: Boolean,  //true or false
         required: true,
     },
+    introImage: {
+        type: String,
+        required: true,
+    },
+    introVideo: {
+        type: String,
+        required: true,
+    },
+    externalResources: {
+        type: String,
+    },
     courseMaterials:{
         type: [String],
-
     },
     playlist:{
         type: mongoose.Schema.Types.ObjectId,

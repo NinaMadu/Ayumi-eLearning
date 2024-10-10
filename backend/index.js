@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import authRouter from "./routes/auth.route.js";
 import videoRouter from "./routes/video.route.js";
+import courseRouter from "./routes/admin.routes/course.routes.js";
 
 import cookieParser from "cookie-parser";
 
@@ -25,6 +26,7 @@ app.use(cors({
 app.use(cookieParser());
 
 app.use('/api/auth', authRouter);
+app.use('/api/course', courseRouter);
 app.use('/api',videoRouter);
 
 
