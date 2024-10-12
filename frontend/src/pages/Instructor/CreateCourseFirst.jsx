@@ -1,44 +1,37 @@
-import React, { useState } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCourseData, resetCourseData } from '../../redux/courseSlice';
+import { ChevronRightIcon } from '@heroicons/react/20/solid';
+import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../../components/AdminLayout';
 
 const CreateCourseFirst = () => {
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    category: '',
-    difficulty: 'beginner',
-    prerequisites: '',
-    objectives: '',
-  });
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const formData = useSelector((state) => state.course);
+
+  useEffect(() => {
+
+  }, []);
 
   const handleNext = () => {
-    navigate('/instructor/create-course-second', { state: formData });
+    console.log(formData);
+    dispatch(setCourseData(formData));
+    navigate('/instructor/create-course-second');
   };
 
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData({
-      ...formData,
-      [id]: value,
-    });
+    dispatch(setCourseData({ [id]: value}));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
   };
 
-  const handleCancel = (e) => {
-    setFormData({
-      title: '',
-      description: '',
-      category: '',
-      difficulty: 'beginner',
-      prerequisites: '',
-      objectives: '',
-    });
+  const handleCancel = () => {
+    dispatch(resetCourseData());
   };
 
   return (
@@ -134,22 +127,16 @@ const CreateCourseFirst = () => {
           </form>
         </div>
 
-        <div className="flex justify-end mt-6  right-4">
-        <Link 
-  to={{
-    pathname: '/instructor/create-course-second',
-    state: formData
-  }}
->
+        <div className="flex justify-end mt-6 right-4">
+  <button onClick={handleNext}>
     <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
       <div className='flex items-center pl-2'>
         <p className="mr-2">Next</p>
         <ChevronRightIcon className="h-6 w-6" />
       </div>
     </div>
-  </Link>
+  </button>
 </div>
-
 
       </div>
     </AdminLayout>

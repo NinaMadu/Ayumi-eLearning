@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import AdminLayout from '../../components/AdminLayout';
 
 const CreateCourseThird = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     ...location.state,
     image: '',
@@ -33,6 +34,11 @@ const CreateCourseThird = () => {
       links: '',
     });
   };
+
+  const handleBack = () => {
+    console.log(formData);
+    navigate('/instructor/create-course-second', { state: formData });
+  }
 
   return (
     <AdminLayout>
@@ -127,16 +133,14 @@ const CreateCourseThird = () => {
               </button>
 
         <div className="flex justify-between mt-6">
-          <Link to={'/instructor/create-course-second'}>
-            <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
-              <div className='flex '>
-              <ChevronLeftIcon className="h-6 w-6" />
-              <p className='pr-2'>
-                Back
-              </p>
+        <button onClick={handleBack}>
+              <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
+                <div className='flex items-center pl-2'>
+                  <p className="mr-2">Back</p>
+                  <ChevronLeftIcon className="h-6 w-6" />
+                </div>
               </div>
-            </div>
-          </Link>
+            </button>
         </div>
       </div>
     </AdminLayout>
