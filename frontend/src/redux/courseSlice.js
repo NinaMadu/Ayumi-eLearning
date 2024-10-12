@@ -13,6 +13,11 @@ const initialState = {
     custom_price: '',
     price: 'lkr',
     visibility: 'public',
+    introImage: '',
+    introVideo: '',
+    reference: '',
+    courseMaterial: '',
+    playlist: '',
     loading: false,
     error: null,
 };

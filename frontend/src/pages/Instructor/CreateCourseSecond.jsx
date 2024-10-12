@@ -31,14 +31,7 @@ const CreateCourseSecond = () => {
   };
 
   const handleCancel = () => {
-    setFormData({
-      custom_duration: '',
-      duration: 'hours',
-      enroll: 'free',
-      custom_price: '',
-      price: 'lkr',
-      visibility: 'public',
-    });
+    dispatch(resetCourseData());
   };
 
   const handleNext = () => {
