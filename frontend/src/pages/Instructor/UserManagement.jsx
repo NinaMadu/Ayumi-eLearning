@@ -90,21 +90,31 @@ export default function UserManagement() {
               onClick={() => openModal(user)}
             >
               {/* Image Column */}
-              {user.image ? (
+              {user.avatar ? (
                 <img
-                  src={user.image}
+                  src={user.avatar}
                   alt={user.firstName}
                   className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg"
                 />
+                
               ) : (
                 <div className="w-16 h-16 bg-gray-200 rounded-lg flex justify-center items-center">
                   <span className="text-gray-400">No Image</span>
                 </div>
               )}
+              <div>
+              <FaCircle
+                  className={`mr-2 ${user.isActive ? "text-green-500" : "text-gray-500"}`}
+                />
+                <span className="gap-2">{user.isActive ? "Active" : "Inactive"}</span>
+              
+                
+              </div>
 
               {/* Username Column */}
-              <div>
-                <h3 className="text-xs sm:text-sm md:text-base font-semibold">
+              
+              <div className="flex gap-4">
+             <h3 className="text-xs sm:text-sm md:text-base font-semibold">
                   {user.firstName} {user.lastName}
                 </h3>
               </div>
@@ -118,13 +128,9 @@ export default function UserManagement() {
 
               {/* Status Column */}
               <div className="flex items-center gap-6">
-                <FaCircle
-                  className={`mr-2 ${user.isActive ? "text-green-500" : "text-gray-500"}`}
-                />
-                <span className="gap-2">{user.isActive ? "Active" : "Inactive"}</span>
-              <div className="gap-4 flex flex-col text-white font-semibold">
+                <div className="gap-4 flex flex-col text-white font-semibold">
                 <button
-                  className="border-spacing-4 bg-red-600 p-2 rounded-lg hover:bg-red-400"
+                  className="border-spacing-4 bg-red-600 p-2 rounded-lg hover:bg-red-500"
                   onClick={() => deleteUser(user._id)}
                 >
                   Delete
@@ -138,6 +144,50 @@ export default function UserManagement() {
             </div>
           ))}
         </div>
+
+        {selectedUser && (
+          <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center'>
+            <div className='bg-white p-6 rounded-lg max-w-lg w-full relative'>
+              <button
+                className='absolute top-2 right-2 bg-red-600 text-white text-2xl px-2 pb-1 rounded-xl hover:bg-red-500 transition-all duration-200'
+                onClick={closeModal}
+              >
+                &times;
+              </button>
+              {selectedUser.avatar && (
+                <img
+                  src={selectedUser.avatar}
+                 
+                  className='w-full h-48 object-cover rounded-lg mb-4'
+                />
+              )}
+              <h5 className='text-lg font-semibold'>{selectedUser.firstName} {selectedUser.lastName}</h5>
+              <p className='text-gray-800 mt-2'>Email : {selectedUser.email}</p>
+              <p className='text-gray-800 mt-2'>Date of Birth : {selectedUser.bDay}</p>
+              <p className='text-gray-800 mt-2'>Gender : {selectedUser.gender}</p>
+              <p className='text-gray-800 mt-2'>Contact : {selectedUser.phone}</p>
+              
+              <div className='flex mt-4'>
+              
+                  <button
+                    className='mr-2 py-2 px-4 bg-slate-700 hover:bg-slate-600 text-white rounded-lg'
+                     >
+                    Deactivate
+                  </button>
+                
+                <button
+                  className='py-2 px-4 bg-red-600 hover:bg-red-500 text-white rounded-lg'
+                  onClick={() => {
+                    deleteUser(selectedUser._id);
+                    closeModal(); // Close modal after delete
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </AdminLayout>
   );
