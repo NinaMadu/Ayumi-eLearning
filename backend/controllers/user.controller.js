@@ -51,5 +51,20 @@ export const totalUsers =  async(req,res)=>{
     }
 };
 
+export const deactivateUser = async(req,res)=>{
+    const { id } = req.params;
+    try{
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+        user.isActive=false;
+        await user.save();
+        res.status(200).json({message:"User account has been deactivated"});
+
+    }catch(error){
+        res.status(500).json({message:"Failed to deactivate user"});
+    }
+}
 
 

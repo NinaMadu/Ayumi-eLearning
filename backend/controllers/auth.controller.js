@@ -78,7 +78,9 @@ export const signin = async (req, res, next) => {
 
         res.cookie('access_token', token, { httpOnly: true }).status(200).json({ ...rest, isInstructor });
 
-        
+        if (!validUser|| !validUser.isActive) {
+            return res.status(403).json({ message: "Account is deactivated or user not found" });
+          }
 
     } catch (error) {
         return next(errorHandler(500, "An unexpected error occurred. Please try again later."));
