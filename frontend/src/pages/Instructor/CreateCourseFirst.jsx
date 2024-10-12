@@ -13,6 +13,11 @@ const CreateCourseFirst = () => {
     objectives: '',
   });
 
+  const handleNext = () => {
+    navigate('/instructor/create-course-second', { state: formData });
+  };
+
+
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({
@@ -130,7 +135,12 @@ const CreateCourseFirst = () => {
         </div>
 
         <div className="flex justify-end mt-6  right-4">
-  <Link to={'/instructor/create-course-second'}>
+        <Link 
+  to={{
+    pathname: '/instructor/create-course-second',
+    state: formData
+  }}
+>
     <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
       <div className='flex items-center pl-2'>
         <p className="mr-2">Next</p>

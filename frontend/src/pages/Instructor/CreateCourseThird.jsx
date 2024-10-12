@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import AdminLayout from '../../components/AdminLayout';
 
 const CreateCourseThird = () => {
+  const location = useLocation();
   const [formData, setFormData] = useState({
+    ...location.state,
     image: '',
     video: '',
     links: '',
@@ -20,7 +22,8 @@ const CreateCourseThird = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    //const courseData = { ...formData};
+    console.log('Form submitted:', formData);    
   };
 
   const handleCancel = () => {
@@ -118,6 +121,7 @@ const CreateCourseThird = () => {
           <button
                 type="button"
                 className="flex mt-8 justify-center w-full  p-2 border border-slate-200 rounded-lg bg-blue-900 hover:opacity-85 text-white font-semibold"
+                onClick={handleSubmit}
               >
                 Create Course
               </button>

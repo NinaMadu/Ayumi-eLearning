@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import AdminLayout from '../../components/AdminLayout';
 
 const CreateCourseSecond = () => {
+  const location = useLocation();
   const [formData, setFormData] = useState({
+    ...location.state,
     custom_duration: '',
     duration: 'hours',
     enroll: 'free',
@@ -147,7 +149,12 @@ const CreateCourseSecond = () => {
             </div>
           </Link>
 
-          <Link to={'/instructor/create-course-third'}>
+          <Link 
+  to={{
+    pathname: '/instructor/create-course-third',
+    state: formData
+  }}
+>
             <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
               <div className='flex pl-2'>
               <p>Next</p>
