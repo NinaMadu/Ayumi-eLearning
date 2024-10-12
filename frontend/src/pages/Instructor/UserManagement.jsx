@@ -8,6 +8,7 @@ export default function UserManagement() {
   const [error, setError] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
 
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -29,8 +30,14 @@ export default function UserManagement() {
       }
     };
 
+    
+
     fetchUsers();
   }, []);
+
+   
+
+  
 
   const deleteUser = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
@@ -110,24 +117,24 @@ export default function UserManagement() {
               </div>
 
               {/* Status Column */}
-              <div className="flex items-center">
+              <div className="flex items-center gap-6">
                 <FaCircle
                   className={`mr-2 ${user.isActive ? "text-green-500" : "text-gray-500"}`}
                 />
-                <span>{user.isActive ? "Active" : "Inactive"}</span>
-              </div>
-
-              <div className="gap-4 flex text-white font-semibold">
+                <span className="gap-2">{user.isActive ? "Active" : "Inactive"}</span>
+              <div className="gap-4 flex flex-col text-white font-semibold">
                 <button
                   className="border-spacing-4 bg-red-600 p-2 rounded-lg hover:bg-red-400"
                   onClick={() => deleteUser(user._id)}
                 >
                   Delete
                 </button>
-                <button className="border-spacing-4 bg-slate-700 p-2 rounded-lg hover:bg-red-400">
+                <button className="border-spacing-4 bg-slate-700 p-2 rounded-lg hover:bg-slate-500">
                   Deactivate
                 </button>
               </div>
+              </div>
+
             </div>
           ))}
         </div>

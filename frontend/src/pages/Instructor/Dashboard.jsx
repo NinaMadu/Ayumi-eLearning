@@ -1,45 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaUsers, FaBook, FaUserPlus } from "react-icons/fa";
-
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import AdminLayout from "../../components/AdminLayout";
 import { Link } from "react-router-dom";
+import { totalUsers } from "../../../../backend/controllers/user.controller";
 
 function Dashboard() {
-  // Sample data for the charts
-  const data = [
-    { name: "Jan", users: 40, courses: 24, amt: 2400 },
-    { name: "Feb", users: 30, courses: 13, amt: 2210 },
-    { name: "Mar", users: 20, courses: 98, amt: 2290 },
-    { name: "Apr", users: 27, courses: 39, amt: 2000 },
-    { name: "May", users: 18, courses: 48, amt: 2181 },
-    { name: "Jun", users: 23, courses: 38, amt: 2500 },
-    { name: "Jul", users: 34, courses: 43, amt: 2100 },
-  ];
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [userCount, setUserCount] = useState(0);
+  useEffect(() => {
+    const fetchUserCount = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/count`);
+        const data = await response.json();
+  
+        //console.log('Full API Response:', data);
+        //console.log('Data from response:', data.userCount); // Correct way to access
+  
+        if (response.ok) {
+          // Use the correct property from the response data
+          setUserCount(data.userCount); // Change this line
+        } else {
+          setError(data.message || 'Failed to fetch user count');
+        }
+      } catch (err) {
+        setError('Error fetching user count');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserCount();
+  }, []);
+  
 
-  const pieData = [
-    { name: "Paid", value: 400 },
-    { name: "Free", value: 300 },
-    { name: "Scholarships", value: 300 },
-    { name: "Discounts", value: 200 },
-  ];
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
     <AdminLayout>
@@ -48,28 +48,23 @@ function Dashboard() {
           <div className="bg-gradient-to-r bg-red-200 text-black p-4 rounded-lg shadow-md h-40">
             <div className="flex flex-col items-center justify-center h-full">
               <FaUsers className="mb-2 text-4xl sm:text-4xl" />
-              <div className="text-xl sm:text-2xl font-semibold">
-                Total Users
-              </div>
-              <div className="text-xl sm:text-xl font-bold"></div>
+              <div className="text-xl sm:text-2xl font-semibold">Total Users</div>
+              <div className="text-xl sm:text-2xl font-bold">{userCount}</div>
             </div>
+  
           </div>
           <div className="bg-gradient-to-r bg-blue-200 text-black p-4 rounded-lg shadow-md h-40">
             <div className="flex flex-col items-center justify-center h-full">
               <FaBook className="mb-2 text-2xl sm:text-3xl" />
-              <div className="text-xl sm:text-xl font-semibold">
-                Total Courses
-              </div>
-              <div className="text-xl sm:text-2xl font-bold">20</div>
+              <div className="text-xl sm:text-xl font-semibold">Total Courses</div>
+              <div className="text-xl sm:text-2xl font-bold">0</div>
             </div>
           </div>
           <div className="bg-gradient-to-r bg-slate-200 text-black p-4 rounded-lg shadow-md h-40">
             <div className="flex flex-col items-center justify-center h-full">
               <FaUserPlus className="mb-2 text-4xl sm:text-4xl" />
-              <div className="text-xl sm:text-xl font-semibold">
-                New Enrollments
-              </div>
-              <div className="text-xl sm:text-2xl font-bold">20</div>
+              <div className="text-xl sm:text-xl font-semibold">New Enrollments</div>
+              <div className="text-xl sm:text-2xl font-bold">0</div>
             </div>
           </div>
         </div>
@@ -100,14 +95,9 @@ function Dashboard() {
             </button>
           </Link>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Enrollment Trends */}
-          
-        </div>
       </div>
     </AdminLayout>
   );
 }
 
-export default Dashboard; 
+export default Dashboard;
