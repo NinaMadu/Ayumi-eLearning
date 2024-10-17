@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import Player from '@vimeo/player';
+// import Player from '@vimeo/player';
 import {  useParams } from 'react-router-dom';
 import { IoHeart } from "react-icons/io5";
 import { IoChatbox } from "react-icons/io5";
 import { IoBookmark } from "react-icons/io5";
+import ReactPlayer from 'react-player';
 
 
 export default function VideoPreview() {
@@ -14,24 +15,27 @@ export default function VideoPreview() {
     useEffect(()=>{
 
 
-        if(vimeoRef.current  && videoId){
-            const player = new Player(vimeoRef.current,{
-                id: videoId,
-                width: '100%',
-            });
+        // if(vimeoRef.current  && videoId){
+        //     const player = new Player(vimeoRef.current,{
+        //         id: videoId,
+        //         width: '100%',
+        //     });
 
-            player.on('play', ()=>{
-                console.log('playing');
-            });
+        //     player.on('play', ()=>{
+        //         console.log('playing');
+        //     });
 
-            return ()=>{
-                player.unload();
-            };
-        }
+        //     return ()=>{
+        //         player.unload();
+        //     };
+        // }
     },[videoId]);
 
   return (
-    <div >
+    <div 
+    style={{
+      padding:'16px',
+    }}>
     
       <h1 style={{
         marginBottom: '20px', 
@@ -42,15 +46,53 @@ export default function VideoPreview() {
 
      
       
+      <div>
     
       <div
       style={{
-        width: '100%',
-        paddingRight:'16px',
-        borderRight: '1px solid #ccc',
-      }}>
+        padding: '16px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems:'center',
+
+      }}
+      // style={{
+      //   width: '100%',
+      //   paddingRight:'16px',
+      //   borderRight: '1px solid #ccc',
+      // }}
+      >
        
-      <iframe
+    
+      
+
+        {/* <div style={{
+          display: 'flex',
+          justifyContent:'center',
+          alignItems: 'center',
+          backgroundColor: 'black',
+          width: '50%',
+          
+          
+        }}>  */}
+        {/* <ReactPlayer 
+        url={`https://player.vimeo.com/video/${videoId}` } 
+        controls={true}
+        config={{
+          vimeo: {
+            playerOptions:{
+              title:0,
+              byline:0,
+              portrait:0,
+              badge:0,
+              loop:false,
+              
+              
+            }
+        }}}
+        /> */}
+        <iframe
       style={{
         width:'50%',
         height:'400px',
@@ -58,42 +100,73 @@ export default function VideoPreview() {
         margin: '0 auto',
         border: 'none',
         borderRadius: '10px',
-        overflow: 'hidden',
+        // overflow: 'hidden',
         boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
-        backgroundColor: 'white',
+        backgroundColor: 'black',
         position: 'relative',
         zIndex: '1',
 
       }}        
-        src={`https://player.vimeo.com/video/${videoId}`}
+        src={`https://player.vimeo.com/video/${videoId}?badge=0&byline=0&title=0&portrait=0`}
+        
+        
         frameborder="0"
-        webkitallowfullscreen mozallowfullscreen allowfullscreen
-      ></iframe>
+        allow='autoplay; fullscreen; picture-in-picture'
+        allowfullscreen
+      >
+        
+      </iframe>
       
-      <div 
+      <div style={{
+        padding:`16px`,
+        display: 'flex',
+        flexDirection: 'row',       
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width:'50%',
+      }}>
+
+        
+      <p
+        style={{
+          fontSize:'24px', 
+          color:'rgba(0,0,0,0.7)',
+        
+        }}><span
+        >By</span> Dr.Kushan
+        
+        </p>
+        <IoHeart className='fa fa-heart' 
+          style={{
+            fontSize: '24px',
+            color: 'rgba(0,0,0,0.7)',
+           
+            // marginTop: '16px',
+            cursor: 'pointer',
+          }}></IoHeart>
+
+        </div>
+        {/* </div> */}
+        
+        
+        </div>
+     
+      {/* <div 
       style={{
         display: 'flex',
         justifyContent: 'space-around',
         alignItems: 'center',
-      }}>
+      }}> */}
 
         
-        <p
-        style={{
-          fontSize:'24px', 
-          color:'rgba(0,0,0,0.7)',
-          margin: '0',
-          marginTop: '16px',
-          marginLeft: '50px',
-        }}><span
-        >98.4k</span> views</p>
-        <div
+        
+        {/* <div
         style={{
           display: 'flex',
           
         }}>
        
-          <IoHeart className='fa fa-heart' 
+          <div></div><IoHeart className='fa fa-heart' 
           style={{
             fontSize: '24px',
             color: 'rgba(0,0,0,0.7)',
@@ -117,11 +190,11 @@ export default function VideoPreview() {
             marginTop: '16px',
             cursor: 'pointer',
           }}></IoBookmark>
-         
+          */}
 
-</div>
+{/* </div> */}
         
-      </div>
+      {/* </div> */}
       <h3
       style={{
         fontSize: '36px',
