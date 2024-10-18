@@ -25,6 +25,7 @@ app.use(cookieParser());
 
 app.use('/api/auth', authRouter);
 app.use('/api/notices', noticeRoutes);
+//app.use('/api/courses')
 
 
 
