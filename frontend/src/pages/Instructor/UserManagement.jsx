@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/AdminLayout";
 import { FaCircle } from "react-icons/fa";
 import DeleteConfirmation from "../../components/confirmations/DeleteConfirmation";
+import DeactivateConfirmation from "../../components/confirmations/DeactivateConfirmation";
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
@@ -9,7 +10,9 @@ export default function UserManagement() {
   const [error, setError] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [selectedUserForDeletion, setSelectedUserForDeletion] = useState(null);
+  const [selectedUserForDeactivation, setSelectedUserForDeactivation] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -35,6 +38,7 @@ export default function UserManagement() {
     fetchUsers();
   }, []);
 
+  // Delete user function
   const deleteUser = async (id) => {
     try {
       const res = await fetch(
@@ -57,6 +61,7 @@ export default function UserManagement() {
     }
   };
 
+  // Deactivate user function
   const deactivateUser = async (id) => {
     try {
       const res = await fetch(
@@ -79,6 +84,32 @@ export default function UserManagement() {
     } catch (error) {
       console.error(error);
       alert("Error deactivating user");
+    }
+  };
+
+  // Activate user function
+  const activateUser = async (id) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/users/activate/${id}`,
+        {
+          method: "PUT",
+        }
+      );
+
+      if (res.ok) {
+        const updatedUsers = users.map((user) =>
+          user._id === id ? { ...user, isActive: true } : user
+        );
+        setUsers(updatedUsers);
+        alert("User has been activated.");
+      } else {
+        const data = await res.json();
+        alert(data.message || "Failed to activate user");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error activating user");
     }
   };
 
@@ -108,6 +139,28 @@ export default function UserManagement() {
     setSelectedUserForDeletion(null);
   };
 
+  const handleDeactivateClick = (user) => {
+    setSelectedUserForDeactivation(user);
+    setShowDeactivateModal(true);
+  };
+
+  const handleCancelDeactivate = () => {
+    setShowDeactivateModal(false);
+    setSelectedUserForDeactivation(null);
+  };
+
+  const handleConfirmDeactivate = () => {
+    if (selectedUserForDeactivation) {
+      if (selectedUserForDeactivation.isActive) {
+        deactivateUser(selectedUserForDeactivation._id);
+      } else {
+        activateUser(selectedUserForDeactivation._id);
+      }
+    }
+    setShowDeactivateModal(false);
+    setSelectedUserForDeactivation(null);
+  };
+
   if (loading) {
     return <p>Loading users...</p>;
   }
@@ -119,11 +172,11 @@ export default function UserManagement() {
   return (
     <AdminLayout>
       <div className="p-6">
-        <div className="bg-white rounded-lg shadow-lg">
+        <div className="bg-white rounded-lg shadow-lg ">
           {users.map((user) => (
             <div
               key={user._id}
-              className="flex items-center justify-between p-4 border-b hover:bg-gray-50 cursor-pointer"
+              className="flex items-center justify-between p-4 border-b hover:bg-blue-50 cursor-pointer"
               onClick={() => openModal(user)}
             >
               {/* Image and Active Status */}
@@ -180,11 +233,15 @@ export default function UserManagement() {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    deactivateUser(user._id);
+                    handleDeactivateClick(user);
                   }}
-                  className="bg-slate-700 text-white px-3 py-1 rounded-lg hover:bg-slate-600 transition-all"
+                  className={`${
+                    user.isActive
+                      ? "bg-slate-700 hover:bg-slate-600"
+                      : "bg-green-700 hover:bg-green-500"
+                  } text-white px-3 py-1 rounded-lg transition-all`}
                 >
-                  Deactivate
+                  {user.isActive ? "Deactivate" : "Activate"}
                 </button>
               </div>
             </div>
@@ -196,6 +253,14 @@ export default function UserManagement() {
           <DeleteConfirmation
             onConfirm={handleConfirmDelete}
             onCancel={handleCancelDelete}
+          />
+        )}
+
+        {/* Deactivate Confirmation Modal */}
+        {showDeactivateModal && (
+          <DeactivateConfirmation
+            onConfirm={handleConfirmDeactivate}
+            onCancel={handleCancelDeactivate}
           />
         )}
 
@@ -222,39 +287,18 @@ export default function UserManagement() {
 
               {/* User Info */}
               <div className="text-center space-y-3">
-                <h2 className="text-xl font-semibold text-gray-800">
+                <h2 className="text-xl font-semibold">
                   {selectedUser.firstName} {selectedUser.lastName}
                 </h2>
-                <p className="text-gray-500 text-sm">{selectedUser.email}</p>
-
-                <div className="grid grid-cols-2 gap-2 mt-4">
-                  <div className="text-right text-sm font-medium text-gray-600">
-                    <p>Date of Birth :</p>
-                    <p>Gender :</p>
-                    <p>Contact :</p>
-                  </div>
-                  <div className="text-left text-sm text-gray-800">
-                    <p>{selectedUser.bDay}</p>
-                    <p>{selectedUser.gender}</p>
-                    <p>{selectedUser.phone}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex mt-4 justify-center space-x-3">
-                <button
-                  className="py-1.5 px-4 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-lg transition duration-200 text-s"
-                  onClick={() => deactivateUser(selectedUser._id)}
-                >
-                  Deactivate
-                </button>
-                <button
-                  className="py-1.5 px-4 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-lg transition duration-200"
-                  onClick={() => handleDeleteClick(selectedUser)}
-                >
-                  Delete
-                </button>
+                <p>{selectedUser.email}</p>
+                <p>
+                  Status:{" "}
+                  {selectedUser.isActive ? (
+                    <span className="text-green-700">Active</span>
+                  ) : (
+                    <span className="text-gray-500">Inactive</span>
+                  )}
+                </p>
               </div>
             </div>
           </div>
