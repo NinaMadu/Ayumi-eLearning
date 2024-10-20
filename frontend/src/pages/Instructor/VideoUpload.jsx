@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { Upload } from "tus-js-client";
 import { storage } from '../../firebase.js';
 // import {app} from '../../firebase.js';
-import { ref, uploadBytesResumable, getDownloadURL  } from '@firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL  } from 'firebase/storage';
 
 const accessToken = import.meta.env.VITE_ACCESS_TOKEN;
 
@@ -34,6 +34,10 @@ export default function VideoUpload() {
     const [error, setError] = useState(false);
     const [uploading, setUploading] = useState(false);
 
+    //backend url    
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+    
     const handleInputChange = (e) => {
         const { id, value, files } = e.target;
         if (id === 'thumbnail') {
@@ -52,7 +56,7 @@ export default function VideoUpload() {
     //this is for thumbnail.
     const handleUploadThumbnail = (file) => {
         // const storage = getStorage();
-        console.log("File being uploaded:", file);
+        console.log("File being uploaded: ", file);
         if(!file)
         {
             console.error("No file was provided for upload");
@@ -60,6 +64,7 @@ export default function VideoUpload() {
         }
 
         const fileName = `${new Date().getTime()}-${file.name}`; 
+        // console.log("File name: ", fileName);
         const storageRef = ref(storage, `uploads/${fileName}`);
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -76,8 +81,14 @@ export default function VideoUpload() {
                 
                 () => {
                     getDownloadURL(uploadTask.snapshot.ref)
-                    .then(resolve)
-                    .catch(reject);
+                    .then((url)=>{
+                            console.log("Thumbnail URL: ", url);
+                            resolve(url);
+                    })
+                    .catch((error)=>{
+                        console.error("Failed to get download URL", error);
+                        reject(error);
+                    });
                 }
             );
         });
@@ -86,28 +97,31 @@ export default function VideoUpload() {
 
 
     //videoupload here
-    const handleVideoUpload = async (vfile,title)=>{
+    const handleVideoUpload = async (vfile)=>{
 
     const file = vfile;
     const fileSize = file.size.toString();
+    console.log("videoUpload function");
 
     try{
 
-        const response = await axios.post(
-            'https://api.vimeo.com/me/videos',
+        const response = await axios(
+            
             { 
     
                 
-                
-               
+                method: 'post',
+                url:`https://api.vimeo.com/me/videos`,
+                headers: headerPost,
+                data:{
                     upload:{
                         approach:'tus',
                         size: fileSize,
-                    },
-                    name:title,},
-                    {
-                        headers:headerPost,
-                    }               
+                    }
+               } 
+            }             
+               
+                               
             
         );
     
@@ -142,6 +156,8 @@ export default function VideoUpload() {
     
        console.log(videoId);    
        return videoId;
+        // setFormData({...formData, videoId});
+
 
     } catch(error){
         console.log(error);
@@ -163,7 +179,7 @@ export default function VideoUpload() {
                 const thumbnailUrl = await handleUploadThumbnail(thumbnailFile);
                 console.log("Thumbnail URL:",thumbnailUrl);
                 //video upload here
-                const videoId = await handleVideoUpload(videoFile,formData.title);
+                const videoId = await handleVideoUpload(videoFile);
                 console.log("Video ID:",videoId);
                 //const videoUrl = `https://vimeo.com/${videoId}`;
                 setFormData({ ...formData, thumbnailUrl, videoId });
@@ -175,7 +191,7 @@ export default function VideoUpload() {
                     videoId
                 };
 
-                await axios.post('/api/videoUpload', videoData,{
+                await axios.post(`${API_BASE_URL}/api/videoUpload`, videoData,{
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -186,7 +202,7 @@ export default function VideoUpload() {
 
             } catch (error) {
                 console.error('Upload error:', error);
-                setError('Failed to upload files');
+                setError('Failed to upload files brooo');
                 setUploading(false);
             }
         } else {
