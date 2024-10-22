@@ -5,7 +5,7 @@ import AdminLayout from '../../components/AdminLayout';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCourseData, resetCourseData } from '../../redux/courseSlice';
 import { storage } from '../../firebase';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import axios from 'axios';
 
@@ -59,14 +59,9 @@ const CreateCourseThird = () => {
   const handleImageChange = async (e) => {
     const file = e.target.files && e.target.files[0]; // Get the first file
     if (file) {
-      const base64Image = await convertToBase64(file); // Convert image to base64
-      setImagePreview(base64Image); // Set the preview
-      dispatch(setCourseData({ introImage: base64Image })); // Save to Redux as base64
-
-      // Reset file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ''; // Clear the file input
-      }
+      const base64Image = await convertToBase64(file); // Convert image to base64 for preview
+      setImagePreview(base64Image); // Set the base64 image preview
+      dispatch(setCourseData({ introImage: file })); // Save the original file to Redux
     }
   };
 
@@ -97,40 +92,66 @@ const CreateCourseThird = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // const currentUser = useSelector((state) => state.user.currentUser);
-
-    if(!currentUser) {
+  
+    if (!currentUser) {
       console.error('No user found, Please log in.');
+      return;
     }
   
     try {
-      const response = await axios.post('http://localhost:5000/api/course/add', {
-        title: formData.title,
-        description: formData.description,
-        category: formData.category,
-        difficulty: formData.difficulty,
-        prerequisites: formData.prerequisites,
-        objectives: formData.objectives,
-        customDuration: formData.custom_duration,
-        durationUnit: formData.duration,
-        enrollmentOptions: formData.enroll,
-        customPrice: formData.custom_price,
-        priceUnit: formData.price,
-        visibility: formData.visibility,
-        introImage: formData.introImage,
-        introVideo: videoLink, // Use the video link from the state
-        reference: externalLinks, // Use the external links from the state
-        courseMaterial: formData.courseMaterial, // Assuming this is already handled
-        playlist: formData.playlist,
-        instructor: currentUser._id, // Use the instructor ID from the token
-      });
+      // Upload intro image to Firebase Storage
+      const storage = getStorage();
+      const file = formData.introImage; // Retrieve the original file from Redux
+      if (!file) throw new Error("No image file selected.");
   
-      console.log('Course created successfully:', response.data);
+      const storageRef = ref(storage, `introImages/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file); // Upload the original file
+  
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload is ' + progress + '% done');
+        },
+        (error) => {
+          console.error('Error uploading image:', error);
+          throw error;
+        },
+        async () => {
+          // Get the download URL of the uploaded image
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          console.log('File available at', downloadURL);
+  
+          // Now submit the form data with the Firebase image URL
+          const response = await axios.post('http://localhost:5000/api/course/add', {
+            title: formData.title,
+            description: formData.description,
+            category: formData.category,
+            difficulty: formData.difficulty,
+            prerequisites: formData.prerequisites,
+            objectives: formData.objectives,
+            customDuration: formData.custom_duration,
+            durationUnit: formData.duration,
+            enrollmentOptions: formData.enroll,
+            customPrice: formData.custom_price,
+            priceUnit: formData.price,
+            visibility: formData.visibility,
+            introImage: downloadURL, // Firebase URL
+            introVideo: videoLink, // Video link from state
+            reference: externalLinks, // External links from state
+            courseMaterial: formData.courseMaterial,
+            playlist: formData.playlist,
+            instructor: currentUser._id, // Instructor ID from currentUser
+          });
+  
+          console.log('Course created successfully:', response.data);
+        }
+      );
     } catch (error) {
       console.error('Error creating course:', error);
     }
   };
+  
   
 
 
