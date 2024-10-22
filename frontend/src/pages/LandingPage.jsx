@@ -91,11 +91,11 @@ const Home = () => {
                         </div>
                     </div>
                     <div className='mb-4'>
-                        <h1 className='text-2xl font-semibold px-4 py-4'>Latest Notices</h1>
+                        <h1 className='text-2xl font-semibold flex justify-center '>Latest Notices</h1>
                         <Notices />
                     </div>
                     
-                    <h1 className='text-2xl font-semibold px-4 py-4'>Image Gallery</h1>
+                    <h1 className='text-2xl font-semibold flex justify-center'>Image Gallery</h1>
                     {/* Image Slider */}
                     <div className='px-4 py-8 max-w-4xl mx-auto p-8 bg-slate-200 rounded-2xl'>
                         
