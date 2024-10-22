@@ -103,13 +103,13 @@ const Home = () => {
           </div>
           <div className="mb-4">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-blue-900 text-transparent bg-clip-text   px-4 py-2  flex justify-center">
-              📢 Latest Notices 📢
+              📢 Latest Notices 📢123
             </h1>
             <Notices />
           </div>
 
           <h1 className="text-2xl font-extrabold text-center bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 text-transparent bg-clip-text py-4 drop-shadow-lg">
-            🌟 Image Gallery 🌟
+            🌟 Image Gallery 🌟 123
           </h1>
 
           {/* Image Slider */}
