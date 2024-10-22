@@ -5,9 +5,6 @@ import { configureStore } from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 
-
-
-
 const rootReducer = combineReducers({
     user: userReducer,
     course: courseReducer,    

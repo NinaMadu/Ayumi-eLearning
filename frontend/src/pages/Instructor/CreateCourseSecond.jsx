@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../../components/AdminLayout';
@@ -36,12 +36,12 @@ const CreateCourseSecond = () => {
 
   const handleNext = () => {
     console.log(formData);
-    navigate('/instructor/create-course-third', { state: formData });
+    navigate('/instructor/create-course-third');
   };
 
   const handleBack = () => {
     console.log(formData);
-    navigate('/instructor/create-course-first', { state: formData });
+    navigate('/instructor/create-course-first');
   }
 
   return (
