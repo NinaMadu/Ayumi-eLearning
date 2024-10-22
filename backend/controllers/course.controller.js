@@ -3,20 +3,21 @@ import Course from "../models/course.model.js";
 // Create a new notice
 export const createCourse = async (req, res) => {
     try {
-      const { title, description, category, difficultyLevel, prerequisites,
-        courseObjectives, duration,  enrollmentOptions,
-        pricing, courseVisibility, introImage, introVideo, externalResources,
-        courseMaterials, playlist, instructor 
+      const { title, description, category, difficulty, prerequisites,
+        objectives, durationUnit, customDuration,  enrollmentOptions,
+        customPrice, priceUnit, visibility, introImage, introVideo, reference,
+        courseMaterial, playlist, instructor 
        } = req.body; 
   
       // Create a new course
       const newCourse = new Course({
-        title, description, category, difficultyLevel, prerequisites,
-        courseObjectives, duration,  enrollmentOptions,
-        pricing, courseVisibility, introImage, introVideo, externalResources,
-        courseMaterials, playlist, instructor 
+        title, description, category, difficulty, prerequisites,
+        objectives, durationUnit, customDuration,  enrollmentOptions,
+        customPrice, priceUnit, visibility, introImage, introVideo, reference,
+        courseMaterial, playlist, instructor 
       });
   
+      console.log(req.body);
       // Save the notice to the database
       const savedCourse = await newCourse.save();
   
@@ -47,18 +48,18 @@ export const createCourse = async (req, res) => {
   export const editCourse = async (req, res) => {
     try {
       const { id } = req.params; 
-      const { title, description, category, difficultyLevel, prerequisites,
-        courseObjectives, duration,  enrollmentOptions,
-        pricing, courseVisibility, introImage, introVideo, externalResources,
-        courseMaterials, playlist, instructor  } = req.body; 
+      const { title, description, category, difficulty, prerequisites,
+        objectives, durationUnit, customDuration,  enrollmentOptions,
+        customPrice, priceUnit, visibility, introImage, introVideo, reference,
+        courseMaterial, playlist, instructor  } = req.body; 
   
       // Find the notice by ID and update it
       const updatedCourse = await Course.findByIdAndUpdate(
         id,
-        { title, description, category, difficultyLevel, prerequisites,
-            courseObjectives, duration,  enrollmentOptions,
-            pricing, courseVisibility, introImage, introVideo, externalResources,
-            courseMaterials, playlist, instructor }, // Update the notice with new data
+        { title, description, category, difficulty, prerequisites,
+          objectives, durationUnit, customDuration,  enrollmentOptions,
+          customPrice, priceUnit, visibility, introImage, introVideo, reference,
+          courseMaterial, playlist, instructor }, // Update the notice with new data
         { new: true } // Option to return the updated document
       );
   

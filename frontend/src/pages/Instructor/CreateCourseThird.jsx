@@ -1,25 +1,29 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { ChevronLeftIcon, XMarkIcon, PlusIcon } from '@heroicons/react/20/solid';
+import { ChevronLeftIcon } from '@heroicons/react/20/solid';
 import { Link, useNavigate } from 'react-router-dom';
 import AdminLayout from '../../components/AdminLayout';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCourseData, resetCourseData } from '../../redux/courseSlice';
 import { storage } from '../../firebase';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
-import FileUpload from '../../components/FileUpload';
+import { XMarkIcon } from '@heroicons/react/20/solid';
+import axios from 'axios';
+
 
 
 const CreateCourseThird = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const currentUser = useSelector((state) => state.user.currentUser);
+  
   const formData = useSelector((state) => state.course);
+  console.log(currentUser._id);
 
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
   const [videoLink, setVideoLink] = useState(formData.introVideo || '');
-  const [externalLinks, setExternalLinks] = useState(formData.externalLinks || ['']);
-
+  const [externalLinks, setExternalLinks] = useState(Array.isArray(formData.reference) ? formData.reference : ['']);
+  
   const convertToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -37,15 +41,12 @@ const CreateCourseThird = () => {
 
 
 
-  const handleUploadImage = () => {
-
-  };
-
-
   useEffect(() => {
+    // Check if formData.introImage is a File
     if (formData.introImage && formData.introImage instanceof File) {
-      setImagePreview(URL.createObjectURL(formData.introImage));
+      setImagePreview(URL.createObjectURL(formData.introImage)); // Load image from Redux
     } else if (typeof formData.introImage === 'string') {
+      // If formData.introImage is a URL string, use it directly
       setImagePreview(formData.introImage);
     }
   }, [formData.introImage]);
@@ -74,33 +75,65 @@ const CreateCourseThird = () => {
     dispatch(setCourseData({ introImage: null })); // Remove from Redux
   };
 
-
-  const handleAddLink = () => {
-    setExternalLinks([...externalLinks, '']); // Add an empty string to the array
-  };
-
-  // Handle remove link input field
-  const handleRemoveLink = (index) => {
-    const updatedLinks = externalLinks.filter((_, i) => i !== index); // Remove the link at the given index
-    setExternalLinks(updatedLinks);
-    dispatch(setCourseData({ externalLinks: updatedLinks })); // Update Redux store
-  };
-
-  // Handle input change for links
-  const handleLinkChange = (index, value) => {
+   // Handle external link change
+   const handleExternalLinkChange = (index, value) => {
     const updatedLinks = [...externalLinks];
-    updatedLinks[index] = value; // Update the specific link
+    updatedLinks[index] = value;
     setExternalLinks(updatedLinks);
-    dispatch(setCourseData({ externalLinks: updatedLinks })); // Update Redux store
+    dispatch(setCourseData({ reference: updatedLinks }));
   };
 
+  // Add a new external link input
+  const handleAddLink = () => {
+    setExternalLinks([...externalLinks, '']);
+  };
 
-  const handleSubmit = (e) => {
+  // Remove an external link
+  const handleRemoveLink = (index) => {
+    const updatedLinks = externalLinks.filter((_, i) => i !== index);
+    setExternalLinks(updatedLinks);
+    dispatch(setCourseData({ reference: updatedLinks }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
 
+    // const currentUser = useSelector((state) => state.user.currentUser);
 
+    if(!currentUser) {
+      console.error('No user found, Please log in.');
+    }
+  
+    try {
+      const response = await axios.post('http://localhost:5000/api/course/add', {
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
+        difficulty: formData.difficulty,
+        prerequisites: formData.prerequisites,
+        objectives: formData.objectives,
+        customDuration: formData.custom_duration,
+        durationUnit: formData.duration,
+        enrollmentOptions: formData.enroll,
+        customPrice: formData.custom_price,
+        priceUnit: formData.price,
+        visibility: formData.visibility,
+        introImage: formData.introImage,
+        introVideo: videoLink, // Use the video link from the state
+        reference: externalLinks, // Use the external links from the state
+        courseMaterial: formData.courseMaterial, // Assuming this is already handled
+        playlist: formData.playlist,
+        instructor: currentUser._id, // Use the instructor ID from the token
+      });
+  
+      console.log('Course created successfully:', response.data);
+    } catch (error) {
+      console.error('Error creating course:', error);
+    }
   };
+  
+
+
 
   const handleCancel = () => {
     dispatch(resetCourseData());
@@ -182,22 +215,34 @@ const CreateCourseThird = () => {
               </div>
             </div>
 
+            
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <label className="col-span-1 self-center">Upload Course Materials:</label>
+              <input
+                type="file"
+                id="courseMaterial"
+                accept=".jpg,.jpeg,.png,.gif,.pdf"
+                multiple
+                className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
+              />              
+            </div>
+
             {/* External Links */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <label className="col-span-1 self-center">Links to External Resources:</label>
-              <div className="col-span-3">
+              <div className="col-span-3 space-y-4">
                 {externalLinks.map((link, index) => (
-                  <div key={index} className="flex items-center space-x-2 mb-2">
+                  <div key={index} className="flex items-center space-x-4">
                     <input
                       type="text"
                       value={link}
-                      onChange={(e) => handleLinkChange(index, e.target.value)}
+                      onChange={(e) => handleExternalLinkChange(index, e.target.value)}
                       className="p-2 border border-slate-200 rounded-lg w-full"
-                      placeholder="Enter resource link"
+                      placeholder={`Resource link #${index + 1}`}
                     />
                     <button
                       type="button"
-                      className="bg-red-600 text-white p-1 rounded-full"
+                      className="text-red-500 hover:text-red-700"
                       onClick={() => handleRemoveLink(index)}
                     >
                       <XMarkIcon className="h-5 w-5" />
@@ -206,19 +251,14 @@ const CreateCourseThird = () => {
                 ))}
                 <button
                   type="button"
-                  className="mt-2 flex items-center text-blue-500 hover:underline"
+                  className="text-blue-500 hover:text-blue-700 font-semibold"
                   onClick={handleAddLink}
                 >
-                  <PlusIcon className="h-5 w-5 mr-1" /> Add another link
+                  + Add another link
                 </button>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <label className="col-span-1 self-center">Upload Course Materials:</label>
-              < FileUpload />
-              
-            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <label className="col-span-1 self-center">Embed Media:</label>
