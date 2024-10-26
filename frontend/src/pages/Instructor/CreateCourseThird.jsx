@@ -9,9 +9,10 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import axios from 'axios';
 import useCancelConfirmation from '../../hooks/useCancelConfirmation';
-
+import useSuccessMessage from '../../hooks/useSuccessMessage';
 
 const CreateCourseThird = () => {
+  const { triggerSuccess, successBox } = useSuccessMessage();
   const { triggerCancel, confirmationBox } = useCancelConfirmation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -147,6 +148,11 @@ const CreateCourseThird = () => {
           });
   
           console.log('Course created successfully:', response.data);
+          triggerSuccess('Completed!', 'New course created successfully');
+          dispatch(resetCourseData());
+          setTimeout(() => {            
+            navigate('/instructor/create-course'); 
+          }, 3000);
         }
       );
     } catch (error) {
@@ -162,6 +168,7 @@ const CreateCourseThird = () => {
   return (
     <AdminLayout>
       <div className="px-4 sm:px-8 md:px-12 lg:px-24 py-4">
+        {successBox}
         {confirmationBox}
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-semibold">Step 03</h1>
