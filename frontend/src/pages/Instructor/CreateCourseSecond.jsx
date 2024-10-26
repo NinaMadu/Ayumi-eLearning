@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../../components/AdminLayout';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCourseData, resetCourseData } from '../../redux/courseSlice';
+import useCancelConfirmation from '../../hooks/useCancelConfirmation';
 
 
 const CreateCourseSecond = () => {
+  const { triggerCancel, confirmationBox } = useCancelConfirmation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
@@ -30,10 +32,6 @@ const CreateCourseSecond = () => {
     // Add submission logic here if needed
   };
 
-  const handleCancel = () => {
-    dispatch(resetCourseData());
-  };
-
   const handleNext = () => {
     console.log(formData);
     navigate('/instructor/create-course-third', { state: formData });
@@ -46,14 +44,14 @@ const CreateCourseSecond = () => {
 
   return (
     <AdminLayout>
+      {confirmationBox}
       <div className="px-4 sm:px-8 md:px-12 lg:px-24 py-4">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-semibold">Step 02</h1>
           <button
-            className="border p-2 bg-red-600 text-white font-medium rounded-lg"
-            onClick={handleCancel}
-          >
-            Cancel Process
+            className="border p-2 bg-red-700 hover:bg-red-600 text-white font-medium rounded-lg"
+            onClick={triggerCancel}
+          >Cancel Process
           </button>
         </div>
 

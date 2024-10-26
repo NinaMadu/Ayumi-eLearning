@@ -4,8 +4,10 @@ import { setCourseData, resetCourseData } from '../../redux/courseSlice';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../../components/AdminLayout';
+import useCancelConfirmation from '../../hooks/useCancelConfirmation';
 
 const CreateCourseFirst = () => {
+  const { triggerCancel, confirmationBox } = useCancelConfirmation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.course);
@@ -30,19 +32,17 @@ const CreateCourseFirst = () => {
     e.preventDefault();
   };
 
-  const handleCancel = () => {
-    dispatch(resetCourseData());
-  };
-
+  
   return (
     <AdminLayout>
+      {confirmationBox}
       {/* Adjusted padding to match CreateCourseThird */}
       <div className="px-4 sm:px-8 md:px-12 lg:px-24 py-4">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-semibold">Step 01</h1>
           <button
-            className="border p-2 bg-red-600 text-white font-medium rounded-lg"
-            onClick={handleCancel}
+            className="border p-2 bg-red-700 hover:bg-red-600 text-white font-medium rounded-lg"
+            onClick={triggerCancel}
           >
             Cancel Process
           </button>

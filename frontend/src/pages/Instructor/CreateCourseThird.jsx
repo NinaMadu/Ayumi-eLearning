@@ -8,14 +8,16 @@ import { storage } from '../../firebase';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import axios from 'axios';
-
+import useCancelConfirmation from '../../hooks/useCancelConfirmation';
 
 
 const CreateCourseThird = () => {
+  const { triggerCancel, confirmationBox } = useCancelConfirmation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
   
+
   const formData = useSelector((state) => state.course);
   console.log(currentUser._id);
 
@@ -152,14 +154,6 @@ const CreateCourseThird = () => {
     }
   };
   
-  
-
-
-
-  const handleCancel = () => {
-    dispatch(resetCourseData());
-  };
-
   const handleBack = () => {
     console.log(formData);
     navigate('/instructor/create-course-second');
@@ -168,11 +162,12 @@ const CreateCourseThird = () => {
   return (
     <AdminLayout>
       <div className="px-4 sm:px-8 md:px-12 lg:px-24 py-4">
+        {confirmationBox}
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-semibold">Step 03</h1>
           <button
-            className="border p-2 bg-red-600 text-white font-medium rounded-lg"
-            onClick={handleCancel}
+            className="border p-2 bg-red-700 hover:bg-red-600 text-white font-medium rounded-lg"
+            onClick={triggerCancel}
           >
             Cancel Process
           </button>
