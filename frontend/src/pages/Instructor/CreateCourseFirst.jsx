@@ -35,7 +35,7 @@ const CreateCourseFirst = () => {
   
   return (
     <AdminLayout>
-      {confirmationBox}
+      {confirmationBox} 
       {/* Adjusted padding to match CreateCourseThird */}
       <div className="px-4 sm:px-8 md:px-12 lg:px-24 py-4">
         <div className="flex justify-between items-center mb-4">
