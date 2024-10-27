@@ -64,6 +64,10 @@ export const signin = async (req, res, next) => {
 
         if (!validUser) return next(errorHandler(404, "User not found"));
 
+        if (!isInstructor && !validUser.isActive) {
+            return res.status(403).json({ message: "Account is deactivated. Please contact support." });
+        }
+
         const validPassword = bcryptjs.compareSync(password, validUser.password);
         if (!validPassword) return next(errorHandler(401, "Invalid password"));
 
@@ -78,9 +82,9 @@ export const signin = async (req, res, next) => {
 
         res.cookie('access_token', token, { httpOnly: true }).status(200).json({ ...rest, isInstructor });
 
-        if (!validUser|| !validUser.isActive) {
-            return res.status(403).json({ message: "Account is deactivated or user not found" });
-          }
+        // if (!validUser|| !validUser.isActive) {
+        //     return res.status(403).json({ message: "Account is deactivated or user not found" });
+        //   }
 
     } catch (error) {
         return next(errorHandler(500, "An unexpected error occurred. Please try again later."));
@@ -91,20 +95,26 @@ export const signin = async (req, res, next) => {
 
 export const signOut = async (req, res, next) => {
     try {
-        const { userId } = req.body; // Assuming you send userId in the request body
+        const { userId } = req.body; 
         const validUser = await User.findById(userId) || await Instructor.findById(userId);
 
         if (!validUser) {
             return res.status(404).json("User not found");
         }
 
+        // Update user status to inactive
         validUser.isActive = false;
-        await validUser.save();
+        await validUser.save(); 
 
+        // Clear the access token cookie
         res.clearCookie('access_token');
+
+        // Send success response
         res.status(200).json("User has been logged out!");
     } catch (error) {
-        next(error);
+        
+        console.error(error);
+        return next(error);
     }
-}
+};
 
