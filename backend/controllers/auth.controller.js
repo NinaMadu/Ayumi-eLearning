@@ -73,6 +73,7 @@ export const signin = async (req, res, next) => {
 
         if (validUser) {
             validUser.isActive = true; // Update instance property
+            validUser.isLoggedIn=true;
             await validUser.save(); // Save the specific user instance
         }
 
@@ -104,6 +105,7 @@ export const signOut = async (req, res, next) => {
 
         // Update user status to inactive
         validUser.isActive = false;
+        validUser.isLoggedIn = false;
         await validUser.save(); 
 
         // Clear the access token cookie

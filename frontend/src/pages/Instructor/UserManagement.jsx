@@ -40,6 +40,8 @@ export default function UserManagement() {
     fetchUsers();
   }, []);
 
+  
+
   // Delete user function
   const deleteUser = async (id) => {
     try {
@@ -179,6 +181,11 @@ export default function UserManagement() {
     setSelectedUserForDeactivation(null);
   };
 
+  const isLoggedin = () => {
+    const token = localStorage.getItem("token");
+    return !!token;
+  }
+
   if (loading) {
     return <p>Loading users...</p>;
   }
@@ -214,11 +221,11 @@ export default function UserManagement() {
                 <div className="flex items-center gap-2">
                   <FaCircle
                     className={`${
-                      user.isActive ? "text-green-500" : "text-gray-500"
+                      user.isLoggedIn ? "text-green-500" : "text-gray-500"
                     }`}
                   />
                   <span className="text-xs sm:text-sm font-semibold">
-                    {user.isActive ? "Active" : "Inactive"}
+                    {user.isLoggedIn ? "Active" : "Inactive"}
                   </span>
                 </div>
               </div>
