@@ -7,9 +7,6 @@ import authRouter from "./routes/auth.route.js";
 import videoRouter from "./routes/video.route.js";
 import courseRouter from "./routes/admin.routes/course.routes.js";
 import noticeRoutes from "./routes/admin.routes/notice.routes.js";
-
-import cookieParser from "cookie-parser";
-import noticeRoutes from "./routes/admin.routes/notice.routes.js";
 import userRoutes from "./routes/profile.routes.js";
 
 dotenv.config();
