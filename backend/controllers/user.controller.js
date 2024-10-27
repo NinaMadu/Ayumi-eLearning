@@ -67,4 +67,29 @@ export const deactivateUser = async(req,res)=>{
     }
 }
 
+export const activateUser = async(req,res)=>{
+    const { id } = req.params; // Get the user ID from the request parameters
+
+  try {
+
+    const user = await User.findById(id);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Update user's isActive status
+    user.isActive = true; // Set isActive to true (activate user)
+
+    // Save the updated user
+    await user.save();
+
+    // Send response
+    return res.status(200).json({ message: 'User activated successfully.', user });
+  } catch (error) {
+    console.error("Error activating user:", error);
+    return res.status(500).json({ message: 'Server error, could not activate user.' });
+  }
+}
+
 

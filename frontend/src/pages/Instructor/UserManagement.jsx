@@ -3,6 +3,7 @@ import AdminLayout from "../../components/AdminLayout";
 import { FaCircle } from "react-icons/fa";
 import DeleteConfirmation from "../../components/confirmations/DeleteConfirmation";
 import DeactivateConfirmation from "../../components/confirmations/DeactivateConfirmation";
+import ActivateConfirmation from "../../components/confirmations/ActivateConfirmation";
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
@@ -11,26 +12,24 @@ export default function UserManagement() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  const [showActivateModal, setShowActivateModal] = useState(false);
   const [selectedUserForDeletion, setSelectedUserForDeletion] = useState(null);
   const [selectedUserForDeactivation, setSelectedUserForDeactivation] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/users`
-        );
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users`);
         const data = await res.json();
 
         if (res.ok) {
           setUsers(data.users);
-          setLoading(false);
         } else {
           setError(data.message || "Failed to fetch users");
-          setLoading(false);
         }
       } catch (err) {
         setError("Error fetching users");
+      } finally {
         setLoading(false);
       }
     };
@@ -38,38 +37,29 @@ export default function UserManagement() {
     fetchUsers();
   }, []);
 
-  // Delete user function
   const deleteUser = async (id) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/users/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/${id}`, {
+        method: "DELETE",
+      });
 
       if (res.ok) {
         setUsers(users.filter((user) => user._id !== id));
         setSelectedUser(null);
       } else {
         const data = await res.json();
-        alert(data.message || "Failed to delete user");
+        setError(data.message || "Failed to delete user");
       }
     } catch (err) {
-      console.error(err);
-      alert("Error deleting user");
+      setError("Error deleting user");
     }
   };
 
-  // Deactivate user function
   const deactivateUser = async (id) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/users/deactivate/${id}`,
-        {
-          method: "PUT",
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/deactivate/${id}`, {
+        method: "PUT",
+      });
 
       if (res.ok) {
         const updatedUsers = users.map((user) =>
@@ -79,23 +69,18 @@ export default function UserManagement() {
         alert("User has been deactivated.");
       } else {
         const data = await res.json();
-        alert(data.message || "Failed to deactivate user");
+        setError(data.message || "Failed to deactivate user");
       }
     } catch (error) {
-      console.error(error);
-      alert("Error deactivating user");
+      setError("Error deactivating user");
     }
   };
 
-  // Activate user function
   const activateUser = async (id) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/users/activate/${id}`,
-        {
-          method: "PUT",
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/activate/${id}`, {
+        method: "PUT",
+      });
 
       if (res.ok) {
         const updatedUsers = users.map((user) =>
@@ -105,11 +90,10 @@ export default function UserManagement() {
         alert("User has been activated.");
       } else {
         const data = await res.json();
-        alert(data.message || "Failed to activate user");
+        setError(data.message || "Failed to activate user");
       }
     } catch (error) {
-      console.error(error);
-      alert("Error activating user");
+      setError("Error activating user");
     }
   };
 
@@ -141,45 +125,47 @@ export default function UserManagement() {
 
   const handleDeactivateClick = (user) => {
     setSelectedUserForDeactivation(user);
-    setShowDeactivateModal(true);
+    user.isActive ? setShowDeactivateModal(true) : setShowActivateModal(true);
   };
 
-  const handleCancelDeactivate = () => {
+  const handleCancelModal = () => {
     setShowDeactivateModal(false);
+    setShowActivateModal(false);
     setSelectedUserForDeactivation(null);
   };
 
   const handleConfirmDeactivate = () => {
     if (selectedUserForDeactivation) {
-      if (selectedUserForDeactivation.isActive) {
-        deactivateUser(selectedUserForDeactivation._id);
-      } else {
-        activateUser(selectedUserForDeactivation._id);
-      }
+      deactivateUser(selectedUserForDeactivation._id);
     }
     setShowDeactivateModal(false);
-    setSelectedUserForDeactivation(null);
+  };
+
+  const handleConfirmActivate = () => {
+    if (selectedUserForDeactivation) {
+      activateUser(selectedUserForDeactivation._id);
+    }
+    setShowActivateModal(false);
   };
 
   if (loading) {
-    return <p>Loading users...</p>;
+    return <p>Loading users...</p>; // Consider adding a spinner here
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return <p>{error}</p>; // Display error messages in the UI instead of using alert
   }
 
   return (
     <AdminLayout>
       <div className="p-6">
-        <div className="bg-white rounded-lg shadow-lg ">
+        <div className="bg-white rounded-lg shadow-lg">
           {users.map((user) => (
             <div
               key={user._id}
               className="flex items-center justify-between p-4 border-b hover:bg-blue-50 cursor-pointer"
               onClick={() => openModal(user)}
             >
-              {/* Image and Active Status */}
               <div className="flex items-center gap-4">
                 {user.avatar ? (
                   <img
@@ -205,21 +191,18 @@ export default function UserManagement() {
                 </div>
               </div>
 
-              {/* Username Column */}
               <div className="flex-1 ml-4 pl-8">
                 <h3 className="text-sm sm:text-base font-semibold">
                   {user.firstName} {user.lastName}
                 </h3>
               </div>
 
-              {/* Email Column */}
               <div className="hidden md:block flex-1">
                 <h3 className="text-sm sm:text-base text-gray-600">
                   {user.email}
                 </h3>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex items-center gap-4">
                 <button
                   className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-500 transition-all"
@@ -248,60 +231,24 @@ export default function UserManagement() {
           ))}
         </div>
 
-        {/* Delete Confirmation Modal */}
+        {/* Confirmation Modals */}
         {showDeleteModal && (
           <DeleteConfirmation
             onConfirm={handleConfirmDelete}
             onCancel={handleCancelDelete}
           />
         )}
-
-        {/* Deactivate Confirmation Modal */}
         {showDeactivateModal && (
           <DeactivateConfirmation
             onConfirm={handleConfirmDeactivate}
-            onCancel={handleCancelDeactivate}
+            onCancel={handleCancelModal}
           />
         )}
-
-        {selectedUser && (
-          <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-2xl max-w-md w-full relative shadow-2xl">
-              {/* Close Button */}
-              <button
-                className="absolute top-3 right-3 bg-red-500 text-white text-2xl px-3 py-1 rounded-full hover:bg-red-600"
-                onClick={closeModal}
-              >
-                ×
-              </button>
-
-              {/* Avatar */}
-              {selectedUser.avatar && (
-                <div className="flex justify-center mb-4">
-                  <img
-                    src={selectedUser.avatar}
-                    className="h-40 w-40 object-cover rounded-full shadow-lg border-4 border-gray-300"
-                  />
-                </div>
-              )}
-
-              {/* User Info */}
-              <div className="text-center space-y-3">
-                <h2 className="text-xl font-semibold">
-                  {selectedUser.firstName} {selectedUser.lastName}
-                </h2>
-                <p>{selectedUser.email}</p>
-                <p>
-                  Status:{" "}
-                  {selectedUser.isActive ? (
-                    <span className="text-green-700">Active</span>
-                  ) : (
-                    <span className="text-gray-500">Inactive</span>
-                  )}
-                </p>
-              </div>
-            </div>
-          </div>
+        {showActivateModal && (
+          <ActivateConfirmation
+            onConfirm={handleConfirmActivate}
+            onCancel={handleCancelModal}
+          />
         )}
       </div>
     </AdminLayout>
