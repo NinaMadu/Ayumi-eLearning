@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bars3BottomRightIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import logo from '../assets/logo.png';
 import { Link } from 'react-router-dom';
@@ -7,12 +7,14 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signOutUserStart, signOutUserSuccess, signInFailure } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
-import LogoutConfirmation from './LogoutConfirmation'; // Import the LogoutConfirmation component
+import LogoutConfirmation from './LogoutConfirmation';
+import axios from 'axios';
 
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // state for modal
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
   const { currentUser } = useSelector(state => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -22,15 +24,29 @@ const Header = () => {
     { name: "About", link: "/about" },
   ];
 
+  // Fetch user details
+  const fetchUserDetails = async () => {
+    if (currentUser) {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/profile/${currentUser.email}`); // Use email to fetch user details
+        setUserDetails(response.data);
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, [currentUser]);
+
   const handleLogout = async () => {
     dispatch(signOutUserStart());
-
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/signout`, {
+      const response = await fetch(`http://localhost:5000/api/auth/signout`, {
         method: 'GET',
         credentials: 'include',
       });
-
       if (response.ok) {
         dispatch(signOutUserSuccess());
         console.log('Logged out successfully');
@@ -46,7 +62,7 @@ const Header = () => {
 
   const handleConfirmLogout = () => {
     handleLogout();
-    setShowLogoutModal(false); 
+    setShowLogoutModal(false);
   };
 
   return (
@@ -85,18 +101,16 @@ const Header = () => {
           ))}
 
           {currentUser ? (
-            // If user is logged in, show the avatar with dropdown arrow
             <li className='md:ml-8 md:my-0 my-7 font-semibold flex justify-center items-center relative'>
               <div
                 className='flex items-center cursor-pointer'
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 <img
-                  src={currentUser.avatarUrl || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}
+                  src={userDetails?.avatarUrl || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}
                   alt="User Avatar"
                   className="w-8 h-8 rounded-full border-2 border-slate-400"
                 />
-                {/* Toggle arrow direction based on dropdown state */}
                 {dropdownOpen ? (
                   <FaChevronUp className='ml-2 text-slate-600' />
                 ) : (
@@ -104,7 +118,6 @@ const Header = () => {
                 )}
               </div>
 
-              {/* Dropdown menu */}
               {dropdownOpen && (
                 <ul className='absolute left-1/2 transform -translate-x-1/2 mt-32 w-32 bg-white rounded-xl shadow-lg z-10 right-2'>
                   <li className='hover:bg-custom-gradient hover:rounded-lg hover:text-white flex flex-col justify-center items-center'>
@@ -114,7 +127,7 @@ const Header = () => {
                   </li>
                   <li
                     className='hover:bg-custom-gradient hover:rounded-lg hover:text-white flex flex-col justify-center items-center'
-                    onClick={() => setShowLogoutModal(true)} // Trigger modal on logout click
+                    onClick={() => setShowLogoutModal(true)}
                   >
                     <span className='block px-4 py-2 text-gray-700 hover:bg-custom-gradient hover:text-white cursor-pointer'>
                       Logout
@@ -125,24 +138,16 @@ const Header = () => {
             </li>
           ) : (
             <>
-              {/* Login Button */}
               <li className='md:ml-8 md:my-0 my-9 font-semibold flex justify-center items-center'>
                 <Link to='/sign-in'>
-                  <span
-                    className='text-custom-red font-medium border px-9 py-1 rounded-lg border-rose-600 hover:bg-rose-100 transition-all duration-300'
-                  >
+                  <span className='text-custom-red font-medium border px-9 py-1 rounded-lg border-rose-600 hover:bg-rose-100 transition-all duration-300'>
                     Login
                   </span>
                 </Link>
               </li>
-
-              {/* Get Started Button */}
               <li className='flex justify-center items-center md:ml-8 md:my-0 my-7 font-semibold'>
                 <Link to="/sign-up">
-                  <span
-                    className="text-white font-semibold px-4 py-2 duration-500 rounded-xl hover:opacity-90"
-                    style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}
-                  >
+                  <span className="text-white font-semibold px-4 py-2 duration-500 rounded-xl hover:opacity-90" style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}>
                     Get Started
                   </span>
                 </Link>
@@ -152,11 +157,10 @@ const Header = () => {
         </ul>
       </div>
 
-      {/* Logout confirmation modal */}
       {showLogoutModal && (
         <LogoutConfirmation
-          onConfirm={handleConfirmLogout} // Logout user if confirmed
-          onCancel={() => setShowLogoutModal(false)} // Close modal if canceled
+          onConfirm={handleConfirmLogout}
+          onCancel={() => setShowLogoutModal(false)}
         />
       )}
     </div>
