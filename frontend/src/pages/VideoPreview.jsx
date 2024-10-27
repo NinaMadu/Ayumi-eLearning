@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-// import Player from '@vimeo/player';
 import {  useParams } from 'react-router-dom';
 import { IoHeart } from "react-icons/io5";
 import { IoChatbox } from "react-icons/io5";
 import { IoBookmark } from "react-icons/io5";
-import ReactPlayer from 'react-player';
+
 
 
 export default function VideoPreview() {
@@ -14,34 +13,24 @@ export default function VideoPreview() {
 
     useEffect(()=>{
 
-
-        // if(vimeoRef.current  && videoId){
-        //     const player = new Player(vimeoRef.current,{
-        //         id: videoId,
-        //         width: '100%',
-        //     });
-
-        //     player.on('play', ()=>{
-        //         console.log('playing');
-        //     });
-
-        //     return ()=>{
-        //         player.unload();
-        //     };
-        // }
     },[videoId]);
 
   return (
     <div 
     style={{
-      padding:'16px',
+      padding:'20px',
+      //
+      fontFamily: 'Inter, sans-serif',
     }}>
     
       <h1 style={{
-        marginBottom: '20px', 
+        marginBottom: '24px', 
         textAlign: 'center',
-        fontSize: '30px',
-        fontFamily: 'Inter',
+        fontSize: '32px',
+        // fontFamily: 'Inter',
+        //
+        fontWeight: '600',
+        color:'#333',
         }}>The Video Player</h1>
 
      
@@ -50,67 +39,49 @@ export default function VideoPreview() {
     
       <div
       style={{
-        padding: '16px',
+       
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
         alignItems:'center',
+        padding:'24px',
+        backgroundColor: '#f9f9f9',
+        borderRadius: '12px',
+        boxShadow: '0 8px 16px rgpa(0,0,0, 0.2)',
+        maxWidth:'800px',
+        // justifyContent: 'center',
+        margin:'0 auto',   
+
+        
 
       }}
-      // style={{
-      //   width: '100%',
-      //   paddingRight:'16px',
-      //   borderRight: '1px solid #ccc',
-      // }}
+      
       >
        
     
       
 
-        {/* <div style={{
-          display: 'flex',
-          justifyContent:'center',
-          alignItems: 'center',
-          backgroundColor: 'black',
-          width: '50%',
-          
-          
-        }}>  */}
-        {/* <ReactPlayer 
-        url={`https://player.vimeo.com/video/${videoId}` } 
-        controls={true}
-        config={{
-          vimeo: {
-            playerOptions:{
-              title:0,
-              byline:0,
-              portrait:0,
-              badge:0,
-              loop:false,
-              
-              
-            }
-        }}}
-        /> */}
+       
         <iframe
       style={{
-        width:'50%',
+        width:'100%',
         height:'400px',
-        display: 'block',
-        margin: '0 auto',
+        maxWidth:'800px',
+        // display: 'block',
+        // margin: '0 auto',
         border: 'none',
         borderRadius: '10px',
-        // overflow: 'hidden',
+        overflow: 'hidden',
         boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
         backgroundColor: 'black',
-        position: 'relative',
-        zIndex: '1',
+        // position: 'relative',
+        // zIndex: '1',
+        objectFit: 'cover',
 
       }}        
         src={`https://player.vimeo.com/video/${videoId}?badge=0&byline=0&title=0&portrait=0`}
         
         
-        frameborder="0"
+       
         allow='autoplay; fullscreen; picture-in-picture'
         allowfullscreen
       >
@@ -118,19 +89,21 @@ export default function VideoPreview() {
       </iframe>
       
       <div style={{
-        padding:`16px`,
+        
         display: 'flex',
-        flexDirection: 'row',       
+        // flexDirection: 'row',       
         justifyContent: 'space-between',
         alignItems: 'center',
-        width:'50%',
+        width:'100%',
+        padding:`16px 0`,
+        color:'#555',
       }}>
 
         
       <p
         style={{
-          fontSize:'24px', 
-          color:'rgba(0,0,0,0.7)',
+          fontSize:'20px', 
+          
         
         }}><span
         >By</span> Dr.Kushan
@@ -139,79 +112,38 @@ export default function VideoPreview() {
         <IoHeart className='fa fa-heart' 
           style={{
             fontSize: '24px',
-            color: 'rgba(0,0,0,0.7)',
+            color: '#ff6464',
            
             // marginTop: '16px',
             cursor: 'pointer',
           }}></IoHeart>
 
         </div>
-        {/* </div> */}
+        
         
         
         </div>
      
-      {/* <div 
-      style={{
-        display: 'flex',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-      }}> */}
-
-        
-        
-        {/* <div
-        style={{
-          display: 'flex',
-          
-        }}>
-       
-          <div></div><IoHeart className='fa fa-heart' 
-          style={{
-            fontSize: '24px',
-            color: 'rgba(0,0,0,0.7)',
-            marginRight: '20px',
-            marginTop: '16px',
-            cursor: 'pointer',
-          }}></IoHeart>
-          <IoChatbox className='fa fa-comment-alt'
-           style={{
-            fontSize: '24px',
-            color: 'rgba(0,0,0,0.7)',
-            marginRight: '20px',
-            marginTop: '16px',
-            cursor: 'pointer',
-          }}></IoChatbox>
-          <IoBookmark
-           style={{
-            fontSize: '24px',
-            color: 'rgba(0,0,0,0.7)',
-            marginRight: '20px',
-            marginTop: '16px',
-            cursor: 'pointer',
-          }}></IoBookmark>
-          */}
-
-{/* </div> */}
-        
-      {/* </div> */}
+     
       <h3
       style={{
-        fontSize: '36px',
-        marginTop: '16px',
-        marginBottom: '16px',
-        borderTop: '1px solid #ccc',
+        fontSize: '28px',
+        margin: '20px 0 10px',
+        // marginBottom: '16px',
+        borderTop: '1px solid #e0e0e0',
         paddingTop: '16px',
+        color:'#333',
       }}
       >Croissants  | Flour and Stone</h3>
           <p
           style={{
-            fontSize: '20px',
-            letterSpacing: '1px',
-            lineHeight: '1.3',
-            marginTop: '0',
-            color:'rgba(0,0,0,0.7)',
-            marginBottom: '100px',
+            fontSize: '18px',
+            letterSpacing: '0.5px',
+            lineHeight: '1.6',
+            color:'#666',
+            // marginTop: '0',
+            textAlign: 'justify',
+            marginBottom: '24px',
 
           }}>
             There is no other way but to commit
