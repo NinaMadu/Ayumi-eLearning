@@ -24,23 +24,16 @@ const Header = () => {
 
   const handleLogout = async () => {
     dispatch(signOutUserStart());
-  
+
     try {
-      const userId = localStorage.getItem('userId'); // Assuming you store userId in localStorage
       const response = await fetch(`${API_BASE_URL}/api/auth/signout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId }),
+        method: 'GET',
         credentials: 'include',
       });
-  
+
       if (response.ok) {
         dispatch(signOutUserSuccess());
         console.log('Logged out successfully');
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
         navigate('/');
       } else {
         const errorData = await response.json();
@@ -50,7 +43,6 @@ const Header = () => {
       dispatch(signInFailure(error.message || 'An unexpected error occurred.'));
     }
   };
-  
 
   const handleConfirmLogout = () => {
     handleLogout();
