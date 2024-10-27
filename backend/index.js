@@ -4,6 +4,11 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.route.js";
+import videoRouter from "./routes/video.route.js";
+import courseRouter from "./routes/admin.routes/course.routes.js";
+import noticeRoutes from "./routes/admin.routes/notice.routes.js";
+
+import cookieParser from "cookie-parser";
 import noticeRoutes from "./routes/admin.routes/notice.routes.js";
 import userRoutes from "./routes/profile.routes.js";
 
@@ -27,7 +32,10 @@ app.use(cors({
 app.use(cookieParser());
 
 app.use('/api/auth', authRouter);
+app.use('/api/course', courseRouter);
 app.use('/api/notices', noticeRoutes);
+app.use('/api',videoRouter);
+
 app.use('/api/profile', userRoutes); // Use user routes
 
 const PORT = process.env.PORT || 5000;
