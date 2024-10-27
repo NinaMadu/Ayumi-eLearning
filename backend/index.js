@@ -31,6 +31,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRouter);
 app.use('/api/course', courseRouter);
 app.use('/api/notices', noticeRoutes);
+//app.use('/api/courses')
 app.use('/api',videoRouter);
 
 app.use('/api/profile', userRoutes); // Use user routes

@@ -20,7 +20,7 @@ const Sidemenu = () => {
     { title: "Discussion", icon: <FaBookOpen /> },
     { title: "Favourites", icon: <FaHeart /> },
     { title: "Help", icon: <FaQuestionCircle /> },
-    { title: "Courses", icon: <FaBook />, path: "/instructor/create-course" },
+    { title: "Courses", icon: <FaBook />, path: "/user/courses" },
   ];
 
   const settingsMenu = [
