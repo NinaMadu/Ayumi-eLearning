@@ -14,6 +14,7 @@ import CreateNotice from './pages/Instructor/CreateNotice';
 import EditNotice from './pages/Instructor/EditNotice';
 import VideoUpload from './pages/Instructor/VideoUpload';
 import AddVideos from './pages/Instructor/AddVideos';
+import VideoList from './pages/Instructor/VideoList';
 
 
 const InstructorRoutes = () => {
@@ -33,6 +34,7 @@ const InstructorRoutes = () => {
         <Route path="/instructor/edit-notice/:id" element={<EditNotice />} />
         <Route path="/instructor/add-videos" element={<AddVideos/>} />
         <Route path="/instructor/video-upload" element={<VideoUpload/>} />
+        <Route path="/instructor/videoList" element={<VideoList/>} />
       
       </Route>
     </Routes>
