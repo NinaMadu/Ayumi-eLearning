@@ -11,69 +11,51 @@ const courseSchema = new mongoose.Schema({
     },
     category: {
         type: String,
+        enum:[], // should be  added
         required: true,
     },
-    difficulty: {
+    difficultyLevel: {
         type: String,
-        enum:["Beginner", "Intermediate", "Advanced"],
+        enum:["Beginner", "Intermediate", "Advanced"], //may be changed
         required: true,
     },
     prerequisites: {
         type: [String],
         required: true,
     },
-    objectives: {
+    courseObjectives: {
         type: [String],
         required: true,
     },
-    customDuration: {
-        type: String,
-        required: true,
-    },
-    durationUnit: {
+    duration: {
         type: String,
         required: true,
     },
     enrollmentOptions: {
+        //may be changed
         type: String,
         required: true,
     },
-    customPrice: {
-        type: mongoose.Schema.Types.Decimal128,
-        required: true,
-        default: 0.0
-    },
-    priceUnit: {
-        type: String,
+    Pricing: {
+        type: number,
         required: true,
     },
-    visibility:{
-        type: String,  
-        required: true,
-        default: 'private'
-    },
-    introImage: {
-        type: String,
+    courseVisibility:{
+        type: Boolean,  //true or false
         required: true,
     },
-    introVideo: {
-        type: String,
-        required: true,
-    },
-    reference: {
+    courseMaterials:{
         type: [String],
-    },
-    courseMaterial:{
-        type: [String],
+
     },
     playlist:{
-        type: String,        
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Playlist",
     },
 
     instructor:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Instructor",
-        required: true
     },
     
 
