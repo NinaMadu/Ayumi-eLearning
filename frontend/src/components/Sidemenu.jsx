@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaHome, FaUser, FaBook, FaCog, FaBell, FaHeart, FaQuestionCircle, FaSignOutAlt, FaChevronCircleLeft, FaChevronCircleRight, FaBookOpen } from 'react-icons/fa';
+import { AiFillDashboard } from "react-icons/ai";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { signOutUserStart, signOutUserSuccess, signInFailure } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
@@ -14,7 +15,7 @@ const Sidemenu = () => {
 
   const mainMenu = [
     { title: "Home", icon: <FaHome />, path: "/" },
-    { title: "Profile", icon: <FaUser />, path: "/user/dashboard" },
+    { title: "Dashboard", icon: <AiFillDashboard />, path: "/user/dashboard" },
     { title: "Notifications", icon: <FaBell /> },
     { title: "Discussion", icon: <FaBookOpen /> },
     { title: "Favourites", icon: <FaHeart /> },
