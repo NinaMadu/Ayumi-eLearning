@@ -29,6 +29,9 @@ const InstructorRoutes = () => {
         <Route path="/instructor/create-notice" element={<CreateNotice/>} />
         <Route path="/instructor/payment-management" element={<PaymentManagement/>} />
         <Route path="/instructor/edit-notice/:id" element={<EditNotice />} />
+        <Route path="/instructor/add-videos" element={<AddVideos/>} />
+        <Route path="/instructor/video-upload" element={<VideoUpload/>} />
+      
       </Route>
     </Routes>
   );
