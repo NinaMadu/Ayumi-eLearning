@@ -12,10 +12,13 @@ import NoticeManagement from './pages/Instructor/NoticeManagement';
 import PaymentManagement from './pages/Instructor/PaymentManagement';
 import CreateNotice from './pages/Instructor/CreateNotice';
 import EditNotice from './pages/Instructor/EditNotice';
-import VideoUpload from './pages/Instructor/VideoUpload';
+// import VideoUpload from './pages/Instructor/VideoUpload';
+import VideoUpload from './pages/Instructor/VideoManagement/VideoUpload';
 import AddVideos from './pages/Instructor/AddVideos';
-import VideoList from './pages/Instructor/VideoList';
-import VideoPreview from './pages/Instructor/VideoPreview';
+// import VideoList from './pages/Instructor/VideoList';
+import VideoList from './pages/Instructor/VideoManagement/VideoList';
+// import VideoPreview from './pages/Instructor/VideoPreview';
+import VideoPreview from './pages/Instructor/VideoManagement/VideoPreview';
 
 
 const InstructorRoutes = () => {

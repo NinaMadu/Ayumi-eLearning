@@ -3,6 +3,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
+//
+import ConfirmationBox from '../../../components/ConfirmationBox';
+import SuccessBox from '../../../components/SuccessBox';
+
 
 export default function VideoPreview() {
 
@@ -12,6 +16,10 @@ export default function VideoPreview() {
     const [description, setDescription] = useState(null);
     const [thumbnailUrl, setThumbnailUrl] = useState(null);
     // const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+    //
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
    
@@ -39,22 +47,39 @@ export default function VideoPreview() {
       }
     };
 
-    const handleDelete = async (videoId)=>{
+    const handleDelete =  (videoId)=>{
+        setShowConfirmation(true);      
+    };
+
+    const confirmDelete = async () =>{
+      try{
+        const response = await axios.delete(`${API_BASE_URL}/api/videoDelete/${videoId}`,{
+          data : {
+            thumbnailUrl,
+          }
+        });
+        console.log(response.data);
         
-      if(window.confirm("Are you sure you want to delete this video?"))
-          {
-          try{
-              const response = await axios.delete(`${API_BASE_URL}/api/videoDelete/${videoId}`);
-              console.log(response.data);
-              setVideos(videos.filter(video=> video.videoId !== videoId));    
-          }
-          catch(error){
-              console.error('Error deleting video:', error);
-          }
-          }
+        //
+        setShowConfirmation(false);
+        setShowSuccess(true);
+
+      }
+      catch(error){
+        console.error('Error deleting video:', error);
+      }
+    };      
+      
+    const cancelDelete = () => {
+        setShowConfirmation(false);
+    };
+
+    const closeSuccessBox = ()=>{
+        setShowSuccess(false);
+    }
 
 
-  };
+  
 
 
     
@@ -136,6 +161,7 @@ export default function VideoPreview() {
             color:'#555',
 
           }}>
+            
             <button
             style={{
               padding:'10px 20px',
@@ -155,6 +181,16 @@ export default function VideoPreview() {
             onMouseLeave={
               (e)=> e.target.style.backgroundColor = '#4CAF50'
               }>Update</button>
+
+              { showConfirmation &&
+              (
+              <ConfirmationBox
+                title="Confirm Delete"
+                message="Are you sure you want to delete this video?"
+                onConfirm={confirmDelete}
+                onCancel={cancelDelete}
+              />
+            )}
 
 
             <button style={{
@@ -178,6 +214,19 @@ export default function VideoPreview() {
 
 
         </div>
+        <div
+        style={{
+          display:'flex',
+          flexDirection:'column',
+          alignItems:'start',
+          padding:'24px',
+          backgroundColor:'#f9f9f9',
+          borderRadius:'12px',
+          boxRadius:'0 8px 16px rgpa(0,0,0,0.2)',
+          maxWidth:'800px',
+          margin:'0 auto',
+          marginTop:'24px',
+        }}>
         <h3
       style={{
         fontSize: '28px',
@@ -186,7 +235,7 @@ export default function VideoPreview() {
         paddingTop: '16px',
         color:'#333',
       }}
-      >{title}</h3>
+      > {title}</h3>
           <p
           style={{
             fontSize: '18px',
@@ -197,8 +246,18 @@ export default function VideoPreview() {
             marginBottom: '24px',
 
           }}>
-            {description}
+             {description}
           </p>
+          </div>
+
+          {showSuccess &&(
+            <SuccessBox
+              title = "Success"
+              message= "Video updated successfully"
+              onClose={closeSuccessBox}
+
+              />
+          )}
 
 
 
