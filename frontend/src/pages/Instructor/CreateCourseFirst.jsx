@@ -1,48 +1,50 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setCourseData, resetCourseData } from '../../redux/courseSlice';
-import { ChevronRightIcon } from '@heroicons/react/20/solid';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
+import { useNavigate, Link } from 'react-router-dom';
 import AdminLayout from '../../components/AdminLayout';
-import useCancelConfirmation from '../../hooks/useCancelConfirmation';
 
 const CreateCourseFirst = () => {
-  const { triggerCancel, confirmationBox } = useCancelConfirmation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const formData = useSelector((state) => state.course);
-
-  useEffect(() => {
-
-  }, []);
-
-  const handleNext = () => {
-    console.log(formData);
-    dispatch(setCourseData(formData));
-    navigate('/instructor/create-course-second');
-  };
-
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    category: '',
+    difficulty: 'beginner',
+    prerequisites: '',
+    objectives: '',
+  });
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    dispatch(setCourseData({ [id]: value}));
+    setFormData({
+      ...formData,
+      [id]: value,
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
   };
 
-  
+  const handleCancel = (e) => {
+    setFormData({
+      title: '',
+      description: '',
+      category: '',
+      difficulty: 'beginner',
+      prerequisites: '',
+      objectives: '',
+    });
+  };
+
   return (
     <AdminLayout>
-      {confirmationBox} 
       {/* Adjusted padding to match CreateCourseThird */}
       <div className="px-4 sm:px-8 md:px-12 lg:px-24 py-4">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-semibold">Step 01</h1>
           <button
-            className="border p-2 bg-red-700 hover:bg-red-600 text-white font-medium rounded-lg"
-            onClick={triggerCancel}
+            className="border p-2 bg-red-600 text-white font-medium rounded-lg"
+            onClick={handleCancel}
           >
             Cancel Process
           </button>
@@ -98,9 +100,9 @@ const CreateCourseFirst = () => {
                 onChange={handleChange}
                 value={formData.difficulty}
               >
-                <option value="Beginner">Beginner</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Advanced">Advanced</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
               </select>
             </div>
 
@@ -127,16 +129,17 @@ const CreateCourseFirst = () => {
           </form>
         </div>
 
-        <div className="flex justify-end mt-6 right-4">
-  <button onClick={handleNext}>
+        <div className="flex justify-end mt-6  right-4">
+  <Link to={'/instructor/create-course-second'}>
     <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg">
       <div className='flex items-center pl-2'>
         <p className="mr-2">Next</p>
         <ChevronRightIcon className="h-6 w-6" />
       </div>
     </div>
-  </button>
+  </Link>
 </div>
+
 
       </div>
     </AdminLayout>
