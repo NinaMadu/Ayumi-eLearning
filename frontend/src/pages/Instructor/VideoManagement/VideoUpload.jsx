@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 // import 'dotenv/config';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import AdminLayout from '../../components/AdminLayout';
+import AdminLayout from '../../../components/AdminLayout.jsx';
 import { useSelector } from 'react-redux';
 import { Upload } from "tus-js-client";
-import { storage } from '../../firebase.js';
+import { storage } from '../../../firebase.js';
 // import {app} from '../../firebase.js';
 import { ref, uploadBytesResumable, getDownloadURL  } from 'firebase/storage';
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AdminLayout from '../../components/AdminLayout';
-import VideoUpload from '../../pages/Instructor/VideoUpload';
+import VideoUpload from './VideoManagement/VideoUpload';
+// import VideoUpload from '../../pages/Instructor/VideoUpload';
 import { Link } from 'react-router-dom';
 
 export default function AddVideos() {
@@ -25,14 +26,14 @@ export default function AddVideos() {
       ))}
 
   
-      <div className='flex justify-between  '>
-     <Link to={'/instructor/create-course-third'} className='bg-gray-400 text-white p-2 px-4 font-semibold rounded-lg shadow-lg'>
+      <div className='flex justify-between '>
+     <Link to={'/instructor/create-course-third'} className='p-2 px-4 font-semibold text-white bg-gray-400 rounded-lg shadow-lg'>
       <button>Back to Course</button>
      </Link>
 
       <button
         onClick={handleAddVideo}
-        className=" flex justify-items-end px-2 py-2 rounded-lg text-white font-semibold "
+        className="flex px-2 py-2 font-semibold text-white rounded-lg  justify-items-end"
         style={{
           background: 'linear-gradient(to right, #D16262, #C53B3B)',
         }}
