@@ -136,7 +136,7 @@ const Profile = () => {
       {showSuccessBox && (
   <SuccessBox
     title="Success"
-    message={successMessage}
+    message="Profile updated!"
     onClose={handleCloseSuccessBox}
   />
 )}
