@@ -92,4 +92,15 @@ export const activateUser = async(req,res)=>{
   }
 }
 
+export const getOnlineUsers = async (req, res) => {
+    try {
+        const onlineUsers = await User.find({ isLoggedIn: true }); // Fetch users with isLoggedIn set to true
+        if (onlineUsers.length === 0) {
+            return res.status(404).json({ message: "No users are currently online." });
+        }
+        res.status(200).json({ message: "Online users retrieved successfully", onlineUsers });
+    } catch (error) {
+        res.status(500).json({ message: "Error retrieving online users", error });
+    }
+};
 

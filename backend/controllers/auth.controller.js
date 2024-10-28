@@ -104,7 +104,7 @@ export const signOut = async (req, res, next) => {
         }
 
         // Update user status to inactive
-        validUser.isActive = false;
+        //validUser.isActive = false;
         validUser.isLoggedIn = false;
         await validUser.save(); 
 
