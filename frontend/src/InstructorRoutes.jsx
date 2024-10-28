@@ -36,7 +36,7 @@ const InstructorRoutes = () => {
         <Route path="/instructor/add-videos" element={<AddVideos/>} />
         <Route path="/instructor/video-upload" element={<VideoUpload/>} />
         <Route path="/instructor/videoList" element={<VideoList/>} />
-        <Route path="/instructor/videoPreview/:id" element={<VideoPreview/>} />
+        <Route path="/instructor/videoPreview/:videoId" element={<VideoPreview/>} />
       
       </Route>
     </Routes>

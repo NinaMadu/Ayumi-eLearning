@@ -1,4 +1,5 @@
-import React, { useEffect, useState , useNavigate } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
 
@@ -26,24 +27,9 @@ export default function VideoList() {
         }
     };
 
-    const handleDelete = async (videoId)=>{
-        
-        if(window.confirm("Are you sure you want to delete this video?"))
-            {
-            try{
-                await axios.delete(`${API_BASE_URL}/api/videoDelete/${videoId}`);
-                setVideos(videos.filter(video=> video.videoId !== videoId));    
-            }
-            catch(error){
-                console.error('Error deleting video:', error);
-            }
-            }
-
-
-    };
 
     const handleThumbnailClick = (videoId)=>{
-        navigate(`/videoPreview/${videoId}`);
+        navigate(`/instructor/videoPreview/${videoId}`);
     };
 
   return (
@@ -61,7 +47,6 @@ export default function VideoList() {
                 />
                 <h3>{video.title}</h3>
                 <p>{video.description}</p>
-                <button onClick={()=>handleDelete(video.videoId)}>Delete</button>
             </div>
         ))}
     </div>
