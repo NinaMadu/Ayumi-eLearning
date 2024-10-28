@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState , useNavigate } from "react";
+
 import axios from "axios";
 
 const API_BASE_URL  = import.meta.env.VITE_API_BASE_URL;
@@ -7,6 +8,7 @@ const API_BASE_URL  = import.meta.env.VITE_API_BASE_URL;
 export default function VideoList() {
 
     const [videos, setVideos] = useState([]);
+    const navigate = useNavigate();
     
     useEffect(()=>{
         fetchVideos();
@@ -39,12 +41,24 @@ export default function VideoList() {
 
 
     };
+
+    const handleThumbnailClick = (videoId)=>{
+        navigate(`/videoPreview/${videoId}`);
+    };
+
   return (
     <div>
         <div>Hello World</div>
         {videos.map((video)=>(
             <div key={video._id}>
-                <img src={video.thumbnailUrl} alt="Video Thumbnail"/>
+                <img 
+                src={video.thumbnailUrl} 
+                alt="Video Thumbnail"
+                onClick={()=>{
+                    handleThumbnailClick(video.videoId)
+                }}
+                style={{cursor:'pointer'}}
+                />
                 <h3>{video.title}</h3>
                 <p>{video.description}</p>
                 <button onClick={()=>handleDelete(video.videoId)}>Delete</button>
