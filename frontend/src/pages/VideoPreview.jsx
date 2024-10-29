@@ -1,19 +1,46 @@
 import React, { useEffect, useRef } from 'react';
 import {  useParams } from 'react-router-dom';
+import { useState } from 'react';
 import { IoHeart } from "react-icons/io5";
 import { IoChatbox } from "react-icons/io5";
 import { IoBookmark } from "react-icons/io5";
+import axios from 'axios';
 
 
 
 export default function VideoPreview() {
     
     const vimeoRef = useRef(null);
-    const {videoId} = useParams()
+    const {videoId} = useParams();
+    const [title, setTitle] = useState(null);
+    const [description, setDescription] = useState(null);
+    const [thumbnailUrl, setThumbnailUrl] = useState(null);
 
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+    
     useEffect(()=>{
 
+      getVideoData();
+      
     },[videoId]);
+
+    const getVideoData = async () =>{
+      try{
+        const response = await axios.get(`${API_BASE_URL}/api/video/${videoId}`);
+        console.log(response.data.video);
+        setTitle(response.data.video.title);
+        setDescription(response.data.video.description);
+        setThumbnailUrl(response.data.video.thumbnailUrl);
+
+      }
+      catch(error)
+      {
+        console.error('Error fetching video data:', error);
+
+
+      }
+    }
 
   return (
     <div 
@@ -106,7 +133,7 @@ export default function VideoPreview() {
           
         
         }}><span
-        >By</span> Dr.Kushan
+        >By</span> Ayumi Sense1024209167
         
         </p>
         <IoHeart className='fa fa-heart' 
@@ -134,7 +161,7 @@ export default function VideoPreview() {
         paddingTop: '16px',
         color:'#333',
       }}
-      >Croissants  | Flour and Stone</h3>
+      >{title}</h3>
           <p
           style={{
             fontSize: '18px',
@@ -146,11 +173,7 @@ export default function VideoPreview() {
             marginBottom: '24px',
 
           }}>
-            There is no other way but to commit
-         wholeheartedly to a relationship with a croissant. 
-         We have all found ourselves at the mercy of its allure.
-          Here, in another epic film by the uber talented Nathan Rodger, 
-          our Erin divulges her personal romance with The Croissant.
+            {description}
           </p>
 
 
