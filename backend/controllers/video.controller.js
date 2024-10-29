@@ -56,22 +56,23 @@ export const deleteVideo = async (req,res)=>{
 
      
 
-     
      //1. vimeo delete
+     try{
+        await axios.delete(`https://api.vimeo.com/videos/${videoId}`,{
+            headers: headerPost,
+         }) 
+         console.log('Video deleted successfully');
+
+
+     }
+     catch(error){
+        console.error('Error deleting video:', error);
+        return res.status(500).json({message:'Video Deletion error is there'});
+     }
      
-     await axios.delete(`https://api.vimeo.com/videos/${videoId}`,{
-        headers: headerPost,
-     }) 
-     .then(res=>console.log({
-        message: 'Video deleted successfully',
-        video: res
-     }))        
-     .catch(err=>console.log({
-        message: 'Server error',
-        error: err
-     }));
     
 
+     
 
     //  2. thumbnail delete from firbase
     if(thumbnailUrl){
@@ -96,24 +97,37 @@ export const deleteVideo = async (req,res)=>{
      //mongodb delete
      //1. find 
      //2.delete
-     const deletedVideo = await Video.findOneAndDelete({videoId});
+     try{
+        const deletedVideo = await Video.findOneAndDelete({videoId});
      if(!deletedVideo)  
      {
-        return res.status(404).json({message:'Video not found'});
+        return res.status(404).json({message:'Video model not found'});
      }
      return res.status(200).json({
-        message: 'Video deleted successfully',
+        message: 'Video model deleted successfully',
         video: deletedVideo
-    })
+    });
 
+     }
+     catch(error)
+     {
+        console.error('Error deleting video model:', error);
+        res.status(500).json({message:'mongodb error'});
+     }
+     
+        
  
    }
-   
+    
+
    catch(error)
    {
     console.error('Error deleting video:', error);
     res.status(500).json({message:'Server error'});
    }
+
+
+  
 
    
 
