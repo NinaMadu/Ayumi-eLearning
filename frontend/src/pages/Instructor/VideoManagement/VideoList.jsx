@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AdminLayout from "../../../components/AdminLayout";
 
 import axios from "axios";
 
@@ -33,6 +34,7 @@ export default function VideoList() {
     };
 
   return (
+    <AdminLayout>
     <div 
     style={{
         display:'grid',
@@ -94,5 +96,6 @@ export default function VideoList() {
             </div>
         ))}
     </div>
+    </AdminLayout>
   )
 }

@@ -6,6 +6,7 @@ import axios from 'axios';
 //
 import ConfirmationBox from '../../../components/ConfirmationBox';
 import SuccessBox from '../../../components/SuccessBox';
+import AdminLayout from '../../../components/AdminLayout';
 
 
 export default function VideoPreview() {
@@ -84,13 +85,14 @@ export default function VideoPreview() {
 
     
   return (
+    <AdminLayout>
     <div
     style={{
       padding:'20px',
       fontFamily:'Inter, sans-serif',
     }}>
 
-      <h1 
+      {/* <h1 
       style={{
           marginBottom:'24px',
           textAlign:'center',
@@ -99,7 +101,7 @@ export default function VideoPreview() {
           color:'#333',
       }}>The Video Player
 
-      </h1>
+      </h1> */}
 
       <div>
         <div 
@@ -267,5 +269,6 @@ export default function VideoPreview() {
 
 
     </div>
+    </AdminLayout>
   )
 }
