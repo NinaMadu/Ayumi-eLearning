@@ -7,7 +7,8 @@ import authRouter from "./routes/auth.route.js";
 import videoRouter from "./routes/video.route.js";
 import courseRouter from "./routes/admin.routes/course.routes.js";
 import noticeRoutes from "./routes/admin.routes/notice.routes.js";
-import userRoutes from "./routes/profile.routes.js";
+import profileRoutes from "./routes/profile.routes.js";
+import userRoutes from "./routes/admin.routes/user.routes.js";
 
 dotenv.config();
 
@@ -32,8 +33,8 @@ app.use('/api/auth', authRouter);
 app.use('/api/course', courseRouter);
 app.use('/api/notices', noticeRoutes);
 app.use('/api',videoRouter);
-
-app.use('/api/profile', userRoutes); // Use user routes
+app.use('/api/users' ,userRoutes);
+app.use('/api/profile', profileRoutes); // Use user routes
 
 const PORT = process.env.PORT || 5000;
 
