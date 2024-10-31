@@ -9,6 +9,8 @@ import { signOutUserStart, signOutUserSuccess, signInFailure } from '../redux/us
 import { useDispatch } from 'react-redux';
 import LogoutConfirmation from './LogoutConfirmation'; // Import the LogoutConfirmation component
 
+
+
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -26,8 +28,10 @@ const Header = () => {
     dispatch(signOutUserStart());
   
     try {
-      const userId = localStorage.getItem('userId'); // Assuming you store userId in localStorage
-      const response = await fetch(`${API_BASE_URL}/api/auth/signout`, {
+      const userId = currentUser ? currentUser._id : null;
+      console.log(userId); 
+      ContentVisibilityAutoStateChangeEvent// Assuming you store userId in localStorage
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +126,7 @@ const Header = () => {
                   </li>
                   <li
                     className='hover:bg-custom-gradient hover:rounded-lg hover:text-white flex flex-col justify-center items-center'
-                    onClick={() => setShowLogoutModal(true)} // Trigger modal on logout click
+                    onClick={() => setShowLogoutModal(true)} 
                   >
                     <span className='block px-4 py-2 text-gray-700 hover:bg-custom-gradient hover:text-white cursor-pointer'>
                       Logout
