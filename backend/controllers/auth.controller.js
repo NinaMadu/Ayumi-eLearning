@@ -97,10 +97,6 @@ export const signin = async (req, res, next) => {
 export const signOut = async (req, res, next) => {
     try {
         const { userId } = req.body; 
-
-        if (!userId) {
-            return res.status(400).json("User ID is required for logout.");
-        }
         const validUser = await User.findById(userId) || await Instructor.findById(userId);
 
         if (!validUser) {
@@ -113,10 +109,10 @@ export const signOut = async (req, res, next) => {
         await validUser.save(); 
 
         // Clear the access token cookie
-        res.clearCookie('access_token', { httpOnly: true});
+        res.clearCookie('access_token');
 
         // Send success response
-        return res.status(200).json("User has been logged out!");
+        res.status(200).json("User has been logged out!");
     } catch (error) {
         
         console.error(error);
