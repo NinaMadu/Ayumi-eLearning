@@ -15,7 +15,3 @@ password:123
 user login
 email: ninadamaduwantha@gmail.com
 password: 12
-
-AWS account
-ayumi.elearning@gmail.com
-Ayumi1995#
