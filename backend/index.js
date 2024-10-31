@@ -21,11 +21,10 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
     credentials: true, 
   }));
-app.use(cookieParser());
+//app.use(cookieParser());
 
 app.use('/api/auth', authRouter);
 app.use('/api/notices', noticeRoutes);
-app.use('/api',videoRouter);
 app.use('/api/users' ,userRoutes);
  // Use user routes
 
