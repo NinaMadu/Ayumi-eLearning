@@ -5,7 +5,6 @@ import cors from "cors";
 import authRouter from "./routes/auth.route.js";
 import noticeRoutes from "./routes/admin.routes/notice.routes.js";
 import userRoutes from "./routes/admin.routes/user.routes.js";
-import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -26,9 +25,9 @@ app.use(cookieParser());
 
 app.use('/api/auth', authRouter);
 app.use('/api/notices', noticeRoutes);
-app.use('/api/users',userRoutes);
-
-
+app.use('/api',videoRouter);
+app.use('/api/users' ,userRoutes);
+ // Use user routes
 
 const PORT = process.env.PORT || 5000;
 
