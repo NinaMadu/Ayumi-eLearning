@@ -43,22 +43,35 @@ const Header = () => {
   const handleLogout = async () => {
     dispatch(signOutUserStart());
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/signout`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-      if (response.ok) {
-        dispatch(signOutUserSuccess());
-        console.log('Logged out successfully');
-        navigate('/');
-      } else {
-        const errorData = await response.json();
-        dispatch(signInFailure(errorData.message || 'Failed to log out. Please try again.'));
-      }
+        const userId = localStorage.getItem('userId');
+        console.log('Retrieved userId from localStorage:', userId);
+        if (!userId) {
+            throw new Error('User ID is missing. Please log in again.');
+        }
+
+        const response = await fetch(`http://localhost:5000/api/auth/signout`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ userId }),
+        });
+
+        if (response.ok) {
+            dispatch(signOutUserSuccess());
+            console.log('Logged out successfully');
+            navigate('/');
+        } else {
+            const errorData = await response.json();
+            dispatch(signInFailure(errorData.message || 'Failed to log out. Please try again.'));
+        }
     } catch (error) {
-      dispatch(signInFailure(error.message || 'An unexpected error occurred.'));
+        console.error('Logout error:', error.message);
+        dispatch(signInFailure(error.message || 'An unexpected error occurred.'));
     }
-  };
+};
+
 
   const handleConfirmLogout = () => {
     handleLogout();

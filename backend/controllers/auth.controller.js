@@ -96,27 +96,31 @@ export const signin = async (req, res, next) => {
 
 export const signOut = async (req, res, next) => {
     try {
-        const { userId } = req.body; 
+        const { userId } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
+
         const validUser = await User.findById(userId) || await Instructor.findById(userId);
 
         if (!validUser) {
-            return res.status(404).json("User not found");
+            return res.status(404).json({ message: "User not found" });
         }
 
-        // Update user status to inactive
-        //validUser.isActive = false;
+        // Update user status to logged out
         validUser.isLoggedIn = false;
-        await validUser.save(); 
+        await validUser.save();
 
         // Clear the access token cookie
         res.clearCookie('access_token');
 
         // Send success response
-        res.status(200).json("User has been logged out!");
+        res.status(200).json({ message: "User has been logged out!" });
     } catch (error) {
-        
-        console.error(error);
-        return next(error);
+        console.error("Signout error:", error.message);
+        return next(errorHandler(500, "An unexpected error occurred while logging out."));
     }
 };
+
 
