@@ -37,6 +37,8 @@ export default function Signin() {
       if (!res.ok) {
         throw new Error(data.message || 'Failed to sign in');
       }
+
+      localStorage.setItem('userId', data._id);
       dispatch(signInSuccess(data));
 
       if (data.isInstructor) {

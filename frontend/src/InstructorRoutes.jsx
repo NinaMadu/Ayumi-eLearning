@@ -14,12 +14,15 @@ import CreateNotice from './pages/Instructor/CreateNotice';
 import EditNotice from './pages/Instructor/EditNotice';
 import VideoUpload from './pages/Instructor/VideoUpload';
 import AddVideos from './pages/Instructor/AddVideos';
+import InstructorProfile from './pages/Instructor/InstructorProfile';
+import InstructorHeader from './pages/Instructor/InstructorHeader';
 
 
 const InstructorRoutes = () => {
   return (
     <Routes>
       <Route element={<PrivateRoute />}>
+        <Route path='/instructor/header' element={<InstructorHeader/>} />
         <Route path="/instructor/dashboard" element={<Dashboard />} />
         <Route path="/instructor/create-course" element={<CreateCourse/>} />
         <Route path="/instructor/create-course-first" element={<CreateCourseFirst/>} />
@@ -33,6 +36,7 @@ const InstructorRoutes = () => {
         <Route path="/instructor/edit-notice/:id" element={<EditNotice />} />
         <Route path="/instructor/add-videos" element={<AddVideos/>} />
         <Route path="/instructor/video-upload" element={<VideoUpload/>} />
+        <Route path="/instructor/profile" element={<InstructorProfile/>} />
       
       </Route>
     </Routes>
