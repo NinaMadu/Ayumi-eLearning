@@ -8,6 +8,7 @@ import { Upload } from "tus-js-client";
 import { storage } from '../../../firebase.js';
 // import {app} from '../../firebase.js';
 import { ref, uploadBytesResumable, getDownloadURL  } from 'firebase/storage';
+import  CircularProgressWithLabel from '../../../components/progressBar.jsx';
 
 const accessToken = import.meta.env.VITE_ACCESS_TOKEN;
 
@@ -31,6 +32,7 @@ export default function VideoUpload() {
         videoId: ''
     });
 
+    const [progress, setProgress] = useState(false);
     const [error, setError] = useState(false);
     const [uploading, setUploading] = useState(false);
 
@@ -73,6 +75,7 @@ export default function VideoUpload() {
                 (snapshot) => {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     console.log(`Upload is ${progress}% done`);
+                    setProgress(progress);
                 },
                 (error)=>{
                     console.error("Upload failed", error);
@@ -97,11 +100,11 @@ export default function VideoUpload() {
 
 
     //videoupload here
-    const handleVideoUpload = async (vfile)=>{
+    const handleVideoUpload = async (vfile, setProgress)=>{
 
     const file = vfile;
     const fileSize = file.size.toString();
-    console.log("videoUpload function");
+    // console.log("videoUpload function");
 
     try{
 
@@ -144,9 +147,12 @@ export default function VideoUpload() {
           onProgress: function(bytesUploaded, bytesTotal) {
             let percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
             console.log(bytesUploaded, bytesTotal, percentage + '%');
+            setProgress(Number(percentage));
           },
           onSuccess: function() {
-            console.log('Download %s from %s', upload.file.name, upload.url);
+            // console.log('Download %s from %s', upload.file.name, upload.url);
+            console.log('Video uploaded successfully');
+            setProgress(100);
             
           }
         });
@@ -167,6 +173,23 @@ export default function VideoUpload() {
 
         
     }
+
+    // const videoUploadProgress = () => {
+    //     const [progress, setProgress] = useState(0);
+    
+    //     const handleFileChnage = async (e)=>{
+    //         const file = e.target.files[0];
+    //         if(file){
+    //             try{
+    //                 await handleVideoUpload(file,setProgress);
+
+    //             }
+    //             catch(error){
+    //                 console.log('Error uploading video',error);
+    //             }
+    //         }
+    //     }
+    // };
 
 
 
@@ -253,6 +276,11 @@ export default function VideoUpload() {
                             type="file" 
                             onChange={handleInputChange}/>
                         </div>
+                        {uploading && (
+                        <div className="mb-4">
+                            <CircularProgressWithLabel value={progress} />
+                        </div>
+                    )}
                         <div className="flex items-center justify-between">
                             <button 
                             type="button" 
