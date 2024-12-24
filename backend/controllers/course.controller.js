@@ -108,3 +108,12 @@ export const createCourse = async (req, res) => {
         res.status(500).json({ message: "Error deleting course", error });
     }
 };
+
+export const totalCourses =  async(req,res)=>{
+  try{
+      const courseCount = await Course.countDocuments();
+      res.status(200).json({courseCount});
+  }catch(error){
+      res.status(500).json({message:"Error fetching course count"});
+  }
+};

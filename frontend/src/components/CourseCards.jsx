@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { FaStar } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -38,12 +39,13 @@ const Courses = () => {
 
   return (
     <div className="px-4 py-8 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6">Let's Start Learning</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {courses.map((course) => (
           <div
             key={course._id}
-            className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-105"
+            className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-transform hover:scale-105 overflow-hidden"
+            onClick={() => navigate(`/courses/${course._id}`)}
           >
             {/* Course Image */}
             {course.introImage ? (
@@ -54,34 +56,49 @@ const Courses = () => {
               />
             ) : (
               <div className="w-full h-48 bg-gray-300 flex items-center justify-center">
-                <span className="text-gray-500">No Image Available</span>
+                <svg
+                  className="w-16 h-16 text-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M3 16s-1 0-1-1 1-4 6-4 6 4 6 4 1 0 1-1-1-4-6-4-6 4-6 4z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 6.253V6c0-1.104.896-2 2-2h1.764C17.533 4 18 4.567 18 5.364V8"
+                  />
+                </svg>
               </div>
             )}
 
             {/* Course Details */}
-            <div className="p-4">
-              <h3 className="text-lg font-semibold truncate">{course.title}</h3>
-              <p className="text-sm text-gray-600 mt-1">
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-gray-800 truncate">{course.title}</h3>
+              <p className="text-sm text-gray-500 mt-2">
                 By {course.instructor?.name || 'Unknown Instructor'}
               </p>
-              {/* Category and Difficulty */}
-              <p className="text-sm text-gray-600 mt-1">
-                <strong>Category:</strong> {course.category}
-              </p>
-              <p className="text-sm text-gray-600 mt-1">
-                <strong>Difficulty:</strong> {course.difficulty}
-              </p>
-              {/* Price */}
-              <div className="mt-3">
-                <span className="text-xl font-semibold text-blue-600">
+              <div className="flex justify-between items-center mt-4">
+                <div className="text-sm text-gray-600">
+                  <strong>Category:</strong> {course.category}
+                </div>
+                <div className="text-sm text-gray-600">
+                  <strong>Difficulty:</strong> {course.difficulty}
+                </div>
+              </div>
+              <div className="mt-4">
+                {/* <span className="text-xl font-semibold text-blue-600">
                   ${parseFloat(course.customPrice.$numberDecimal).toFixed(2)}{' '}
                   {course.priceUnit}
-                </span>
+                </span> */}
               </div>
-              {/* Enroll Button */}
-              <button className="mt-4 w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                Enroll Now
-              </button>
             </div>
           </div>
         ))}

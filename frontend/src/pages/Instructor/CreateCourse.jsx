@@ -1,5 +1,6 @@
 import React from 'react'
 import AdminLayout from '../../components/AdminLayout'
+import Courses from '../../components/CourseCards'
 import { Link } from 'react-router-dom'
 
 export default function CreateCourse() {
@@ -17,6 +18,10 @@ export default function CreateCourse() {
             </Link>
         </div>
   
+      </div>
+      <div className='mt-24'>
+
+      <Courses />
       </div>
     
     </AdminLayout>

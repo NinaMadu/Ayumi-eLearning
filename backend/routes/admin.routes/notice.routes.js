@@ -12,4 +12,5 @@ router.get('/:id', getNoticeById);
 
 
 
+
 export default router;
