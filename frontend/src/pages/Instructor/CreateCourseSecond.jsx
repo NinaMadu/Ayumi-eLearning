@@ -173,4 +173,4 @@ const CreateCourseSecond = () => {
   );
 };
 
-export default CreateCourseSecond;
+export default CreateCourseSecond; 
