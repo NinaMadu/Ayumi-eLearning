@@ -33,6 +33,7 @@ export default function VideoUpload() {
 
     const [error, setError] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [progress, setProgress] = useState(0);
 
     //backend url    
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -128,35 +129,41 @@ export default function VideoUpload() {
         const videoUri = response.data.uri;
         const videoId = videoUri.split('/').pop();
     
-        const upload = new Upload(file,{
-            endpoint:'https://api.vimeo.com/me/videos',
-            uploadUrl:response.data.upload.upload_link,
-    
-            retryDelays: [0, 3000, 5000, 10000, 20000],
-          metadata: {
-            filename: file.originalname,
-            filetype: file.mimetype
-          },
-          headers: {},
-          onError: function(error) {
-            console.log('Failed because: ' + error);
-          },
-          onProgress: function(bytesUploaded, bytesTotal) {
-            let percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
-            console.log(bytesUploaded, bytesTotal, percentage + '%');
-          },
-          onSuccess: function() {
-            console.log('Download %s from %s', upload.file.name, upload.url);
-            
-          }
-        });
-    
+        return new Promise((resolve, reject) => {
+
+            const upload = new Upload(file,{
+                endpoint:'https://api.vimeo.com/me/videos',
+                uploadUrl:response.data.upload.upload_link,
         
-       upload.start();
-    
-       console.log(videoId);    
-       return videoId;
-        // setFormData({...formData, videoId});
+                retryDelays: [0, 3000, 5000, 10000, 20000],
+              metadata: {
+                filename: file.originalname,
+                filetype: file.mimetype
+              },
+              headers: {},
+              onError: function(error) {
+                console.log('Failed because: ' + error);
+              },
+              onProgress: function(bytesUploaded, bytesTotal) {
+                let percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
+                console.log(bytesUploaded, bytesTotal, percentage + '%');
+                setProgress(Number(percentage));
+              },
+              onSuccess: function() {
+                console.log('Download %s from %s', upload.file.name, upload.url);
+                resolve(videoId);
+                
+              },
+            });
+        
+            
+           upload.start();
+        
+           console.log(videoId);    
+         
+            // setFormData({...formData, videoId});
+        })
+        
 
 
     } catch(error){
@@ -253,6 +260,7 @@ export default function VideoUpload() {
                             type="file" 
                             onChange={handleInputChange}/>
                         </div>
+                        
                         <div className="flex items-center justify-between">
                             <button 
                             type="button" 
@@ -262,10 +270,20 @@ export default function VideoUpload() {
                             >
                                 {uploading ? 'Uploading...' : 'Publish Video'}
                             </button>
+                            {uploading && (
+    <div className="mt-4">
+        <p className="text-sm text-gray-700">Uploading... {progress}%</p>
+        <div className="w-full bg-gray-200 rounded-full h-2.5">
+            <div
+                className="bg-blue-600 h-2.5 rounded-full"
+                style={{ width: `${progress}%` }}
+            ></div>
+        </div>
+    </div>
+)}
                         </div>
                     </form>
-                    {error && <p className="text-red-500">{error}</p>}
-                </div>
+                    {error && <p className="text-red-500">{error}</p>}</div>
             </div>
         //</AdminLayout>
     );
