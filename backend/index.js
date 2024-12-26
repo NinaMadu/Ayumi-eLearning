@@ -9,6 +9,8 @@ import courseRoutes from "./routes/admin.routes/course.routes.js";
 import videoRoutes from "./routes/video.route.js";
 import userDetailRoutes from "./routes/userDetail.routes.js";
 import instructorDetailRoutes from "./routes/instructorDetail.route.js";
+import instructorRoutes from "./routes/admin.routes/instructor.routes.js";
+
 
 dotenv.config();
 
@@ -34,6 +36,7 @@ app.use('/api/course', courseRoutes);
 app.use('/api/' , videoRoutes);
 app.use('/api/profile', userDetailRoutes);
 app.use('/api/instructorProfile', instructorDetailRoutes);
+app.use('/api/instructor', instructorRoutes);
 
  // Use user routes
 

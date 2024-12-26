@@ -4,6 +4,7 @@ import { AiFillDashboard } from "react-icons/ai";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { signOutUserStart, signOutUserSuccess, signInFailure } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
+import CourseIntro from '../pages/User/CourseIntro';
 
 const Sidemenu = () => {
   const [open, setOpen] = useState(true);
@@ -21,6 +22,7 @@ const Sidemenu = () => {
     { title: "Favourites", icon: <FaHeart /> },
     { title: "Help", icon: <FaQuestionCircle /> },
     { title: "Courses", icon: <FaBook />, path: "/user/course-cards" },
+
   ];
 
   const settingsMenu = [
