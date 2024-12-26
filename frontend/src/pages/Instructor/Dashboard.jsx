@@ -3,23 +3,22 @@ import { FaUsers, FaBook, FaUserPlus } from "react-icons/fa";
 import AdminLayout from "../../components/AdminLayout";
 import { Link } from "react-router-dom";
 import { totalUsers } from "../../../../backend/controllers/user.controller";
+import { totalCourses } from "../../../../backend/controllers/course.controller";
 
 function Dashboard() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userCount, setUserCount] = useState(0);
+  const [courseCount, setCourseCount] = useState(0);
+
   useEffect(() => {
     const fetchUserCount = async () => {
       try {
         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/count`);
         const data = await response.json();
-  
-        //console.log('Full API Response:', data);
-        //console.log('Data from response:', data.userCount); // Correct way to access
-  
+
         if (response.ok) {
-          // Use the correct property from the response data
-          setUserCount(data.userCount); // Change this line
+          setUserCount(data.userCount); 
         } else {
           setError(data.message || 'Failed to fetch user count');
         }
@@ -30,6 +29,26 @@ function Dashboard() {
       }
     };
     fetchUserCount();
+  }, []);
+
+  useEffect(() => {
+    const fetchCourseCount = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/course/count`);
+        const data = await response.json();
+
+        if (response.ok) {
+          setCourseCount(data.courseCount); 
+        } else {
+          setError(data.message || 'Failed to fetch course count');
+        }
+      } catch (err) {
+        setError('Error fetching course count');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourseCount();
   }, []);
   
 
@@ -57,7 +76,7 @@ function Dashboard() {
             <div className="flex flex-col items-center justify-center h-full">
               <FaBook className="mb-2 text-2xl sm:text-3xl" />
               <div className="text-xl sm:text-xl font-semibold">Total Courses</div>
-              <div className="text-xl sm:text-2xl font-bold">0</div>
+              <div className="text-xl sm:text-2xl font-bold">{courseCount}</div>
             </div>
           </div>
           <div className="bg-gradient-to-r bg-slate-200 text-black p-4 rounded-lg shadow-md h-40">

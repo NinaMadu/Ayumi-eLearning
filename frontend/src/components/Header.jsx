@@ -120,9 +120,9 @@ const Header = () => {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 <img
-                  src={userDetails?.avatarUrl || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}
+                  src={userDetails?.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}
                   alt="User Avatar"
-                  className="w-8 h-8 rounded-full border-2 border-slate-400"
+                  className="w-8 h-8 rounded-full border-2 border-slate-100"
                 />
                 {dropdownOpen ? (
                   <FaChevronUp className='ml-2 text-slate-600' />
