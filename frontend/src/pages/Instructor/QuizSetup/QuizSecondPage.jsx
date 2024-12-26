@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
-import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/20/solid';
-import { useNavigate, Link } from 'react-router-dom';
-import AdminLayout from '../../../components/AdminLayout';
+import React, { useState } from "react";
+import { ChevronRightIcon, ChevronLeftIcon, PencilIcon, TrashIcon } from "@heroicons/react/20/solid";
+import { useNavigate, Link } from "react-router-dom";
+import AdminLayout from "../../../components/AdminLayout";
 
 const QuizSecondPage = () => {
   const [formData, setFormData] = useState({
-    questionType: '',
-    questionText: '',
+    questionType: "",
+    questionText: "",
     answers: [],
-    correctAnswer: '',
+    correctAnswer: "",
   });
+  const [questions, setQuestions] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
+  const addAnswer = () => {
+    setFormData({
+      ...formData,
+      answers: [...formData.answers, ""],
+    });
+  };
+  
 
   const navigate = useNavigate();
 
@@ -21,35 +31,44 @@ const QuizSecondPage = () => {
     });
   };
 
-  const handleAnswerChange = (index, e) => {
-    const newAnswers = [...formData.answers];
-    newAnswers[index] = e.target.value;
+  const handleSaveQuestion = () => {
+    if (isEditing) {
+      const updatedQuestions = questions.map((question, idx) =>
+        idx === editIndex ? formData : question
+      );
+      setQuestions(updatedQuestions);
+      setIsEditing(false);
+      setEditIndex(null);
+    } else {
+      setQuestions([...questions, formData]);
+    }
     setFormData({
-      ...formData,
-      answers: newAnswers,
+      questionType: "",
+      questionText: "",
+      answers: [],
+      correctAnswer: "",
     });
   };
 
-  const addAnswer = () => {
-    setFormData({
-      ...formData,
-      answers: [...formData.answers, ''],
-    });
+  const handleEditQuestion = (index) => {
+    setFormData(questions[index]);
+    setIsEditing(true);
+    setEditIndex(index);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Question added:', formData);
+  const handleDeleteQuestion = (index) => {
+    const updatedQuestions = questions.filter((_, idx) => idx !== index);
+    setQuestions(updatedQuestions);
   };
 
   const handleCancel = () => {
     setFormData({
-      questionType: '',
-      questionText: '',
+      questionType: "",
+      questionText: "",
       answers: [],
-      correctAnswer: '',
+      correctAnswer: "",
     });
-    navigate('/instructor/create-quiz');
+    navigate("/instructor/create-quiz");
   };
 
   return (
@@ -61,7 +80,6 @@ const QuizSecondPage = () => {
             <button
               className="border p-2 bg-red-600 text-white font-medium rounded-lg"
               onClick={handleCancel}
-              
             >
               Cancel Process
             </button>
@@ -70,21 +88,21 @@ const QuizSecondPage = () => {
           <div className="my-4 border p-4 pt-0 rounded-lg shadow-md">
             <h1
               className="mb-6 text-xl font-medium border-2 rounded-lg p-3 text-white justify-center flex"
-              style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}
+              style={{ background: "linear-gradient(to right, #D16262, #C53B3B)" }}
             >
               Questions Setup
             </h1>
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
-                <label className="col-span-1 whitespace-nowrap ">Question Type:</label>
+                <label className="col-span-1 whitespace-nowrap">Question Type:</label>
                 <select
                   id="questionType"
                   className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
                   onChange={handleChange}
                   value={formData.questionType}
                 >
-                  <option className='text-sm' value="">Select Type</option>
+                  <option value="">Select Type</option>
                   <option value="multipleChoice">Multiple Choice</option>
                   <option value="trueFalse">True/False</option>
                   <option value="shortAnswer">Short Answer</option>
@@ -102,10 +120,10 @@ const QuizSecondPage = () => {
                 />
               </div>
 
-              {formData.questionType === 'multipleChoice' &&
+              {formData.questionType === "multipleChoice" &&
                 formData.answers.map((answer, index) => (
                   <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
-                    <label className="col-span-1 whitespace-nowrap text-lg">{`Answer ${index + 1}:`}</label>
+                    <label className="col-span-1 whitespace-nowrap">{`Answer ${index + 1}:`}</label>
                     <input
                       type="text"
                       className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
@@ -115,58 +133,98 @@ const QuizSecondPage = () => {
                   </div>
                 ))}
 
-              {formData.questionType === 'multipleChoice' && (
+              {formData.questionType === "multipleChoice" && (
                 <div className="flex justify-end">
                   <button
                     type="button"
-                    className="bg-blue-900 text-white py-2 px-4 rounded-lg"
+                    className="bg-slate-700 text-white font-semibold py-2 px-4 rounded-lg"
                     onClick={addAnswer}
-                    style={{ background: 'linear-gradient(to right, #2B3090, #8487BE)' }}
                   >
                     Add Answer
                   </button>
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
-                <label className="col-span-1 whitespace-nowrap">Correct Answer:</label>
-                <input
-                  type="text"
-                  id="correctAnswer"
-                  className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
-                  onChange={handleChange}
-                  value={formData.correctAnswer}
-                />
-              </div>
+              {formData.questionType === "trueFalse" && (
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
+                  <label className="col-span-1 whitespace-nowrap">Answer:</label>
+                  <select
+                    id="correctAnswer"
+                    className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
+                    onChange={handleChange}
+                    value={formData.correctAnswer}
+                  >
+                    <option value="">Select Answer</option>
+                    <option value="True">True</option>
+                    <option value="False">False</option>
+                  </select>
+                </div>
+              )}
 
-              <div className="flex ">
+              <div className="flex justify-end">
                 <button
-                  type="submit"
-                  className="bg-blue-900 text-white py-2 px-6 rounded-lg "
-                  
+                  type="button"
+                  className="bg-blue-900  font-semibold text-white py-2 px-6 rounded-lg"
+                  onClick={handleSaveQuestion}
                 >
-                  Save Question
+                  {isEditing ? "Update Question" : "Save Question"}
                 </button>
               </div>
-
-            
             </form>
           </div>
-          <div className="flex justify-between mt-6">
-          <Link to={'/instructor/quiz-first'}>
-            <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg flex pr-4">
-              <ChevronLeftIcon className="h-6 w-6" />
-              <p>Back</p>
-            </div>
-          </Link>
 
-          <Link to={'/instructor/quiz-third'}>
-            <div className="bg-gray-400 text-white p-2 pl-4 rounded-full shadow-lg flex">
-              <p>Next</p>
-              <ChevronRightIcon className="h-6 w-6" />
-            </div>
-          </Link>
-        </div>
+          <div className="my-6">
+            <h2 className="text-xl font-semibold mb-4">Saved Questions</h2>
+            {questions.map((question, index) => (
+              <div
+                key={index}
+                className="border p-4 rounded-lg shadow-md flex justify-between items-center"
+              >
+                <div>
+                  <h3 className="font-medium">{`Question ${index + 1}: ${question.questionText}`}</h3>
+                  <p>{`Type: ${question.questionType}`}</p>
+                  {question.answers.length > 0 && (
+                    <ul className="list-disc pl-5">
+                      {question.answers.map((answer, i) => (
+                        <li key={i}>{answer}</li>
+                      ))}
+                    </ul>
+                  )}
+                  <p>{`Correct Answer: ${question.correctAnswer}`}</p>
+                </div>
+                <div className="flex space-x-2">
+                  <button
+                    className="text-blue-700"
+                    onClick={() => handleEditQuestion(index)}
+                  >
+                    <PencilIcon className="h-5 w-5" />
+                  </button>
+                  <button
+                    className="text-red-700"
+                    onClick={() => handleDeleteQuestion(index)}
+                  >
+                    <TrashIcon className="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-between mt-6">
+            <Link to={"/instructor/quiz-first"}>
+              <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg flex pr-4">
+                <ChevronLeftIcon className="h-6 w-6" />
+                <p>Back</p>
+              </div>
+            </Link>
+
+            <Link to={"/instructor/quiz-third"}>
+              <div className="bg-gray-400 text-white p-2 pl-4 rounded-full shadow-lg flex">
+                <p>Next</p>
+                <ChevronRightIcon className="h-6 w-6" />
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
     </AdminLayout>

@@ -1,60 +1,23 @@
-import React, { useState } from 'react';
+// src/pages/instructor/quizFirstPage/QuizFirstPage.js
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateQuizData, resetQuizData } from '../../../redux/quizSlice';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { Link, useNavigate } from 'react-router-dom';
-import AdminLayout from '../../../components/AdminLayout'
+import AdminLayout from '../../../components/AdminLayout';
 
 const QuizFirstPage = () => {
-  const [formData, setFormData] = useState({
-    quizTitle: '',
-    description: '',
-    category: '',
-    difficulty: 'beginner',
-    questions: [],
-  });
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const formData = useSelector((state) => state.quiz.quizData);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData({
-      ...formData,
-      [id]: value,
-    });
-  };
-
-  const handleQuestionChange = (index, e) => {
-    const { name, value } = e.target;
-    const newQuestions = [...formData.questions];
-    newQuestions[index] = {
-      ...newQuestions[index],
-      [name]: value,
-    };
-    setFormData({
-      ...formData,
-      questions: newQuestions,
-    });
-  };
-
-  const addQuestion = () => {
-    setFormData({
-      ...formData,
-      questions: [...formData.questions, { question: '', answer: '' }],
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Submission logic
+    dispatch(updateQuizData({ [id]: value }));
   };
 
   const handleCancel = () => {
-    setFormData({
-      quizTitle: '',
-      description: '',
-      category: '',
-      difficulty: 'beginner',
-      questions: [],
-    });
+    dispatch(resetQuizData());
     navigate('/instructor/create-quiz');
   };
 
@@ -79,7 +42,7 @@ const QuizFirstPage = () => {
             >
               Quiz Information
             </h1>
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
                 <label className="col-span-1 whitespace-nowrap">Quiz Title:</label>
                 <input
@@ -102,14 +65,22 @@ const QuizFirstPage = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
-                <label className="col-span-1 whitespace-nowrap">Category:</label>
-                <input
-                  type="text"
+                <label className="col-span-1 whitespace-nowrap" htmlFor="category">
+                  Category:
+                </label>
+                <select
                   id="category"
                   className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
                   onChange={handleChange}
                   value={formData.category}
-                />
+                >
+                  <option value="language">Language Skills</option>
+                  <option value="cultural">Cultural Knowledge</option>
+                  <option value="proficiency">Proficiency Levels</option>
+                  <option value="interactive">Fun and Interactive</option>
+                  <option value="history">History and Literature</option>
+                  <option value="practical">Practical Use</option>
+                </select>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
@@ -127,57 +98,21 @@ const QuizFirstPage = () => {
                   <option value="advanced">Advanced</option>
                 </select>
               </div>
-
-              {formData.questions.map((question, index) => (
-                <div key={index} className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-2 gap-4 pb-4">
-                  <label className="col-span-1 whitespace-nowrap">Question {index + 1}:</label>
-                  <input
-                    type="text"
-                    name="question"
-                    className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
-                    value={question.question}
-                    onChange={(e) => handleQuestionChange(index, e)}
-                  />
-                  <label className="col-span-1 whitespace-nowrap">Answer:</label>
-                  <input
-                    type="text"
-                    name="answer"
-                    className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
-                    value={question.answer}
-                    onChange={(e) => handleQuestionChange(index, e)}
-                  />
-                </div>
-              ))}
-
-              <button
-                type="button"
-                className="bg-blue-900 text-white py-2 px-4 rounded-lg"
-                onClick={addQuestion}
-              >
-                Add Question
-              </button>
             </form>
-              
           </div>
+
           <div className="flex justify-between mt-6">
-          <Link to={'/instructor/create-course-first'}>
-           
-          </Link>
-
-          <Link to={'/instructor/quiz-second'}>
-            <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg flex pl-4">
-              <p>Next</p>
-              <ChevronRightIcon className="h-6 w-6" />
-            </div>
-          </Link>
+            <Link to={'/instructor/quiz-second'}>
+              <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg flex pl-4">
+                <p>Next</p>
+                <ChevronRightIcon className="h-6 w-6" />
+              </div>
+            </Link>
+          </div>
         </div>
-        </div>
-
-        
       </div>
     </AdminLayout>
   );
 };
-
 
 export default QuizFirstPage;
