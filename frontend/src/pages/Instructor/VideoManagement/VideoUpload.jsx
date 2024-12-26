@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // import 'dotenv/config';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../../components/AdminLayout.jsx';
 import { useSelector } from 'react-redux';
@@ -8,6 +8,9 @@ import { Upload } from "tus-js-client";
 import { storage } from '../../../firebase.js';
 // import {app} from '../../firebase.js';
 import { ref, uploadBytesResumable, getDownloadURL  } from 'firebase/storage';
+import SuccessBox from '../../../components/SuccessBox.jsx';
+// import { set } from 'mongoose';
+
 
 const accessToken = import.meta.env.VITE_ACCESS_TOKEN;
 
@@ -34,10 +37,33 @@ export default function VideoUpload() {
     const [error, setError] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0);
-
+    const [thumbnailUploaded, setThumbnailUploaded] = useState(false);
+    const [showSuccessBox, setShowSuccessBox] = useState(false);
     //backend url    
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+
+    const resetForm = ()=>{
+        setThumbnailFile(null);
+        setVideoFile(null);
+        setFormData({
+            title: '',
+            description: '',
+            thumbnailUrl: '',
+            videoId: ''
+        });
+        setProgress(0);
+        setThumbnailUploaded(false);
+        setError(false);
+        setUploading(false);
+        setShowSuccessBox(false);
+    };
+
+    const handleCloseSuccessBox = () =>{
+        resetForm();
+        
+       
+    }
     
     const handleInputChange = (e) => {
         const { id, value, files } = e.target;
@@ -84,6 +110,7 @@ export default function VideoUpload() {
                     getDownloadURL(uploadTask.snapshot.ref)
                     .then((url)=>{
                             console.log("Thumbnail URL: ", url);
+                            setThumbnailUploaded(true);
                             resolve(url);
                     })
                     .catch((error)=>{
@@ -204,7 +231,8 @@ export default function VideoUpload() {
                     }
                 });
                 setUploading(false);
-                navigate('/success-page'); 
+                // navigate('/success-page'); 
+                setShowSuccessBox(true);
 
 
             } catch (error) {
@@ -219,6 +247,13 @@ export default function VideoUpload() {
     return (
         //<AdminLayout>
             <div className="container px-4 mx-auto">
+                 {showSuccessBox && (
+        <SuccessBox
+          title="Upload Successful!"
+          message="Your video has been uploaded successfully."
+          onClose={handleCloseSuccessBox}
+        />
+      )}
                 <div className="px-8 pt-6 pb-8 mb-4 bg-white rounded shadow-md">
                     <h1 className="mb-4 text-xl font-semibold">Upload Videos from Here</h1>
                     <form>
@@ -229,6 +264,7 @@ export default function VideoUpload() {
                             <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
                             id="title" 
                             type="text"
+                            value={formData.title}
                             onChange={handleInputChange} />
                         </div>
                         <div className="mb-4">
@@ -237,16 +273,26 @@ export default function VideoUpload() {
                             </label>
                             <textarea className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
                             id="description"
-                            onChange={handleInputChange} ></textarea>
+                            onChange={handleInputChange} 
+                            value={formData.description}
+                            >
+
+                            </textarea>
                         </div>
                         <div className="mb-4">
                             <label className="block mb-2 text-sm font-semibold text-gray-700" htmlFor="thumbnail">
                                 Thumbnail:
                             </label>
                             <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
+                            
                             id="thumbnail" 
                             type="file" 
                             onChange={handleInputChange}/>
+                            {thumbnailUploaded && (
+              <div className="flex items-center mt-2 text-green-600">
+                <span>✔ Thumbnail Uploaded Successfully</span>
+              </div>
+            )}
                             <div className="flex items-center justify-start mt-2 space-x-2">
                                
                             </div>
@@ -256,9 +302,21 @@ export default function VideoUpload() {
                                 Upload video:
                             </label>
                             <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" 
+                           
                             id="video" 
                             type="file" 
                             onChange={handleInputChange}/>
+                            {uploading && (
+              <div className="mt-4">
+                <p className="text-sm text-gray-700">Uploading Video: {progress}%</p>
+                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    className="bg-blue-600 h-2.5 rounded-full"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
                         </div>
                         
                         <div className="flex items-center justify-between">
@@ -270,21 +328,20 @@ export default function VideoUpload() {
                             >
                                 {uploading ? 'Uploading...' : 'Publish Video'}
                             </button>
-                            {uploading && (
-    <div className="mt-4">
-        <p className="text-sm text-gray-700">Uploading... {progress}%</p>
-        <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div
-                className="bg-blue-600 h-2.5 rounded-full"
-                style={{ width: `${progress}%` }}
-            ></div>
-        </div>
-    </div>
-)}
+                           
                         </div>
                     </form>
                     {error && <p className="text-red-500">{error}</p>}</div>
+                    {showSuccessBox && (
+                <SuccessBox
+                  title="Upload Successful!"
+                  message="Your video has been uploaded successfully."
+                  onClose={() => setShowSuccessBox(false)} // Close the success box
+                />
+              )}
             </div>
+            
+            
         //</AdminLayout>
     );
 }
