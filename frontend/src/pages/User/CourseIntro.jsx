@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import UserLayout from '../../components/UserLayout';
 
 const CourseIntro = () => {
   const { id } = useParams();
@@ -50,6 +51,8 @@ const CourseIntro = () => {
   const instructor = course.instructor;
 
   return (
+    <div>
+      <UserLayout>
     <div className="px-4 py-8 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row">
         <div className="md:w-2/3">
@@ -136,6 +139,8 @@ const CourseIntro = () => {
           </div>
         </div>
       </div>
+    </div>
+    </UserLayout>
     </div>
   );
 };
