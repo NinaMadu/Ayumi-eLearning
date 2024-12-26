@@ -23,7 +23,7 @@ const Home = () => {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
-    nextArrow: <div className="custom-arrow slick-next"></div>,
+    nextArrow: <div className="custom-arrow slick-next "></div>,
     prevArrow: <div className="custom-arrow slick-prev"></div>,
     responsive: [
       {
@@ -102,15 +102,11 @@ const Home = () => {
             </div>
           </div>
           <div className="mb-4">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-blue-900 text-transparent bg-clip-text   px-4 py-2  flex justify-center">
-              📢 Latest Notices 📢123
-            </h1>
+            
             <Notices />
           </div>
 
-          <h1 className="text-2xl font-extrabold text-center bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 text-transparent bg-clip-text py-4 drop-shadow-lg">
-            🌟 Image Gallery 🌟 123
-          </h1>
+         
 
           {/* Image Slider */}
           <div className="px-4 py-8 max-w-4xl mx-auto p-8 bg-slate-200 rounded-2xl">
