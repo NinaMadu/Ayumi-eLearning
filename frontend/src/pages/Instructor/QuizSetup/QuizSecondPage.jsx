@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { ChevronRightIcon, ChevronLeftIcon, PencilIcon, TrashIcon } from "@heroicons/react/20/solid";
+import {
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/20/solid";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -35,8 +40,21 @@ const QuizSecondPage = () => {
       return;
     }
 
-    if (formData.questionType === "multipleChoice" && formData.answers.length === 0) {
+    if (
+      formData.questionType === "multipleChoice" &&
+      formData.answers.length === 0
+    ) {
       alert("Please add at least one answer for multiple-choice questions.");
+      return;
+    }
+
+    if (formData.questionType === "multipleChoice" && !formData.correctAnswer) {
+      alert("Please specify the correct answer.");
+      return;
+    }
+
+    if (formData.questionType === "shortAnswer" && !formData.correctAnswer) {
+      alert("Please specify the correct answer for short answer question.");
       return;
     }
 
@@ -102,14 +120,18 @@ const QuizSecondPage = () => {
           <div className="my-4 border p-4 pt-0 rounded-lg shadow-md">
             <h1
               className="mb-6 text-xl font-medium border-2 rounded-lg p-3 text-white justify-center flex"
-              style={{ background: "linear-gradient(to right, #D16262, #C53B3B)" }}
+              style={{
+                background: "linear-gradient(to right, #D16262, #C53B3B)",
+              }}
             >
               Questions Setup
             </h1>
 
             <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
-                <label className="col-span-1 whitespace-nowrap">Question Type:</label>
+                <label className="col-span-1 whitespace-nowrap">
+                  Question Type:
+                </label>
                 <select
                   id="questionType"
                   className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
@@ -124,7 +146,9 @@ const QuizSecondPage = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
-                <label className="col-span-1 whitespace-nowrap">Question Text:</label>
+                <label className="col-span-1 whitespace-nowrap">
+                  Question Text:
+                </label>
                 <input
                   type="text"
                   id="questionText"
@@ -136,8 +160,13 @@ const QuizSecondPage = () => {
 
               {formData.questionType === "multipleChoice" &&
                 formData.answers.map((answer, index) => (
-                  <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
-                    <label className="col-span-1 whitespace-nowrap">{`Answer ${index + 1}:`}</label>
+                  <div
+                    key={index}
+                    className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4"
+                  >
+                    <label className="col-span-1 whitespace-nowrap">{`Answer ${
+                      index + 1
+                    }:`}</label>
                     <input
                       type="text"
                       className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
@@ -161,7 +190,9 @@ const QuizSecondPage = () => {
 
               {formData.questionType === "trueFalse" && (
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
-                  <label className="col-span-1 whitespace-nowrap">Answer:</label>
+                  <label className="col-span-1 whitespace-nowrap">
+                    Answer:
+                  </label>
                   <select
                     id="correctAnswer"
                     className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
@@ -175,10 +206,48 @@ const QuizSecondPage = () => {
                 </div>
               )}
 
+              {/* Correct Answer for Multiple Choice */}
+              {formData.questionType === "multipleChoice" && (
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
+                  <label className="col-span-1 whitespace-nowrap">
+                    Correct Answer:
+                  </label>
+                  <select
+                    id="correctAnswer"
+                    className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
+                    onChange={handleChange}
+                    value={formData.correctAnswer}
+                  >
+                    <option value="">Select Correct Answer</option>
+                    {formData.answers.map((answer, index) => (
+                      <option key={index} value={answer}>
+                        {answer}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Correct Answer for Short Answer */}
+              {formData.questionType === "shortAnswer" && (
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
+                  <label className="col-span-1 whitespace-nowrap">
+                    Correct Answer:
+                  </label>
+                  <input
+                    type="text"
+                    id="correctAnswer"
+                    className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
+                    onChange={handleChange}
+                    value={formData.correctAnswer}
+                  />
+                </div>
+              )}
+
               <div className="flex justify-end">
                 <button
                   type="button"
-                  className="bg-blue-900  font-semibold text-white py-2 px-6 rounded-lg"
+                  className="bg-blue-800  font-semibold text-white py-2 px-6 rounded-lg"
                   onClick={handleSaveQuestion}
                 >
                   {isEditing ? "Update Question" : "Save Question"}
@@ -199,7 +268,9 @@ const QuizSecondPage = () => {
                   className="border p-4 rounded-lg shadow-md flex justify-between items-center"
                 >
                   <div>
-                    <h3 className="font-medium">{`Question ${index + 1}: ${question.questionText}`}</h3>
+                    <h3 className="font-medium">{`Question ${index + 1}: ${
+                      question.questionText
+                    }`}</h3>
                     <p>{`Type: ${question.questionType}`}</p>
                     {question.answers.length > 0 && (
                       <ul className="list-disc pl-5">
@@ -218,7 +289,7 @@ const QuizSecondPage = () => {
                       <PencilIcon className="h-5 w-5" />
                     </button>
                     <button
-                      className="text-red-700"
+                      className="text-red-500"
                       onClick={() => handleDeleteQuestion(index)}
                     >
                       <TrashIcon className="h-5 w-5" />
@@ -228,7 +299,6 @@ const QuizSecondPage = () => {
               ))
             )}
           </div>
-
           {/* Navigation */}
           <div className="flex justify-between mt-6">
             <Link to={"/instructor/quiz-first"}>
