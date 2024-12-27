@@ -9,6 +9,9 @@ const initialState = {
     difficulty: "",
 
     questions: [],
+    totalMarks: 0,
+    passingScore: 0,
+    duration: 0,
   },
 };
 
@@ -52,6 +55,9 @@ const quizSlice = createSlice({
     setPassingScore: (state, action) => {
       state.passingScore = action.payload;
     },
+    setDuration: (state, action) => {
+      state.duration = action.payload;
+    },
   },
 });
 
@@ -65,6 +71,7 @@ export const {
   updateMarkPoint,
   setTotalMarks,
   setPassingScore,
+  setDuration
 } = quizSlice.actions;
 
 export default quizSlice.reducer;

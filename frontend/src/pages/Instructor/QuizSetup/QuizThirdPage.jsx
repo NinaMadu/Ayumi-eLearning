@@ -4,14 +4,14 @@ import { useNavigate, Link } from 'react-router-dom';
 import AdminLayout from '../../../components/AdminLayout';
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/20/solid';
 import { useSelector, useDispatch } from 'react-redux';
-import { setTotalMarks, setPassingScore, updateMarkPoint } from '../../../redux/quizSlice';
+import { setTotalMarks, setPassingScore, updateMarkPoint, setDuration } from '../../../redux/quizSlice';
 
 const QuizThirdPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // Select questions and quiz-related state from Redux store
-  const { questions, totalMarks, passingScore } = useSelector((state) => state.quiz);
+  const { questions, totalMarks, passingScore,duration } = useSelector((state) => state.quiz);
 
   // Handle changes for question points and passing score
   const handleChange = (e, index) => {
@@ -21,7 +21,9 @@ const QuizThirdPage = () => {
       dispatch(setPassingScore(value));
     } else if (id === 'totalMarks') {
       dispatch(setTotalMarks(value));
-    } else {
+    } else if (id === 'duration') {
+      dispatch(setDuration(value));
+    }else {
       dispatch(updateMarkPoint({ index, markPoint: value }));
     }
   };
@@ -29,13 +31,14 @@ const QuizThirdPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission logic (e.g., save quiz data to server)
-    console.log('Form submitted:', { questions, totalMarks, passingScore });
+    console.log('Form submitted:', { questions, totalMarks, passingScore ,duration});
   };
 
   const handleCancel = () => {
     // Reset the quiz data and navigate to the previous page
     dispatch(setTotalMarks(0));
     dispatch(setPassingScore(0));
+    dispatch(setDuration(0));
     navigate('/instructor/create-quiz');
   };
 
@@ -81,6 +84,17 @@ const QuizThirdPage = () => {
                 id="passingScore"
                 className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
                 value={passingScore}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
+              <label className="col-span-1">Duration (minutes): </label>
+              <input
+                type="number"
+                id="duration"
+                className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
+                value={duration}
                 onChange={handleChange}
               />
             </div>
