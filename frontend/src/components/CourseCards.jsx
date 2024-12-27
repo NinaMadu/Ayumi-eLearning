@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Courses = () => {
+const Courses = ({ isAdmin }) => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,23 +29,35 @@ const Courses = () => {
     fetchCourses();
   }, []);
 
-  if (loading) {
-    return <p>Loading courses...</p>;
-  }
+  const handleDelete = async (courseId) => {
+    if (window.confirm('Are you sure you want to delete this course?')) {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/course/${courseId}`, {
+          method: 'DELETE',
+        });
+        if (res.ok) {
+          setCourses((prevCourses) => prevCourses.filter((course) => course._id !== courseId));
+          alert('Course deleted successfully');
+        } else {
+          const data = await res.json();
+          alert(data.message || 'Failed to delete course');
+        }
+      } catch (error) {
+        alert('Error deleting course');
+      }
+    }
+  };
 
-  if (error) {
-    return <p>{error}</p>;
-  }
+  if (loading) return <p>Loading courses...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="px-4 py-8 max-w-7xl mx-auto">
-      
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {courses.map((course) => (
           <div
             key={course._id}
             className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-transform hover:scale-105 overflow-hidden"
-            onClick={() => navigate(`/user/courseIntro/${course._id}`)}
           >
             {/* Course Image */}
             {course.introImage ? (
@@ -93,12 +105,22 @@ const Courses = () => {
                   <strong>Difficulty:</strong> {course.difficulty}
                 </div>
               </div>
-              <div className="mt-4">
-                {/* <span className="text-xl font-semibold text-blue-600">
-                  ${parseFloat(course.customPrice.$numberDecimal).toFixed(2)}{' '}
-                  {course.priceUnit}
-                </span> */}
-              </div>
+              {isAdmin && (
+                <div className="mt-4 flex justify-between">
+                  <button
+                    className="text-sm text-white bg-blue-500 px-4 py-2 rounded-md hover:bg-blue-600"
+                    onClick={() => navigate(`/admin/edit-course/${course._id}`)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="text-sm text-white bg-red-500 px-4 py-2 rounded-md hover:bg-red-600"
+                    onClick={() => handleDelete(course._id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         ))}
