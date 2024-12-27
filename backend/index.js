@@ -34,7 +34,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/notices', noticeRoutes);
 app.use('/api/users' , userRoutes);
 app.use('/api/course', courseRoutes);
-app.use('api/quiz', quizRoutes)
+app.use('/api/quiz', quizRoutes)
 app.use('/api/' , videoRoutes);
 app.use('/api/profile', userDetailRoutes);
 app.use('/api/instructorProfile', instructorDetailRoutes);

@@ -40,27 +40,21 @@ const quizSchema = new mongoose.Schema(
         },
         answers: [
           {
-            type: String,
-            // Will only be used for multipleChoice questions
+            type: String, // Used for multipleChoice
           },
         ],
         correctAnswer: {
           type: String,
           required: function () {
-            // For multipleChoice and trueFalse, correct answer is required
             return this.questionType !== "shortAnswer";
           },
         },
         marks: {
           type: Number,
-          required: true,  
+          required: true,
         },
       },
     ],
-    instructor: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Instructor",
-    },
     duration: {
       type: Number,
       required: true,
@@ -73,6 +67,7 @@ const quizSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    // Uncomment if needed later
     // course: {
     //   type: mongoose.Schema.Types.ObjectId,
     //   ref: "Course",

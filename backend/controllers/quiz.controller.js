@@ -1,23 +1,20 @@
-import Quiz from "../models/quiz.model.js"; 
+import Quiz from "../models/quiz.model.js";
 
 export const createQuiz = async (req, res) => {
   try {
-    // Destructure fields from the request body
     const { 
       title, 
       description, 
       category, 
       difficultyLevel, 
-      instructor, 
       duration,
       totalMarks,
       passingScore, 
-      //course, 
       questions 
     } = req.body;
 
-    // Validation checks (optional, but good practice)
-    if (!title || !description || !category || !difficultyLevel || !instructor || !duration || !totalMarks || !passingScore || !questions) {
+    // Validation: Check if all required fields are provided
+    if (!title || !description || !category || !difficultyLevel || !duration || !totalMarks || !passingScore || !questions) {
       return res.status(400).json({ message: "All fields are required!" });
     }
 
@@ -27,18 +24,14 @@ export const createQuiz = async (req, res) => {
       description,
       category,
       difficultyLevel,
-      instructor,
       duration,
       totalMarks,
       passingScore,
-      //course,
-      questions  // Assumes questions are passed as an array of question objects
+      questions, 
     });
 
-    
     const savedQuiz = await newQuiz.save();
 
-    // Respond with success message and saved quiz
     res.status(201).json({ message: "Quiz created successfully!", quiz: savedQuiz });
   } catch (error) {
     console.error(error);
@@ -46,10 +39,11 @@ export const createQuiz = async (req, res) => {
   }
 };
 
+//retrieve all quizzes
 export const getAllQuizzes = async (req, res) => {
     try {
-      // Retrieve all quizzes and populate the 'instructor' field
-      const quizzes = await Quiz.find().populate('instructor');
+
+      const quizzes = await Quiz.find();
   
       if (!quizzes.length) {
         return res.status(404).json({ message: "No quizzes found" });
@@ -61,3 +55,40 @@ export const getAllQuizzes = async (req, res) => {
       res.status(500).json({ message: "Error retrieving quizzes", error });
     }
   };
+
+  // Delete a quiz
+export const deleteQuiz = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedQuiz = await Quiz.findByIdAndDelete(id);
+
+    if (!deletedQuiz) {
+      return res.status(404).json({ message: "Quiz not found" });
+    }
+
+    res.status(200).json({ message: "Quiz deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting quiz", error });
+  }
+};
+
+// Get a quiz by ID 
+export const getQuizById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Retrieve the course by ID and populate the 'instructor' field
+    const quiz = await Quiz.findById(id);
+
+    // Check if the course exists
+    if (!quiz) {
+      return res.status(404).json({ message: "Quiz not found" });
+    }
+    res.status(200).json({ message: "Quiz retrieved successfully", quiz });
+  }
+
+  catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error retrieving quiz", error });
+  }
+};
