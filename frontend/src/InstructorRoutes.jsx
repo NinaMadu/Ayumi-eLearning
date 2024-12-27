@@ -12,10 +12,15 @@ import NoticeManagement from './pages/Instructor/NoticeManagement';
 import PaymentManagement from './pages/Instructor/PaymentManagement';
 import CreateNotice from './pages/Instructor/CreateNotice';
 import EditNotice from './pages/Instructor/EditNotice';
-import VideoUpload from './pages/Instructor/VideoUpload';
+// import VideoUpload from './pages/Instructor/VideoUpload';
+import VideoUpload from './pages/Instructor/VideoManagement/VideoUpload';
 import AddVideos from './pages/Instructor/AddVideos';
 import InstructorProfile from './pages/Instructor/InstructorProfile';
 import InstructorHeader from './pages/Instructor/InstructorHeader';
+// import VideoList from './pages/Instructor/VideoList';
+import VideoList from './pages/Instructor/VideoManagement/VideoList';
+// import VideoPreview from './pages/Instructor/VideoPreview';
+import VideoPreview from './pages/Instructor/VideoManagement/VideoPreview';
 
 
 const InstructorRoutes = () => {
@@ -37,6 +42,8 @@ const InstructorRoutes = () => {
         <Route path="/instructor/add-videos" element={<AddVideos/>} />
         <Route path="/instructor/video-upload" element={<VideoUpload/>} />
         <Route path="/instructor/profile" element={<InstructorProfile/>} />
+        <Route path="/instructor/videoList" element={<VideoList/>} />
+        <Route path="/instructor/videoPreview/:videoId" element={<VideoPreview/>} />
       
       </Route>
     </Routes>

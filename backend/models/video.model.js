@@ -20,6 +20,11 @@ const videoSchema = new mongoose.Schema(
         required:true,
 
     },
+    thumbnailUrl:{
+        type:String,
+        required:true,
+    }
+
 
 
     },{timestamps:true}
