@@ -13,8 +13,8 @@ const quizSchema = new mongoose.Schema(
     category: {
       type: String,
       enum: [
-        "Langugage Skills",
-        "Cultural Knowledge ",
+        "Language Skills",
+        "Cultural Knowledge",
         "Proficiency Levels",
         "Fun and Interactive",
         "History and Literature",
@@ -23,30 +23,60 @@ const quizSchema = new mongoose.Schema(
       required: true,
     },
     difficultyLevel: {
-        type: String,
-        enum:["Beginner", "Intermediate", "Advanced"],
-        required: true,
+      type: String,
+      enum: ["Beginner", "Intermediate", "Advanced"],
+      required: true,
     },
-
-    questions: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "Question",
-    },
-
+    questions: [
+      {
+        questionText: {
+          type: String,
+          required: true,
+        },
+        questionType: {
+          type: String,
+          enum: ["multipleChoice", "trueFalse", "shortAnswer"],
+          required: true,
+        },
+        answers: [
+          {
+            type: String,
+            // Will only be used for multipleChoice questions
+          },
+        ],
+        correctAnswer: {
+          type: String,
+          required: function () {
+            // For multipleChoice and trueFalse, correct answer is required
+            return this.questionType !== "shortAnswer";
+          },
+        },
+        marks: {
+          type: Number,
+          required: true,  
+        },
+      },
+    ],
     instructor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Instructor",
     },
-
     duration: {
       type: Number,
       required: true,
     },
-
-    course: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
+    totalMarks: {
+      type: Number,
+      required: true,
     },
+    passingScore: {
+      type: Number,
+      required: true,
+    },
+    // course: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Course",
+    // },
   },
   { timestamps: true }
 );
