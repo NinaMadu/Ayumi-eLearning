@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(''); // Search query to filter courses
+  const [searchText, setSearchText] = useState('');   // Text input value
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,6 +32,13 @@ const Courses = () => {
     fetchCourses();
   }, []);
 
+  // Dynamically filter courses as search query changes
+  const filteredCourses = searchQuery
+    ? courses.filter(course =>
+        course.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : courses; // If searchQuery is empty, show all courses
+
   if (loading) {
     return <p>Loading courses...</p>;
   }
@@ -38,16 +48,37 @@ const Courses = () => {
   }
 
   return (
-    <div className="px-4 py-8 max-w-7xl mx-auto">
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {courses.map((course) => (
+    <div>
+      <div className="relative max-w-4xl mx-auto">
+        {/* Search Bar Container */}
+        <div className="flex items-center border border-gray-300 rounded-full shadow-lg w-full">
+          {/* Input Field */}
+          <input
+            type="text"
+            placeholder="What do you want to learn?"
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);   // Update input text
+              setSearchQuery(e.target.value);  // Update search query for filtering
+            }}
+            className="w-full pl-6 py-2 text-gray-700 placeholder-gray-500 rounded-full focus:outline-none"
+          />
+          
+          {/* Search Icon (Optional, can remove if not needed) */}
+          <div className="absolute right-3 text-black p-2 rounded-full cursor-pointer">
+            <FaSearch className="text-xl" />
+          </div>
+        </div>
+      </div>
+
+      {/* Courses Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+        {filteredCourses.map((course) => (
           <div
             key={course._id}
             className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-transform hover:scale-105 overflow-hidden"
             onClick={() => navigate(`/user/courseIntro/${course._id}`)}
           >
-            {/* Course Image */}
             {course.introImage ? (
               <img
                 src={course.introImage}
@@ -79,7 +110,6 @@ const Courses = () => {
               </div>
             )}
 
-            {/* Course Details */}
             <div className="p-6">
               <h3 className="text-lg font-semibold text-gray-800 truncate">{course.title}</h3>
               <p className="text-sm text-gray-500 mt-2">
@@ -92,12 +122,6 @@ const Courses = () => {
                 <div className="text-sm text-gray-600">
                   <strong>Difficulty:</strong> {course.difficulty}
                 </div>
-              </div>
-              <div className="mt-4">
-                {/* <span className="text-xl font-semibold text-blue-600">
-                  ${parseFloat(course.customPrice.$numberDecimal).toFixed(2)}{' '}
-                  {course.priceUnit}
-                </span> */}
               </div>
             </div>
           </div>
