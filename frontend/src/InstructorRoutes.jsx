@@ -7,7 +7,10 @@ import CreateCourseFirst from './pages/Instructor/CreateCourseFirst';
 import CreateCourseSecond from './pages/Instructor/CreateCourseSecond';
 import CreateCourseThird from './pages/Instructor/CreateCourseThird';
 import UserManagement from './pages/Instructor/UserManagement';
-import CreateQuiz from './pages/Instructor/CreateQuiz';
+import CreateQuiz from './pages/Instructor/QuizSetup/CreateQuiz';
+import QuizFirstPage from './pages/Instructor/QuizSetup/QuizFirstPage';
+import QuizSecondPage from './pages/Instructor/QuizSetup/QuizSecondPage';
+import QuizThirdPage from './pages/Instructor/QuizSetup/QuizThirdPage';
 import NoticeManagement from './pages/Instructor/NoticeManagement';
 import PaymentManagement from './pages/Instructor/PaymentManagement';
 import CreateNotice from './pages/Instructor/CreateNotice';
@@ -35,6 +38,9 @@ const InstructorRoutes = () => {
         <Route path="/instructor/create-course-third" element={<CreateCourseThird/>} />
         <Route path='/instructor/user-management' element={<UserManagement/>} />
         <Route path="/instructor/create-quiz" element={<CreateQuiz/>} />
+        <Route path="/instructor/quiz-first" element={<QuizFirstPage/>} />
+        <Route path="/instructor/quiz-second" element={<QuizSecondPage/>} />
+        <Route path="/instructor/quiz-third" element={<QuizThirdPage/>} />
         <Route path="/instructor/notice-management" element={<NoticeManagement/>} />
         <Route path="/instructor/create-notice" element={<CreateNotice/>} />
         <Route path="/instructor/payment-management" element={<PaymentManagement/>} />

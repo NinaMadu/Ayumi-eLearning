@@ -4,6 +4,7 @@ import axios from 'axios';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import ConfirmationBox from '../../components/ConfirmationBox.jsx';
 import SuccessBox from '../../components/SuccessBox.jsx';
+import AdminLayout from '../../components/AdminLayout.jsx';
 
 const InstructorProfile = () => {
   const [instructor, setInstructor] = useState({
@@ -142,6 +143,8 @@ const InstructorProfile = () => {
   }, [currentUser]);
 
   return (
+    <div>
+     <AdminLayout>
     <div className="min-h-screen bg-gray-100 flex flex-col items-center">
       {showSuccessBox && (
         <SuccessBox
@@ -257,6 +260,8 @@ const InstructorProfile = () => {
           </div>
         </div>
       </div>
+    </div>
+    </AdminLayout>
     </div>
   );
 };

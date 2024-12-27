@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"; // Firebase storage imports
 import ConfirmationBox from '../components/ConfirmationBox.jsx';
 import SuccessBox from '../components/SuccessBox.jsx';
+import UserLayout from './UserLayout.jsx';
 
 const Profile = () => {
   const [user, setUser] = useState({
@@ -132,6 +133,8 @@ const Profile = () => {
   }, [currentUser]); // Fetch when currentUser changes
 
   return (
+    <div>
+     <UserLayout>
     <div className="min-h-screen bg-gray-100 flex flex-col items-center">
       {showSuccessBox && (
   <SuccessBox
@@ -252,6 +255,8 @@ const Profile = () => {
           </div>
         </div>
       </div>
+    </div>
+     </UserLayout>
     </div>
   );
 };
