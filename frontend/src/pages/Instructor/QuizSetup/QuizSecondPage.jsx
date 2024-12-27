@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { ChevronRightIcon, ChevronLeftIcon, PencilIcon, TrashIcon } from "@heroicons/react/20/solid";
 import { useNavigate, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addQuestion,
+  updateQuestion,
+  deleteQuestion,
+  resetQuizData,
+} from "../../../redux/quizSlice";
 import AdminLayout from "../../../components/AdminLayout";
 
 const QuizSecondPage = () => {
@@ -10,38 +17,37 @@ const QuizSecondPage = () => {
     answers: [],
     correctAnswer: "",
   });
-  const [questions, setQuestions] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
-  const addAnswer = () => {
-    setFormData({
-      ...formData,
-      answers: [...formData.answers, ""],
-    });
-  };
-  
 
+  const dispatch = useDispatch();
+  const questions = useSelector((state) => state.quiz.questions || []);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData({
-      ...formData,
-      [id]: value,
-    });
+    setFormData({ ...formData, [id]: value });
   };
 
   const handleSaveQuestion = () => {
+    if (!formData.questionText.trim() || !formData.questionType.trim()) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    if (formData.questionType === "multipleChoice" && formData.answers.length === 0) {
+      alert("Please add at least one answer for multiple-choice questions.");
+      return;
+    }
+
     if (isEditing) {
-      const updatedQuestions = questions.map((question, idx) =>
-        idx === editIndex ? formData : question
-      );
-      setQuestions(updatedQuestions);
+      dispatch(updateQuestion({ index: editIndex, question: formData }));
       setIsEditing(false);
       setEditIndex(null);
     } else {
-      setQuestions([...questions, formData]);
+      dispatch(addQuestion(formData));
     }
+
     setFormData({
       questionType: "",
       questionText: "",
@@ -57,18 +63,25 @@ const QuizSecondPage = () => {
   };
 
   const handleDeleteQuestion = (index) => {
-    const updatedQuestions = questions.filter((_, idx) => idx !== index);
-    setQuestions(updatedQuestions);
+    dispatch(deleteQuestion(index));
   };
 
   const handleCancel = () => {
-    setFormData({
-      questionType: "",
-      questionText: "",
-      answers: [],
-      correctAnswer: "",
-    });
+    dispatch(resetQuizData());
     navigate("/instructor/create-quiz");
+  };
+
+  const addAnswer = () => {
+    setFormData({
+      ...formData,
+      answers: [...formData.answers, ""],
+    });
+  };
+
+  const handleAnswerChange = (index, e) => {
+    const updatedAnswers = [...formData.answers];
+    updatedAnswers[index] = e.target.value;
+    setFormData({ ...formData, answers: updatedAnswers });
   };
 
   return (
@@ -85,6 +98,7 @@ const QuizSecondPage = () => {
             </button>
           </div>
 
+          {/* Question Form */}
           <div className="my-4 border p-4 pt-0 rounded-lg shadow-md">
             <h1
               className="mb-6 text-xl font-medium border-2 rounded-lg p-3 text-white justify-center flex"
@@ -173,43 +187,49 @@ const QuizSecondPage = () => {
             </form>
           </div>
 
+          {/* Saved Questions */}
           <div className="my-6">
             <h2 className="text-xl font-semibold mb-4">Saved Questions</h2>
-            {questions.map((question, index) => (
-              <div
-                key={index}
-                className="border p-4 rounded-lg shadow-md flex justify-between items-center"
-              >
-                <div>
-                  <h3 className="font-medium">{`Question ${index + 1}: ${question.questionText}`}</h3>
-                  <p>{`Type: ${question.questionType}`}</p>
-                  {question.answers.length > 0 && (
-                    <ul className="list-disc pl-5">
-                      {question.answers.map((answer, i) => (
-                        <li key={i}>{answer}</li>
-                      ))}
-                    </ul>
-                  )}
-                  <p>{`Correct Answer: ${question.correctAnswer}`}</p>
+            {questions.length === 0 ? (
+              <p>No questions have been saved yet.</p>
+            ) : (
+              questions.map((question, index) => (
+                <div
+                  key={index}
+                  className="border p-4 rounded-lg shadow-md flex justify-between items-center"
+                >
+                  <div>
+                    <h3 className="font-medium">{`Question ${index + 1}: ${question.questionText}`}</h3>
+                    <p>{`Type: ${question.questionType}`}</p>
+                    {question.answers.length > 0 && (
+                      <ul className="list-disc pl-5">
+                        {question.answers.map((answer, i) => (
+                          <li key={i}>{answer}</li>
+                        ))}
+                      </ul>
+                    )}
+                    <p>{`Correct Answer: ${question.correctAnswer}`}</p>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      className="text-blue-700"
+                      onClick={() => handleEditQuestion(index)}
+                    >
+                      <PencilIcon className="h-5 w-5" />
+                    </button>
+                    <button
+                      className="text-red-700"
+                      onClick={() => handleDeleteQuestion(index)}
+                    >
+                      <TrashIcon className="h-5 w-5" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex space-x-2">
-                  <button
-                    className="text-blue-700"
-                    onClick={() => handleEditQuestion(index)}
-                  >
-                    <PencilIcon className="h-5 w-5" />
-                  </button>
-                  <button
-                    className="text-red-700"
-                    onClick={() => handleDeleteQuestion(index)}
-                  >
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
+          {/* Navigation */}
           <div className="flex justify-between mt-6">
             <Link to={"/instructor/quiz-first"}>
               <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg flex pr-4">
