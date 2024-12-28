@@ -20,6 +20,8 @@ const QuizFirstPage = () => {
     dispatch(resetQuizData());
     navigate('/instructor/create-quiz');
   };
+  //dispatch(updateQuizData({ [id]: value }));
+
 
   return (
     <AdminLayout>

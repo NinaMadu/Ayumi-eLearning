@@ -4,15 +4,19 @@ import { useNavigate, Link } from 'react-router-dom';
 import AdminLayout from '../../../components/AdminLayout';
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/20/solid';
 import { useSelector, useDispatch } from 'react-redux';
-import { setTotalMarks, setPassingScore, updateMarkPoint, setDuration } from '../../../redux/quizSlice';
+import { updateQuizData,resetQuizData,setTotalMarks, setPassingScore, updateMarkPoint, setDuration } from '../../../redux/quizSlice';
 
 const QuizThirdPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  
+  
   // Select questions and quiz-related state from Redux store
-  const { questions, totalMarks, passingScore,duration } = useSelector((state) => state.quiz);
+  const {  questions, totalMarks, passingScore,duration } = useSelector((state) => state.quiz);
+  const { quizTitle, description, category, difficulty} = useSelector((state) => state.quiz.quizData);
 
+  
   // Handle changes for question points and passing score
   const handleChange = (e, index) => {
     const { id, value } = e.target;
@@ -30,8 +34,15 @@ const QuizThirdPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const quizData = {
+      quizTitle,
+      description,
+      category,
+      difficulty,
+    };
+    dispatch(updateQuizData(quizData));
     // Handle form submission logic (e.g., save quiz data to server)
-    console.log('Form submitted:', { questions, totalMarks, passingScore ,duration});
+    console.log('Form submitted:', { quizTitle, description, category, difficulty, questions, totalMarks, passingScore ,duration});
   };
 
   const handleCancel = () => {

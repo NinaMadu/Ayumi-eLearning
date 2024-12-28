@@ -1,4 +1,3 @@
-// redux/quizSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
