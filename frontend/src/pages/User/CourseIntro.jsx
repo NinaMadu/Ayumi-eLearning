@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import UserLayout from '../../components/UserLayout';
 
 const CourseIntro = () => {
@@ -95,9 +95,12 @@ const CourseIntro = () => {
                 <li key={index} className="text-gray-700">{objective}</li>
               ))}
             </ul>
+            <Link to={`/user/course-content/${course._id}`}>
+
             <button className="mt-6 w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
               Enroll Now
             </button>
+            </Link>
           </div>
 
           {/* Instructor Info */}

@@ -45,7 +45,7 @@ const Courses = () => {
           <div
             key={course._id}
             className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-transform hover:scale-105 overflow-hidden"
-            onClick={() => navigate(`/user/courseIntro/${course._id}`)}
+            onClick={() => navigate(`/user/course-intro/${course._id}`)}
           >
             {/* Course Image */}
             {course.introImage ? (
