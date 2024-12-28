@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCourseData } from '../../../redux/courseSlice';
+import { setCourseData, resetCourseData } from '../../../redux/courseSlice';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { useNavigate, useParams } from 'react-router-dom';
 import AdminLayout from '../../../components/AdminLayout';
@@ -11,8 +11,14 @@ const CourseEditFirst = () => {
   const { triggerCancel, confirmationBox } = useCancelConfirmation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const formData = useSelector((state) => state.course) || {}; // Ensure default value
+  const formData = useSelector((state) => state.course)  || {}; // Ensure default value
   const { courseId } = useParams();
+
+  const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     dispatch(resetCourseData()); // Reset formData before fetching
+//   }, [dispatch]);
 
   // Reverse mapping to match fetched course data with form fields
   const mapCourseDataToForm = (data) => ({
@@ -25,7 +31,7 @@ const CourseEditFirst = () => {
     custom_duration: data.customDuration,
     duration: data.durationUnit,
     enroll: data.enrollmentOptions,
-    custom_price: data.customPrice,
+    custom_price: data.customPrice.$numberDecimal,
     price: data.priceUnit,
     visibility: data.visibility,
     courseMaterial: data.courseMaterial,
@@ -36,21 +42,28 @@ const CourseEditFirst = () => {
   });
 
   useEffect(() => {
-    const fetchCourseData = async () => {
-      try {
-        console.log('Initail form data: ', formData);
-        const response = await axios.get(`http://localhost:5000/api/course/${courseId}`);
-        console.log('Fetched Course Data:', response.data);
-        console.log('Fetched Course Data:', response.data.course.title);
-        const mappedData = mapCourseDataToForm(response.data.course); // Map data to form structure
-        console.log('Mapped Course Data:', mappedData);
-        dispatch(setCourseData(mappedData)); // Populate Redux state
-      } catch (error) {
-        console.error('Error fetching course data:', error);
-      }
-    };
-    fetchCourseData();
-  }, [courseId, dispatch]);
+    // Only fetch data if formData is not already populated
+    if (!formData.title) { // You can add more checks for other required fields if needed
+      dispatch(resetCourseData());
+      const fetchCourseData = async () => {
+        try {
+          console.log('Initial form data: ', formData);
+          const response = await axios.get(`http://localhost:5000/api/course/${courseId}`);
+          console.log('Fetched Course Data:', response.data);
+          const mappedData = mapCourseDataToForm(response.data.course); // Map data to form structure
+          console.log('Mapped Course Data:', mappedData);
+          dispatch(setCourseData(mappedData));
+          setLoading(false); // Populate Redux state
+        } catch (error) {
+          console.error('Error fetching course data:', error);
+          setLoading(false);
+        }
+      };
+      fetchCourseData();
+    } else {
+      setLoading(false); // Skip the fetch if formData is already populated
+    }
+  }, [courseId, dispatch, formData]);
 
   useEffect(() => {
     console.log('Redux Course Slice:', formData); // Log Redux slice
@@ -58,7 +71,7 @@ const CourseEditFirst = () => {
 
   const handleNext = () => {
     console.log(formData); // Debugging log
-    navigate('/instructor/edit-course-second');
+    navigate(`/instructor/edit-course-second/${courseId}`, { state: formData });
   };
 
   const handleChange = (e) => {

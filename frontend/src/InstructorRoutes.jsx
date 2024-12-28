@@ -25,6 +25,8 @@ import VideoList from './pages/Instructor/VideoManagement/VideoList';
 // import VideoPreview from './pages/Instructor/VideoPreview';
 import VideoPreview from './pages/Instructor/VideoManagement/VideoPreview';
 import CourseEditFirst from './pages/Instructor/courseEdit/CourseEditFirst';
+import CourseEditSecond from './pages/Instructor/courseEdit/CourseEditSecond';
+import CourseEditThird from './pages/Instructor/courseEdit/CourseEditThird';
 
 
 const InstructorRoutes = () => {
@@ -52,6 +54,10 @@ const InstructorRoutes = () => {
         <Route path="/instructor/videoList" element={<VideoList/>} />
         <Route path="/instructor/videoPreview/:videoId" element={<VideoPreview/>} />
         <Route path="/instructor/edit-course-first/:courseId" element={<CourseEditFirst/>} />
+        <Route path="/instructor/edit-course-second/:courseId" element={<CourseEditSecond/>} />
+        <Route path="/instructor/edit-course-third/:courseId" element={<CourseEditThird/>} />
+
+
       
       </Route>
     </Routes>
