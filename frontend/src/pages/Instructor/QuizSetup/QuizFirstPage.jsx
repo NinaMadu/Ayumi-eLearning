@@ -76,12 +76,13 @@ const QuizFirstPage = () => {
                   onChange={handleChange}
                   value={formData.category}
                 >
-                  <option value="language">Language Skills</option>
-                  <option value="cultural">Cultural Knowledge</option>
-                  <option value="proficiency">Proficiency Levels</option>
-                  <option value="interactive">Fun and Interactive</option>
-                  <option value="history">History and Literature</option>
-                  <option value="practical">Practical Use</option>
+                  <option value="">Select Type</option>
+                  <option value="Language Skills">Language Skills</option>
+                  <option value="Cultural Knowledge">Cultural Knowledge</option>
+                  <option value="Proficiency Levels">Proficiency Levels</option>
+                  <option value="Fun and Interactive">Fun and Interactive</option>
+                  <option value="History and Literature">History and Literature</option>
+                  <option value="Practical Use">Practical Use</option>
                 </select>
               </div>
 
@@ -95,9 +96,10 @@ const QuizFirstPage = () => {
                   onChange={handleChange}
                   value={formData.difficulty}
                 >
-                  <option value="beginner">Beginner</option>
-                  <option value="intermediate">Intermediate</option>
-                  <option value="advanced">Advanced</option>
+                  <option value="">Select Type</option>
+                  <option value="Beginner">Beginner</option>
+                  <option value="Intermediate">Intermediate</option>
+                  <option value="Advanced">Advanced</option>
                 </select>
               </div>
             </form>

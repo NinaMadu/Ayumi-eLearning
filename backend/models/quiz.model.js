@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const quizSchema = new mongoose.Schema(
   {
-    title: {
+    quizTitle: {
       type: String,
       required: true,
     },
@@ -22,7 +22,7 @@ const quizSchema = new mongoose.Schema(
       ],
       required: true,
     },
-    difficultyLevel: {
+    difficulty: {
       type: String,
       enum: ["Beginner", "Intermediate", "Advanced"],
       required: true,
@@ -57,15 +57,15 @@ const quizSchema = new mongoose.Schema(
     ],
     duration: {
       type: Number,
-      required: true,
+      required: true,  // Uncommented if needed
     },
     totalMarks: {
       type: Number,
-      required: true,
+      required: true,  // Uncommented if needed
     },
     passingScore: {
       type: Number,
-      required: true,
+      required: true,  // Uncommented if needed
     },
     // Uncomment if needed later
     // course: {

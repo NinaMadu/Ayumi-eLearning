@@ -3,10 +3,10 @@ import Quiz from "../models/quiz.model.js";
 export const createQuiz = async (req, res) => {
   try {
     const { 
-      title, 
+      quizTitle, 
       description, 
       category, 
-      difficultyLevel, 
+      difficulty, 
       duration,
       totalMarks,
       passingScore, 
@@ -14,16 +14,21 @@ export const createQuiz = async (req, res) => {
     } = req.body;
 
     // Validation: Check if all required fields are provided
-    if (!title || !description || !category || !difficultyLevel || !duration || !totalMarks || !passingScore || !questions) {
+    if (!quizTitle || !description || !category || !difficulty || !duration || !totalMarks || !passingScore || !questions) {
       return res.status(400).json({ message: "All fields are required!" });
+    }
+
+    // Check if questions is an array and not empty
+    if (!Array.isArray(questions) || questions.length === 0) {
+      return res.status(400).json({ message: "Questions must be a non-empty array!" });
     }
 
     // Create a new quiz instance
     const newQuiz = new Quiz({
-      title,
+      quizTitle,
       description,
       category,
-      difficultyLevel,
+      difficulty,
       duration,
       totalMarks,
       passingScore,
@@ -35,9 +40,10 @@ export const createQuiz = async (req, res) => {
     res.status(201).json({ message: "Quiz created successfully!", quiz: savedQuiz });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error creating quiz", error });
+    res.status(500).json({ message: "Error creating quiz", error: error.message });
   }
 };
+
 
 //retrieve all quizzes
 export const getAllQuizzes = async (req, res) => {

@@ -4,19 +4,24 @@ import { useNavigate, Link } from 'react-router-dom';
 import AdminLayout from '../../../components/AdminLayout';
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/20/solid';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateQuizData,resetQuizData,setTotalMarks, setPassingScore, updateMarkPoint, setDuration } from '../../../redux/quizSlice';
+import { updateQuizData, resetQuizData, setTotalMarks, setPassingScore, updateMarkPoint, setDuration } from '../../../redux/quizSlice';
+import axios from 'axios';
+import useCancelConfirmation from '../../../hooks/useCancelConfirmation';
+import useSuccessMessage from '../../../hooks/useSuccessMessage';
 
 const QuizThirdPage = () => {
+  const { triggerSuccess, successBox } = useSuccessMessage();
+  const { triggerCancel, confirmationBox } = useCancelConfirmation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  
-  
   // Select questions and quiz-related state from Redux store
-  const {  questions, totalMarks, passingScore,duration } = useSelector((state) => state.quiz);
-  const { quizTitle, description, category, difficulty} = useSelector((state) => state.quiz.quizData);
+  const { questions, totalMarks, passingScore, duration } = useSelector((state) => state.quiz);
+  const { quizTitle, description, category, difficulty } = useSelector((state) => state.quiz.quizData);
 
-  
+  // Retrieve the current user (assuming you are using Redux for authentication)
+  //const currentUser = useSelector((state) => state.auth.currentUser);
+
   // Handle changes for question points and passing score
   const handleChange = (e, index) => {
     const { id, value } = e.target;
@@ -27,23 +32,51 @@ const QuizThirdPage = () => {
       dispatch(setTotalMarks(value));
     } else if (id === 'duration') {
       dispatch(setDuration(value));
-    }else {
+    } else {
       dispatch(updateMarkPoint({ index, markPoint: value }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const quizData = {
       quizTitle,
       description,
       category,
       difficulty,
+      questions,
+      totalMarks,
+      passingScore,
+      duration,
     };
+
+    try {
+      console.log('Submitting quiz data:', quizData);
+      const response = await axios.post('http://localhost:5000/api/quiz/add', quizData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('Quiz created successfully:', response.data);
+      triggerSuccess('Completed!', 'New quiz created successfully');
+      dispatch(resetQuizData());
+      setTimeout(() => {
+        navigate('/instructor/create-quiz');
+      }, 3000);
+    } catch (error) {
+      if (error.response) {
+        // Log the detailed error response
+        console.error('Error creating quiz:', error.response.data);
+      } else {
+        console.error('Unexpected error:', error);
+      }
+    }
+
     dispatch(updateQuizData(quizData));
-    // Handle form submission logic (e.g., save quiz data to server)
-    console.log('Form submitted:', { quizTitle, description, category, difficulty, questions, totalMarks, passingScore ,duration});
-  };
+    console.log('Form submitted:', quizData);
+};
+
 
   const handleCancel = () => {
     // Reset the quiz data and navigate to the previous page
@@ -56,6 +89,8 @@ const QuizThirdPage = () => {
   return (
     <AdminLayout>
       <div className="px-4 sm:px-8 md:px-12 lg:px-24 py-4">
+      {successBox}
+      {confirmationBox}
         <div className="flex flex-row justify-between w-full mb-4">
           <h1 className="text-3xl font-semibold">Step 03</h1>
           <button
@@ -99,6 +134,7 @@ const QuizThirdPage = () => {
               />
             </div>
 
+            {/* Duration */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
               <label className="col-span-1">Duration (minutes): </label>
               <input
@@ -131,6 +167,7 @@ const QuizThirdPage = () => {
               <button
                 type="submit"
                 className="bg-blue-900 text-white font-bold py-2 px-4 rounded-lg w-1/3"
+                onClick={handleSubmit}
               >
                 Save Quiz
               </button>
