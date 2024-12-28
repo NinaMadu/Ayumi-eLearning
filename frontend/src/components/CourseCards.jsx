@@ -109,10 +109,11 @@ const Courses = ({ isAdmin }) => {
                 <div className="mt-4 flex justify-between">
                   <button
                     className="text-sm text-white bg-blue-500 px-4 py-2 rounded-md hover:bg-blue-600"
-                    onClick={() => navigate(`/admin/edit-course/${course._id}`)}
+                    onClick={() => navigate(`/instructor/edit-course-first/${course._id}`)}
                   >
                     Edit
                   </button>
+
                   <button
                     className="text-sm text-white bg-red-500 px-4 py-2 rounded-md hover:bg-red-600"
                     onClick={() => handleDelete(course._id)}
