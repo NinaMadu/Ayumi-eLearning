@@ -1,6 +1,6 @@
 
 import express from 'express';
-import { getVideoById, uploadVideo } from '../controllers/video.controller.js';
+import { deleteCurrentThumbnail, getVideoById, updateVideo, uploadVideo } from '../controllers/video.controller.js';
 import { deleteVideo } from '../controllers/video.controller.js';
 import { getVideos } from '../controllers/video.controller.js';
 
@@ -9,9 +9,12 @@ import { getVideos } from '../controllers/video.controller.js';
 const router = express.Router();
 
 router.post('/videoUpload', uploadVideo);
+router.put('/videoUpdate/:id',updateVideo);
 router.delete('/videoDelete/:id',deleteVideo);
 router.get('/videos',getVideos);
 router.get('/video/:id',getVideoById);
+router.delete('/thumbnailDelete',deleteCurrentThumbnail);
+
 
 
 

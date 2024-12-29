@@ -19,6 +19,7 @@ import AddVideos from './pages/Instructor/AddVideos';
 import VideoList from './pages/Instructor/VideoManagement/VideoList';
 // import VideoPreview from './pages/Instructor/VideoPreview';
 import VideoPreview from './pages/Instructor/VideoManagement/VideoPreview';
+import VideoUpdate from './pages/Instructor/VideoManagement/VideoUpdate';
 
 
 const InstructorRoutes = () => {
@@ -40,6 +41,7 @@ const InstructorRoutes = () => {
         <Route path="/instructor/video-upload" element={<VideoUpload/>} />
         <Route path="/instructor/videoList" element={<VideoList/>} />
         <Route path="/instructor/videoPreview/:videoId" element={<VideoPreview/>} />
+        <Route path="/instructor/videoUpdate/:videoId" element={<VideoUpdate/>} />
       
       </Route>
     </Routes>
