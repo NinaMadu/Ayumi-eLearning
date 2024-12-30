@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 //
@@ -22,6 +22,7 @@ export default function VideoPreview() {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
 
+    const navigate = useNavigate();
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
    
     
@@ -51,6 +52,10 @@ export default function VideoPreview() {
     const handleDelete =  (videoId)=>{
         setShowConfirmation(true);      
     };
+
+    const handleUpdate = ()=>{
+      navigate(`/instructor/videoUpdate/${videoId}`);
+    }
 
     const confirmDelete = async () =>{
       try{
@@ -182,7 +187,8 @@ export default function VideoPreview() {
             }
             onMouseLeave={
               (e)=> e.target.style.backgroundColor = '#4CAF50'
-              }>Update</button>
+              }
+            onClick={handleUpdate}  >Update</button>
 
               { showConfirmation &&
               (
