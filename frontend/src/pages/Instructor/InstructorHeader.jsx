@@ -3,53 +3,55 @@ import { Bars3BottomRightIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import logo from '../../assets/logo.png';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { signOutUserStart, signOutUserSuccess, signInFailure } from '../../redux/userSlice';
-import { useDispatch } from 'react-redux';
-import LogoutConfirmation from '../../components/ConfirmationBox.jsx';
+import LogoutConfirmation from '../../components/LogoutConfirmation';
 import axios from 'axios';
 
-const Header = () => {
+const InstructorHeader = () => {
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [userDetails, setUserDetails] = useState(null);
+  const [instructor, setInstructor] = useState(null);
   const { currentUser } = useSelector(state => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  let Links = [
+  const Links = [
     { name: "Home", link: "/" },
     { name: "About", link: "/about" },
   ];
 
-  // Fetch user details
-  const fetchUserDetails = async () => {
+  // Fetch instructor details
+  const fetchInstructorProfile = async () => {
     if (currentUser) {
       try {
-        const response = await axios.get(`http://localhost:5000/api/instructor/${currentUser.email}`); // Use email to fetch user details
-        setUserDetails(response.data);
+        const response = await axios.get(`http://localhost:5000/api/instructorProfile/${currentUser.email}`);
+        setInstructor(response.data);
       } catch (error) {
-        console.error('Error fetching user details:', error);
+        console.error('Error fetching instructor profile:', error);
       }
     }
   };
 
   useEffect(() => {
-    fetchUserDetails();
+    fetchInstructorProfile();
   }, [currentUser]);
 
   const handleLogout = async () => {
     dispatch(signOutUserStart());
     try {
       const response = await fetch(`http://localhost:5000/api/auth/signout`, {
-        method: 'GET',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         credentials: 'include',
+        body: JSON.stringify({ userId: currentUser.id }),
       });
       if (response.ok) {
         dispatch(signOutUserSuccess());
-        console.log('Logged out successfully');
         navigate('/');
       } else {
         const errorData = await response.json();
@@ -82,7 +84,7 @@ const Header = () => {
             placeholder='Search...'
             className='bg-transparent focus:outline-none w-full sm:w-auto sm:flex-grow px-2'
           />
-          <button>
+          <button type='submit'>
             <FaSearch className='text-slate-600' />
           </button>
         </form>
@@ -96,7 +98,7 @@ const Header = () => {
         <ul className={`md:flex gap-0 md:items-center md:pb-0 pb-12 absolute md:static bg-red-50 md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${open ? 'top-12' : 'top-[-490px]'}`}>
           {Links.map((link) => (
             <li key={link.name} className='md:ml-8 md:my-0 my-7 font-semibold flex justify-center items-center'>
-              <a href={link.link} className='text-gray-800 hover:text-custom-red transform hover:scale-110 transition-transform duration-300'>{link.name}</a>
+              <Link to={link.link} className='text-gray-800 hover:text-custom-red transform hover:scale-110 transition-transform duration-300'>{link.name}</Link>
             </li>
           ))}
 
@@ -107,9 +109,9 @@ const Header = () => {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 <img
-                  src={userDetails?.avatarUrl || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}
-                  alt="User Avatar"
-                  className="w-8 h-8 rounded-full border-2 border-slate-400"
+                  src={instructor?.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}
+                  alt="Instructor Avatar"
+                  className="w-8 h-8 rounded-full border-2 border-slate-100"
                 />
                 {dropdownOpen ? (
                   <FaChevronUp className='ml-2 text-slate-600' />
@@ -167,4 +169,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default InstructorHeader;
