@@ -8,7 +8,7 @@ const quizSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
+      
     },
     category: {
       type: String,
@@ -42,6 +42,7 @@ const quizSchema = new mongoose.Schema(
           {
             type: String, // Used for multipleChoice
           },
+        
         ],
         correctAnswer: {
           type: String,
@@ -57,17 +58,17 @@ const quizSchema = new mongoose.Schema(
     ],
     duration: {
       type: Number,
-      required: true,  // Uncommented if needed
+      required: true, 
     },
     totalMarks: {
       type: Number,
-      required: true,  // Uncommented if needed
+      required: true,  
     },
     passingScore: {
       type: Number,
-      required: true,  // Uncommented if needed
+      required: true,  
     },
-    // Uncomment if needed later
+    
     // course: {
     //   type: mongoose.Schema.Types.ObjectId,
     //   ref: "Course",

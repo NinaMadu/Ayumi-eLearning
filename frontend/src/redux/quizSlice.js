@@ -32,6 +32,7 @@ const quizSlice = createSlice({
         questionType: '',
         questionText: '',
         answers: [],
+        marks: 0,
         correctAnswer: '',
         ...action.payload,
       });
@@ -44,24 +45,30 @@ const quizSlice = createSlice({
     },
     deleteQuestion: (state, action) => {
       state.questions.splice(action.payload, 1);
+      state.totalMarks = state.questions.reduce((total, question) => total + (parseFloat(question.marks) || 0), 0);
     },
+    
     setQuestions: (state, action) => {
       state.questions = action.payload;
     },
     updateMarkPoint: (state, action) => {
-      const { index, markPoint } = action.payload;
+      const { index, marks } = action.payload;
       if (index >= 0 && index < state.questions.length) {
-        state.questions[index].markPoint = markPoint;
+        state.questions[index].marks = marks;
+     state.totalMarks = state.questions.reduce((total, question) => total + (parseFloat(question.marks) || 0), 0);
       }
     },
-    setTotalMarks: (state, action) => {
-      state.totalMarks = action.payload;
-    },
+    
     setPassingScore: (state, action) => {
       state.passingScore = action.payload;
     },
     setDuration: (state, action) => {
       state.duration = action.payload;
+    },
+    
+    // New setTotalMarks action
+    setTotalMarks: (state, action) => {
+      state.totalMarks = action.payload;
     },
   },
 });
@@ -74,7 +81,7 @@ export const {
   deleteQuestion,
   setQuestions,
   updateMarkPoint,
-  setTotalMarks,
+  setTotalMarks, // Export the new setTotalMarks action
   setPassingScore,
   setDuration,
 } = quizSlice.actions;
