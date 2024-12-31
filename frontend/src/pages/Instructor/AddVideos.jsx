@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import AdminLayout from '../../components/AdminLayout';
 import VideoUpload from './VideoManagement/VideoUpload';
 // import VideoUpload from '../../pages/Instructor/VideoUpload';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function AddVideos() {
   
   const [videoUploadCount, setVideoUploadCount] = useState(1);
+  const location = useLocation();
+  const { courseId } = location.state;
+
+  console.log(courseId);
 
   
   const handleAddVideo = () => {

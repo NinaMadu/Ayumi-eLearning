@@ -98,6 +98,11 @@ function Dashboard() {
               Manage Courses
             </button>
           </Link>
+          <Link to={"/instructor/video-management-menu"} className="flex">
+            <button className="w-full h-full bg-gradient-to-r bg-cyan-800 text-white font-semibold p-3 sm:p-4 rounded-lg shadow-md hover:bg-cyan-600 transition min-h-[80px]">
+              Manage Lessons
+            </button>
+          </Link>
           <Link to={"/instructor/create-quiz"} className="flex">
             <button className="w-full h-full bg-gradient-to-r bg-cyan-800 text-white  font-semibold  p-3 sm:p-4 rounded-lg shadow-md hover:bg-cyan-600 transition min-h-[80px]">
               Manage Quizzes

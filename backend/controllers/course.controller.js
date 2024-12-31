@@ -127,3 +127,32 @@ export const deleteCourse = async (req, res) => {
   }
 };
 
+export const addVideoToPlaylist = async (req, res) => {
+  try {
+    const { id } = req.params; // Course ID
+    const { videoId } = req.body;
+
+    // Validate the videoId
+    if (!videoId) {
+      return res.status(400).json({ message: "Video ID is required" });
+    }
+
+    // Find the course and update its playlist
+    const updatedCourse = await Course.findByIdAndUpdate(
+      id,
+      { $addToSet: { playlist: videoId } }, // Prevent duplicates in the playlist
+      { new: true } // Return the updated course
+    );
+
+    // Check if the course exists
+    if (!updatedCourse) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    res.status(200).json({ message: "Video added to playlist successfully", course: updatedCourse });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding video to playlist", error });
+  }
+};
+
