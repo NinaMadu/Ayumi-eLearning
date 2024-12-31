@@ -2,19 +2,19 @@ import mongoose from "mongoose";
 
 const quizSchema = new mongoose.Schema(
   {
-    title: {
+    quizTitle: {
       type: String,
       required: true,
     },
     description: {
       type: String,
-      required: true,
+      
     },
     category: {
       type: String,
       enum: [
-        "Langugage Skills",
-        "Cultural Knowledge ",
+        "Language Skills",
+        "Cultural Knowledge",
         "Proficiency Levels",
         "Fun and Interactive",
         "History and Literature",
@@ -22,31 +22,57 @@ const quizSchema = new mongoose.Schema(
       ],
       required: true,
     },
-    difficultyLevel: {
-        type: String,
-        enum:["Beginner", "Intermediate", "Advanced"],
-        required: true,
-    },
-
-    questions: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "Question",
-    },
-
-    instructor: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Instructor",
-    },
-
-    duration: {
-      type: Number,
+    difficulty: {
+      type: String,
+      enum: ["Beginner", "Intermediate", "Advanced"],
       required: true,
     },
-
-    course: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
+    questions: [
+      {
+        questionText: {
+          type: String,
+          required: true,
+        },
+        questionType: {
+          type: String,
+          enum: ["multipleChoice", "trueFalse", "shortAnswer"],
+          required: true,
+        },
+        answers: [
+          {
+            type: String, // Used for multipleChoice
+          },
+        
+        ],
+        correctAnswer: {
+          type: String,
+          required: function () {
+            return this.questionType !== "shortAnswer";
+          },
+        },
+        marks: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+    duration: {
+      type: Number,
+      required: true, 
     },
+    totalMarks: {
+      type: Number,
+      required: true,  
+    },
+    passingScore: {
+      type: Number,
+      required: true,  
+    },
+    
+    // course: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Course",
+    // },
   },
   { timestamps: true }
 );

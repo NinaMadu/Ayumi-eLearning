@@ -35,29 +35,32 @@ const QuizSecondPage = () => {
   };
 
   const handleSaveQuestion = () => {
+    // Ensure question type and text are provided
     if (!formData.questionText.trim() || !formData.questionType.trim()) {
       alert("Please fill in all required fields.");
       return;
     }
 
-    if (
-      formData.questionType === "multipleChoice" &&
-      formData.answers.length === 0
-    ) {
-      alert("Please add at least one answer for multiple-choice questions.");
-      return;
+    // Validation for multipleChoice questions
+    if (formData.questionType === "multipleChoice") {
+      if (formData.answers.length === 0) {
+        alert("Please add at least one answer for multiple-choice questions.");
+        return;
+      }
+
+      if (!formData.correctAnswer) {
+        alert("Please specify the correct answer.");
+        return;
+      }
     }
 
-    if (formData.questionType === "multipleChoice" && !formData.correctAnswer) {
-      alert("Please specify the correct answer.");
-      return;
-    }
-
+    // Validation for shortAnswer questions
     if (formData.questionType === "shortAnswer" && !formData.correctAnswer) {
       alert("Please specify the correct answer for short answer question.");
       return;
     }
 
+    // Save or update the question
     if (isEditing) {
       dispatch(updateQuestion({ index: editIndex, question: formData }));
       setIsEditing(false);
@@ -66,6 +69,7 @@ const QuizSecondPage = () => {
       dispatch(addQuestion(formData));
     }
 
+    // Reset form data after saving
     setFormData({
       questionType: "",
       questionText: "",
@@ -155,6 +159,16 @@ const QuizSecondPage = () => {
                   className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
                   onChange={handleChange}
                   value={formData.questionText}
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
+                <label className="col-span-1">Marks:</label>
+                <input
+                  type="number"
+                  id="marks"
+                  className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
+                  onChange={handleChange}
+                  value={formData.marks || ""}
                 />
               </div>
 
@@ -280,6 +294,7 @@ const QuizSecondPage = () => {
                       </ul>
                     )}
                     <p>{`Correct Answer: ${question.correctAnswer}`}</p>
+                    <p className="text-gray-500">Marks: {question.marks}</p>
                   </div>
                   <div className="flex space-x-2">
                     <button

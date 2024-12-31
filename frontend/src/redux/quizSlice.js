@@ -1,4 +1,3 @@
-// redux/quizSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -7,12 +6,11 @@ const initialState = {
     description: "",
     category: "",
     difficulty: "",
-
-    questions: [],
-    totalMarks: 0,
-    passingScore: 0,
-    duration: 0,
   },
+  questions: [],
+  totalMarks: 0,
+  passingScore: 0,
+  duration: 0,
 };
 
 const quizSlice = createSlice({
@@ -25,38 +23,52 @@ const quizSlice = createSlice({
     resetQuizData: (state) => {
       state.quizData = initialState.quizData;
       state.questions = [];
+      state.totalMarks = 0;
+      state.passingScore = 0;
+      state.duration = 0;
     },
     addQuestion: (state, action) => {
-      if (!state.questions) {
-        state.questions = []; // Initialize the array if undefined
-      }
-      state.questions.push(action.payload);
+      state.questions.push({
+        questionType: '',
+        questionText: '',
+        answers: [],
+        marks: 0,
+        correctAnswer: '',
+        ...action.payload,
+      });
     },
-
     updateQuestion: (state, action) => {
-      const { index, question } = action.payload; // Payload structure: { index, question }
+      const { index, question } = action.payload;
       if (index >= 0 && index < state.questions.length) {
-        state.questions[index] = question; // Update question at index
+        state.questions[index] = { ...state.questions[index], ...question };
       }
     },
     deleteQuestion: (state, action) => {
-      state.questions.splice(action.payload, 1); // Remove question by index
+      state.questions.splice(action.payload, 1);
+      state.totalMarks = state.questions.reduce((total, question) => total + (parseFloat(question.marks) || 0), 0);
     },
+    
     setQuestions: (state, action) => {
       state.questions = action.payload;
     },
     updateMarkPoint: (state, action) => {
-      const { index, markPoint } = action.payload;
-      state.questions[index].markPoint = markPoint;
+      const { index, marks } = action.payload;
+      if (index >= 0 && index < state.questions.length) {
+        state.questions[index].marks = marks;
+     state.totalMarks = state.questions.reduce((total, question) => total + (parseFloat(question.marks) || 0), 0);
+      }
     },
-    setTotalMarks: (state, action) => {
-      state.totalMarks = action.payload;
-    },
+    
     setPassingScore: (state, action) => {
       state.passingScore = action.payload;
     },
     setDuration: (state, action) => {
       state.duration = action.payload;
+    },
+    
+    // New setTotalMarks action
+    setTotalMarks: (state, action) => {
+      state.totalMarks = action.payload;
     },
   },
 });
@@ -69,9 +81,9 @@ export const {
   deleteQuestion,
   setQuestions,
   updateMarkPoint,
-  setTotalMarks,
+  setTotalMarks, // Export the new setTotalMarks action
   setPassingScore,
-  setDuration
+  setDuration,
 } = quizSlice.actions;
 
 export default quizSlice.reducer;

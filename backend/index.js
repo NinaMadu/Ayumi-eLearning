@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.route.js";
 import noticeRoutes from "./routes/admin.routes/notice.routes.js";
 import userRoutes from "./routes/admin.routes/user.routes.js";
 import courseRoutes from "./routes/admin.routes/course.routes.js";
+import quizRoutes from "./routes/admin.routes/quiz.routes.js";
 import videoRoutes from "./routes/video.route.js";
 import userDetailRoutes from "./routes/userDetail.routes.js";
 import instructorDetailRoutes from "./routes/instructorDetail.route.js";
@@ -33,6 +34,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/notices', noticeRoutes);
 app.use('/api/users' , userRoutes);
 app.use('/api/course', courseRoutes);
+app.use('/api/quiz', quizRoutes)
 app.use('/api/' , videoRoutes);
 app.use('/api/profile', userDetailRoutes);
 app.use('/api/instructorProfile', instructorDetailRoutes);
