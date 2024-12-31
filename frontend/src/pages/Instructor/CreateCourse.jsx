@@ -21,7 +21,7 @@ export default function CreateCourse() {
       </div>
       <div className='mt-24'>
 
-      <Courses />
+      <Courses isAdmin={true} />
       </div>
     
     </AdminLayout>
