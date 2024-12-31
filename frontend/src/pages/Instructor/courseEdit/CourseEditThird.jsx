@@ -132,46 +132,53 @@ const CourseEditThird = () => {
     }
   
     try {
-      // Use existing image URL if no new image is provided
-      let downloadURL = formData.existingIntroImage;
+      let downloadURL = formData.introImage;
   
-      // If there's a new intro image, upload it to Firebase Storage
-      if (formData.introImage && formData.introImage !== formData.existingIntroImage) {
+      // Check if introImage is a file or a Firebase URL
+      if (formData.introImage instanceof File) {
+        // It's a file, upload it to Firebase Storage
         const storage = getStorage();
-        const file = formData.introImage; // Retrieve the file from Redux
-  
-        if (!file) throw new Error("No image file selected.");
+        const file = formData.introImage;
   
         const storageRef = ref(storage, `introImages/${file.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, file); // Upload the image
+        const uploadTask = uploadBytesResumable(storageRef, file);
   
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Upload is ' + progress + '% done');
-          },
-          (error) => {
-            console.error('Error uploading image:', error);
-            throw error;
-          },
-          async () => {
-            // Ensure snapshot.ref is correctly accessed
-            downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            console.log('File available at', downloadURL);
-  
-            // Now submit the form data with the Firebase image URL
-            await submitForm(downloadURL);
-          }
-        );
+        await new Promise((resolve, reject) => {
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log('Upload is ' + progress + '% done');
+            },
+            (error) => {
+              console.error('Error uploading image:', error);
+              reject(error);
+            },
+            async () => {
+              try {
+                downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                console.log('File available at', downloadURL);
+                resolve();
+              } catch (error) {
+                reject(error);
+              }
+            }
+          );
+        });
+      } else if (typeof formData.introImage === "string") {
+        // It's already a Firebase URL, use it as is
+        console.log('Using existing Firebase URL:', formData.introImage);
       } else {
-        // If no new image is provided, use the existing intro image
-        await submitForm(downloadURL);
+        throw new Error("Invalid introImage format.");
       }
+  
+      // Now submit the form data with the correct downloadURL
+      await submitForm(downloadURL);
     } catch (error) {
       console.error('Error editing course:', error);
     }
   };
+  
   
   // Function to submit the form data
   const submitForm = async (downloadURL) => {
