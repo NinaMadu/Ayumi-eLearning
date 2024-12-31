@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // import 'dotenv/config';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import AdminLayout from '../../../components/AdminLayout.jsx';
 import { useSelector } from 'react-redux';
@@ -22,6 +22,8 @@ const headerPost = {
 };
 
 export default function VideoUpload() {
+    const location = useLocation();
+      const { courseId } = location.state;
     const { currentUser } = useSelector((state) => state.user);
     const navigate = useNavigate();
 
@@ -230,6 +232,11 @@ export default function VideoUpload() {
                         'Content-Type': 'application/json'
                     }
                 });
+
+                //const courseId = courseId; // Replace with the actual course ID from the course you're updating
+                await axios.post(`${API_BASE_URL}/api/course/${courseId}/playlist`, { videoId });
+
+
                 setUploading(false);
                 // navigate('/success-page'); 
                 setShowSuccessBox(true);

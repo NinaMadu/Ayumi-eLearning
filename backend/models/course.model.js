@@ -67,7 +67,7 @@ const courseSchema = new mongoose.Schema({
         type: [String],
     },
     playlist:{
-        type: String,        
+        type: [String],        
     },
 
     instructor:{
