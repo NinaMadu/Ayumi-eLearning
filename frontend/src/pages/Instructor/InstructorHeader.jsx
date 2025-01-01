@@ -19,7 +19,7 @@ const InstructorHeader = () => {
   const dispatch = useDispatch();
 
   const Links = [
-    { name: "Home", link: "/" },
+    { name: "Home", link: "/instructor/admin-home" },
     { name: "About", link: "/about" },
   ];
 
@@ -72,7 +72,7 @@ const InstructorHeader = () => {
       <div className='flex items-center justify-between bg-red-50 py-2 px-5 md:px-10'>
         {/* Logo Section */}
         <div className='flex items-center gap-1'>
-          <Link to={'/'}>
+          <Link to={'/instructor/admin-home'}>
             <img src={logo} alt="Logo" className="h-8 sm:h-16" />
           </Link>
         </div>

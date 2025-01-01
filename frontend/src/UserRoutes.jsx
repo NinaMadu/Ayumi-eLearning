@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
 import { UDashboard } from './pages/User/Dashboard';
 import CourseItems from './pages/User/CourseItems';
+import UserHome from './components/UserHome';
 import CourseIntro from './pages/User/CourseIntro';
 
 
@@ -11,6 +12,7 @@ const UserRoutes = () => {
     <Routes>
       <Route element={<PrivateRoute />}>
         <Route path="/user/dashboard" element={<UDashboard />} />
+        <Route path="/user/user-home" element={<UserHome />} />
         <Route path="/user/course-cards" element={<CourseItems />} />
         <Route path="/user/courseIntro/:id" element={<CourseIntro />}/>
 

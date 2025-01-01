@@ -15,7 +15,7 @@ const Sidemenu = () => {
   
 
   const mainMenu = [
-    { title: "Home", icon: <FaHome />, path: "/" },
+    { title: "Home", icon: <FaHome />, path: "/user/user-home" },
     { title: "Dashboard", icon: <AiFillDashboard />, path: "/user/dashboard" },
     { title: "Notifications", icon: <FaBell /> },
     { title: "Discussion", icon: <FaBookOpen /> },
