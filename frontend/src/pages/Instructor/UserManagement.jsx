@@ -197,11 +197,11 @@ export default function UserManagement() {
   return (
     <AdminLayout>
       <div className="p-6">
-        <div className="bg-white rounded-lg shadow-lg ">
+        <div className="bg-slate-50 rounded-lg shadow-lg gap-4 ">
           {users.map((user) => (
             <div
               key={user._id}
-              className="flex items-center justify-between p-4 border-b hover:bg-blue-50 cursor-pointer"
+              className="flex items-center justify-between p-4 border-b hover:bg-blue-50 cursor-pointer hover:shadow-xl transition-transform hover:scale-105"
               onClick={() => openModal(user)}
             >
               {/* Image and Active Status */}
