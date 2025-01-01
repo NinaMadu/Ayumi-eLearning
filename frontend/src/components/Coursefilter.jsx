@@ -1,60 +1,56 @@
 import React from 'react';
 
-const Coursefilter = ({ onFilterChange }) => {
+const Coursefilter = ({ selectedFilters, handleFilterChange }) => {
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md mb-8">
-      <h3 className="text-xl font-semibold mb-4 text-gray-800">Filter Courses</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Category Filter */}
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-2" htmlFor="category">
-            Category
-          </label>
-          <select
-            id="category"
-            className="block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-            onChange={(e) => onFilterChange('category', e.target.value)}
-          >
-            <option value="">All</option>
-            <option value="Technology">Technology</option>
-            <option value="Business">Business</option>
-            <option value="Art">Art</option>
-            <option value="Science">Science</option>
-          </select>
-        </div>
+    <div className="w-1/5">
+      <h4 className="font-semibold text-xl mb-4">Filter by</h4>
 
-        {/* Difficulty Filter */}
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-2" htmlFor="difficulty">
-            Difficulty
+      <div className="mb-8">
+        <h5 className="font-medium mb-2">Level</h5>
+        {['Beginner', 'Intermediate', 'Advanced'].map((level) => (
+          <label key={level} className="block">
+            <input
+              type="checkbox"
+              value={level}
+              checked={selectedFilters.level.includes(level)}
+              onChange={(e) => handleFilterChange(e, 'level')}
+              className="mr-2"
+            />
+            {level}
           </label>
-          <select
-            id="difficulty"
-            className="block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-            onChange={(e) => onFilterChange('difficulty', e.target.value)}
-          >
-            <option value="">All</option>
-            <option value="Beginner">Beginner</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Advanced">Advanced</option>
-          </select>
-        </div>
+        ))}
+      </div>
 
-        {/* Price Filter */}
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-2" htmlFor="priceRange">
-            Price Range
+      <div className="mb-8">
+        <h5 className="font-medium mb-2">Teacher</h5>
+        {['Sewwandi Perera', 'John Doe'].map((teacher) => (
+          <label key={teacher} className="block">
+            <input
+              type="checkbox"
+              value={teacher}
+              checked={selectedFilters.teacher.includes(teacher)}
+              onChange={(e) => handleFilterChange(e, 'teacher')}
+              className="mr-2"
+            />
+            {teacher}
           </label>
-          <input
-            type="range"
-            id="priceRange"
-            min="0"
-            max="100"
-            className="w-full"
-            onChange={(e) => onFilterChange('price', e.target.value)}
-          />
-          <span className="block text-sm text-gray-600 mt-1">Up to ${e.target.value || 100}</span>
-        </div>
+        ))}
+      </div>
+
+      <div className="mb-8">
+        <h5 className="font-medium mb-2">Duration</h5>
+        {['1-24 Hours', '1-4 Weeks', '3-6 Months', '1-2 Years'].map((duration) => (
+          <label key={duration} className="block">
+            <input
+              type="checkbox"
+              value={duration}
+              checked={selectedFilters.duration.includes(duration)}
+              onChange={(e) => handleFilterChange(e, 'duration')}
+              className="mr-2"
+            />
+            {duration}
+          </label>
+        ))}
       </div>
     </div>
   );
