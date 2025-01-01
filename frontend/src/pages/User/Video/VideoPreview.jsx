@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import UserLayout from '../../../components/UserLayout';
 
 export default function UserVideoPreview() {
   const { videoId } = useParams();
@@ -28,6 +29,7 @@ export default function UserVideoPreview() {
   };
 
   return (
+    <UserLayout>
     <div
       style={{
         fontFamily: 'Roboto, sans-serif',
@@ -110,5 +112,6 @@ export default function UserVideoPreview() {
         </p>
       </div>
     </div>
+    </UserLayout>
   );
 }
