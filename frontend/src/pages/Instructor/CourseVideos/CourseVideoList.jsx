@@ -59,6 +59,19 @@ const CourseVideoList = () => {
 
     return (
         <AdminLayout>
+            
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-2xl font-bold">Lessons of the Course</h1>
+                    <Link to="/instructor/add-videos" state={{ courseId }}>
+                        <button
+                            type="button"
+                            className="col-span-3 p-2 border border-slate-200 rounded-lg bg-slate-400 hover:opacity-85 text-white font-semibold"
+                        >
+                            Add New Lessons
+                        </button>
+                    </Link>
+                </div>
+
             <div
                 style={{
                     display: 'grid',
