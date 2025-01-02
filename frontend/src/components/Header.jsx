@@ -20,7 +20,7 @@ const Header = () => {
   const dispatch = useDispatch();
 
   let Links = [
-    { name: "Home", link: "/" },
+    { name: "Home", link: "/user/user-home" },
     { name: "About", link: "/about" },
   ];
 
@@ -83,7 +83,7 @@ const Header = () => {
       <div className='flex items-center justify-between bg-red-50 py-2 px-5 md:px-10'>
         {/* Logo Section */}
         <div className='flex items-center gap-1'>
-          <Link to={'/'}>
+          <Link to={'/user/user-home'}>
             <img src={logo} alt="Logo" className="h-8 sm:h-16" />
           </Link>
         </div>

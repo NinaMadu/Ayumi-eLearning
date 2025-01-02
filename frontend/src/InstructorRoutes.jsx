@@ -30,7 +30,7 @@ import CourseEditSecond from './pages/Instructor/courseEdit/CourseEditSecond';
 import CourseEditThird from './pages/Instructor/courseEdit/CourseEditThird';
 import VideoManagementMenu from './pages/Instructor/CourseVideos/CourseVideosMenu';
 import CourseVideoList from './pages/Instructor/CourseVideos/CourseVideoList';
-
+import AdminHome from './components/AdminHome';
 
 
 const InstructorRoutes = () => {
@@ -39,6 +39,7 @@ const InstructorRoutes = () => {
       <Route element={<PrivateRoute />}>
         <Route path='/instructor/header' element={<InstructorHeader/>} />
         <Route path="/instructor/dashboard" element={<Dashboard />} />
+        <Route path="/instructor/admin-home" element={<AdminHome />} />
         <Route path="/instructor/create-course" element={<CreateCourse/>} />
         <Route path="/instructor/create-course-first" element={<CreateCourseFirst/>} />
         <Route path="/instructor/create-course-second" element={<CreateCourseSecond/>} />
