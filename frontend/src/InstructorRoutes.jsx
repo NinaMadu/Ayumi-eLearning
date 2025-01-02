@@ -63,6 +63,7 @@ const InstructorRoutes = () => {
         <Route path="/instructor/edit-course-third/:courseId" element={<CourseEditThird/>} />
         <Route path="/instructor/video-management-menu" element={<VideoManagementMenu/>} />
         <Route path="/instructor/course-video-list/:courseId" element={<CourseVideoList/>} />
+        
 
 
       </Route>

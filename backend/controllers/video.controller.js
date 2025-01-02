@@ -4,6 +4,7 @@ import { storage } from "../firebase/firebaseAdmin.js";
 import axios from 'axios'; 
 // import {  ref , deleteObject } from 'firebase/storage';
 import dotenv from 'dotenv';
+import Course from "../models/course.model.js";
 
 
 dotenv.config();
@@ -249,3 +250,27 @@ export const updateVideo = async (req, res) => {
     }
   };
   
+
+
+  export const getVideosByCourse = async (req,res)=>{
+    try{
+      const {courseId} = req.params;
+
+      const course = await Course.findById(courseId);
+      if(!course)
+      {
+        return res.status(404).json({message:'Course not found'});
+      }
+
+      const playlist = course.playlist.filter((id)=>id.trim() !== '');
+      
+      const videos = await Video.find({videoId:{$in:playlist}});
+      res.status(200).json({
+        videos,
+      });
+    }
+    catch(error){
+      console.error('Error fetching videos by course:', error);
+      res.status(500).json({message:'Server error'});
+    }
+  }
