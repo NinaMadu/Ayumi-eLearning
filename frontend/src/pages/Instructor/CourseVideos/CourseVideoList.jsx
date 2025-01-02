@@ -1,13 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import AdminLayout from '../../../components/AdminLayout';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+
+
+
+const API_BASE_URL  = import.meta.env.VITE_API_BASE_URL;
+
 
 const CourseVideoList = () => {
     const { courseId } = useParams();
     const [videos, setVideos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+
+    useEffect(()=>{
+        fetchCourseVideos();
+    },[courseId]);
+
+    const fetchCourseVideos = async ()=>{
+        try{
+         const response = await axios.get(`${API_BASE_URL}/api/courses/${courseId}/videos`);
+         setVideos(response.data.videos);  
+         console.log(response.data.videos); 
+        }   
+        catch(error){
+            console.error('Error fetching course videos:', error);
+        }
+    }
 
     //   useEffect(() => {
     //     const fetchVideos = async () => {
@@ -36,37 +59,68 @@ const CourseVideoList = () => {
 
     return (
         <AdminLayout>
-            <div className="px-4 py-8 max-w-4xl mx-auto">
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold">Lessons of the Course</h1>
-                    <Link to="/instructor/add-videos" state={{ courseId }}>
-                        <button
-                            type="button"
-                            className="col-span-3 p-2 border border-slate-200 rounded-lg bg-slate-400 hover:opacity-85 text-white font-semibold"
+            <div
+                style={{
+                    display: 'grid',
+                    gap: '1.5rem',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                    padding: '2rem',
+                }}
+            >
+                {videos.map((video) => (
+                    <div
+                        style={{
+                            backgroundColor: '#fff',
+                            borderRadius: '10px',
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                            overflow: 'hidden',
+                            transition: 'transform 0.3s ease, boxShadow 0.3s ease',
+                        }}
+                        key={video._id}
+                    >
+                        <img
+                            src={video.thumbnailUrl}
+                            alt="Video Thumbnail"
+                            onClick={() => {
+                                navigate(`/instructor/videoPreview/${video.videoId}`);
+                               
+                            }}
+                            style={{
+                                cursor: 'pointer',
+                                width: '100%',
+                                height: '150px',
+                                objectFit: 'cover',
+                            }}
+                        />
+                        <div
+                            style={{
+                                padding: '1rem',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '0.5rem',
+                            }}
                         >
-                            Add New Lessons
-                        </button>
-                    </Link>
-                </div>
-                <ul className="space-y-4">
-                    {videos.map((video) => (
-                        <li
-                            key={video._id}
-                            className="flex items-center bg-white border border-gray-200 rounded-lg shadow p-4"
-                        >
-                            <div className="flex-1">
-                                <h3 className="text-lg font-semibold">{video.title}</h3>
-                                <p className="text-sm text-gray-500">{video.description}</p>
-                            </div>
-                            <button className="text-sm text-white bg-red-500 px-4 py-2 rounded-md hover:bg-red-600">
-                                Delete
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+                            <h3
+                                style={{
+                                    fontSize: '1.2rem',
+                                    color: '#333',
+                                }}
+                            >
+                                {video.title}
+                            </h3>
+                            <p
+                                style={{
+                                    fontSize: '0.9rem',
+                                    color: '#666',
+                                }}
+                            >
+                                {video.description}
+                            </p>
+                        </div>
+                    </div>
+                ))}
             </div>
         </AdminLayout>
     );
-};
-
+}
 export default CourseVideoList;
