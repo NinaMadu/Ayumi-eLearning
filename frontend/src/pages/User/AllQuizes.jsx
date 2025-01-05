@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import Sidemenu from "../../components/Sidemenu";
-import Header from "../../components/Header";
+import React, { useState, useEffect } from "react";
 import UserLayout from "../../components/UserLayout";
 
 function AllQuizes() {
@@ -8,6 +6,7 @@ function AllQuizes() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch quizzes from API
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
@@ -29,26 +28,30 @@ function AllQuizes() {
     fetchQuizzes();
   }, []);
 
+  // Group quizzes by difficulty level
+  const groupByDifficulty = (quizzes) => {
+    return quizzes.reduce((acc, quiz) => {
+      acc[quiz.difficulty] = acc[quiz.difficulty] || [];
+      acc[quiz.difficulty].push(quiz);
+      return acc;
+    }, {});
+  };
+
+  const groupedQuizzes = groupByDifficulty(quizzes);
+
+  // Loading and Error States
   if (loading) {
     return (
-      <div>
-        <Header />
-        <Sidemenu />
-        <div className="flex items-center justify-center min-h-screen">
-          <p className="text-lg text-gray-600">Loading quizzes...</p>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-lg text-gray-600">Loading quizzes...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div>
-        <Header />
-        <Sidemenu />
-        <div className="flex items-center justify-center min-h-screen">
-          <p className="text-lg text-red-600">{error}</p>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-lg text-red-600">{error}</p>
       </div>
     );
   }
@@ -56,37 +59,11 @@ function AllQuizes() {
   return (
     <div>
       <UserLayout>
-        <div className="container mx-auto p-4 space-y-4 bg-slate-50 rounded-lg relative">
-          {quizzes.length > 0 ? (
-            <div className="space-y-4">
-              {quizzes.map((quiz) => (
-                <div
-                  key={quiz._id}
-                  className="flex flex-col bg-white shadow-lg rounded-xl overflow-hidden transition-all transform hover:scale-105 hover:shadow-xl"
-                >
-                  <div className="relative flex-1 p-6 space-y-4">
-                    <h3 className="text-xl font-semibold text-gray-800 truncate">{quiz.quizTitle}</h3>
-                    <div className="text-sm text-gray-600 mt-2">
-                      <p>
-                        <strong>Category:</strong> {quiz.category}
-                      </p>
-                      <p>
-                        <strong>Difficulty:</strong> {quiz.difficulty}
-                      </p>
-                      <p>
-                        <strong>Duration:</strong> {quiz.duration} minutes
-                      </p>
-                    </div>
-                    <div className="absolute top-1/2 right-10 transform -translate-y-1/2 flex gap-4">
-                      
-                      <button className="bg-blue-800 text-white py-2 px-6 rounded-lg hover:bg-indigo-700 transition-colors">
-                        Start Quiz
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+        <div className="container mx-auto p-4">
+          {Object.keys(groupedQuizzes).length > 0 ? (
+            Object.entries(groupedQuizzes).map(([difficulty, quizzes]) => (
+              <DifficultySection key={difficulty} difficulty={difficulty} quizzes={quizzes} />
+            ))
           ) : (
             <p className="text-center text-gray-500 text-lg">No quizzes found!</p>
           )}
@@ -95,5 +72,50 @@ function AllQuizes() {
     </div>
   );
 }
+
+// Component for Difficulty Sections
+const DifficultySection = ({ difficulty, quizzes }) => {
+  const difficultyStyles = {
+    Easy: "bg-green-50 text-green-700 border-green-300",
+    Medium: "bg-yellow-50 text-yellow-700 border-yellow-300",
+    Hard: "bg-red-50 text-red-700 border-red-300",
+  };
+
+  return (
+    <div className="mb-10">
+      <h2
+  className={`text-xl font-semibold py-3 px-4 rounded border text-center ${
+    difficultyStyles[difficulty] || "bg-gray-10 text-gray-700 border-gray-100"
+  }`}
+>
+  {difficulty} Level Quizzes
+</h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+        {quizzes.map((quiz) => (
+          <QuizCard key={quiz._id} quiz={quiz} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Quiz Card Component
+const QuizCard = ({ quiz }) => (
+  <div className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300">
+    <div className="p-6 text-center">
+      <h3 className="text-lg font-bold text-gray-800 mb-2">{quiz.quizTitle}</h3>
+      <p className="text-sm text-gray-500 mb-1">
+        <strong>Category:</strong> {quiz.category}
+      </p>
+      <p className="text-sm text-gray-500 mb-4">
+        <strong>Duration:</strong> {quiz.duration} minutes
+      </p>
+      <button className="bg-blue-700 text-white font-medium py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors duration-200">
+        Start Quiz
+      </button>
+    </div>
+  </div>
+);
 
 export default AllQuizes;
