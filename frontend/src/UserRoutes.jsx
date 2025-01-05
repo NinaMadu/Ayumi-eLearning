@@ -6,6 +6,7 @@ import CourseItems from './pages/User/CourseItems';
 import UserHome from './components/UserHome';
 import CourseIntro from './pages/User/CourseIntro';
 import UserVideoPreview from './pages/User/Video/VideoPreview';
+import CourseContent from './pages/User/CourseContent';
 
 
 const UserRoutes = () => {
@@ -16,7 +17,9 @@ const UserRoutes = () => {
         <Route path="/user/user-home" element={<UserHome />} />
         <Route path="/user/course-cards" element={<CourseItems />} />
         <Route path="/user/courseIntro/:id" element={<CourseIntro />}/>
+        <Route path="/user/course-content/:courseId" element={<CourseContent />} />
         <Route path="/user/video/:videoId" element={<UserVideoPreview/>}/>
+
 
       </Route>
     </Routes>

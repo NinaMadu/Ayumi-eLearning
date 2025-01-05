@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import UserLayout from '../../components/UserLayout';
 import { FaStar, FaTags, FaDollarSign, FaClock } from 'react-icons/fa';
 
@@ -173,9 +173,13 @@ const CourseIntro = () => {
                 </div>
               </div>
 
-              <button className="mt-8 w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                Enroll Now
-              </button>
+              <Link to={`/user/course-content/${course._id}`}>
+
+            <button className="mt-6 w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+              Enroll Now
+            </button>
+            </Link>
+
             </div>
 
             {/* Statistical Ratings and Reviews */}
