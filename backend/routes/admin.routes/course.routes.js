@@ -10,7 +10,6 @@ router.delete("/:id", deleteCourse);
 router.get("/", getAllCourses);
 router.put("/:id", editCourse);
 router.get('/:id', getCourseById);
-router.get('/count',totalCourses);
 router.post("/:id/playlist", addVideoToPlaylist);
 
 

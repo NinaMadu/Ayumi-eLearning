@@ -283,7 +283,7 @@ const CreateCourseThird = () => {
             </div>
 
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <label className="col-span-1 self-center">Embed Media:</label>
               <Link to={'/instructor/add-videos'}>
                 <button
@@ -293,7 +293,7 @@ const CreateCourseThird = () => {
                   Upload
                 </button>
               </Link>
-            </div>
+            </div> */}
           </form>
         </div>
         <button

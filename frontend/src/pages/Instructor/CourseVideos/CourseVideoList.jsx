@@ -67,7 +67,7 @@ const CourseVideoList = () => {
                             type="button"
                             className="col-span-3 p-2 border border-slate-200 rounded-lg bg-slate-400 hover:opacity-85 text-white font-semibold"
                         >
-                            Add New Lessons
+                            + Add New Lessons
                         </button>
                     </Link>
                 </div>
