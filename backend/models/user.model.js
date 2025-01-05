@@ -46,7 +46,12 @@ const userSchema = new mongoose.Schema(
         isLoggedIn:{
             type:Boolean,
             default:false,
-        } 
+        },
+        favorities:{
+            type:[mongoose.Schema.Types.ObjectId],
+            ref:"Course",
+            default: [],
+        }, 
 
     }, { timestamps: true }
 );

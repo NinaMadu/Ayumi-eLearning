@@ -5,6 +5,7 @@ import { UDashboard } from './pages/User/Dashboard';
 import CourseItems from './pages/User/CourseItems';
 import CourseIntro from './pages/User/CourseIntro';
 import UserVideoPreview from './pages/User/Video/VideoPreview';
+import FavoriteCourses from './pages/User/Favorites';
 
 
 const UserRoutes = () => {
@@ -15,6 +16,7 @@ const UserRoutes = () => {
         <Route path="/user/course-cards" element={<CourseItems />} />
         <Route path="/user/courseIntro/:id" element={<CourseIntro />}/>
         <Route path="/user/video/:videoId" element={<UserVideoPreview/>}/>
+        <Route path="/user/favourites" element={<FavoriteCourses />} />
 
       </Route>
     </Routes>
