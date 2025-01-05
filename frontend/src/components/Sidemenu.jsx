@@ -1,33 +1,44 @@
 import React, { useState } from 'react';
-import { FaHome, FaUser, FaBook, FaCog, FaBell, FaHeart, FaQuestionCircle, FaSignOutAlt, FaChevronCircleLeft, FaChevronCircleRight, FaBookOpen } from 'react-icons/fa';
-import { AiFillDashboard } from "react-icons/ai";
+import {
+  FaHome,
+  FaUser,
+  FaBook,
+  FaCog,
+  FaBell,
+  FaHeart,
+  FaQuestionCircle,
+  FaSignOutAlt,
+  FaChevronCircleLeft,
+  FaChevronCircleRight,
+  FaBookOpen,
+} from 'react-icons/fa';
+import { AiFillDashboard } from 'react-icons/ai';
+import { MdLibraryBooks } from 'react-icons/md'; // Correct import for LibraryBooksOutlinedIcon
 import { useNavigate, useLocation } from 'react-router-dom';
 import { signOutUserStart, signOutUserSuccess, signInFailure } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
-import CourseIntro from '../pages/User/CourseIntro';
 
 const Sidemenu = () => {
   const [open, setOpen] = useState(true);
-  const [showLogoutModal, setShowLogoutModal] = useState(false); 
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
   const dispatch = useDispatch();
-  
 
   const mainMenu = [
-    { title: "Home", icon: <FaHome />, path: "/user/user-home" },
-    { title: "Dashboard", icon: <AiFillDashboard />, path: "/user/dashboard" },
-    { title: "Notifications", icon: <FaBell /> },
-    { title: "Discussion", icon: <FaBookOpen /> },
-    { title: "Favourites", icon: <FaHeart /> },
-    { title: "Help", icon: <FaQuestionCircle /> },
-    { title: "Courses", icon: <FaBook />, path: "/user/course-cards" },
-
+    { title: 'Home', icon: <FaHome />, path: '/user/user-home' },
+    { title: 'Dashboard', icon: <AiFillDashboard />, path: '/user/dashboard' },
+    { title: 'Notifications', icon: <FaBell /> },
+    { title: 'Discussion', icon: <FaBookOpen /> },
+    { title: 'Favourites', icon: <FaHeart /> },
+    { title: 'Help', icon: <FaQuestionCircle /> },
+    { title: 'Courses', icon: <FaBook />, path: '/user/course-cards' },
+    { title: 'Quizzes', icon: <MdLibraryBooks />, path: '/user/all-quizes' }, // Fixed icon
   ];
 
   const settingsMenu = [
-    { title: "Settings", icon: <FaCog /> },
-    { title: "Logout", icon: <FaSignOutAlt /> },
+    { title: 'Settings', icon: <FaCog /> },
+    { title: 'Logout', icon: <FaSignOutAlt /> },
   ];
 
   const handleLogout = async () => {
@@ -92,7 +103,10 @@ const Sidemenu = () => {
   );
 
   return (
-    <div className={`relative ${open ? 'w-48' : 'w-20'} bg-custom-pink p-4 pt-0 duration-300`} style={{ height: '100vh' }}>
+    <div
+      className={`relative ${open ? 'w-48' : 'w-20'} bg-custom-pink p-4 pt-0 duration-300`}
+      style={{ height: '100vh' }}
+    >
       <div className="absolute top-3 right-0 cursor-pointer" onClick={() => setOpen(!open)}>
         {open ? (
           <FaChevronCircleLeft size={23} className="text-slate-600" />
@@ -116,7 +130,9 @@ const Sidemenu = () => {
               onClick={() => handleMenuClick(menu)}
             >
               <span className="text-xl">{menu.icon}</span>
-              <span className={`${!open && 'hidden'} origin-left duration-200`}>{menu.title}</span>
+              <span className={`${!open && 'hidden'} origin-left duration-200`}>
+                {menu.title}
+              </span>
             </li>
           ))}
         </div>
@@ -131,7 +147,9 @@ const Sidemenu = () => {
               onClick={() => handleMenuClick(menu)}
             >
               <span className="text-xl">{menu.icon}</span>
-              <span className={`${!open && 'hidden'} origin-left duration-200`}>{menu.title}</span>
+              <span className={`${!open && 'hidden'} origin-left duration-200`}>
+                {menu.title}
+              </span>
             </li>
           ))}
         </div>
