@@ -1,3 +1,4 @@
+import Course from "../models/course.model.js";
 import User from "../models/user.model.js";
 
 
@@ -104,3 +105,74 @@ export const getOnlineUsers = async (req, res) => {
     }
 };
 
+
+
+export const addFavourite = async(req,res)=>{
+    const {userId,courseId} = req.params;
+    try{
+        const course= await Course.findById(courseId);
+        if(!course){
+            return res.status(401).json({message:"Course not found"});
+        }
+
+        const user = await User.findById(userId);
+
+        if(!user){
+            return res.status(401).json({message:"User not found"});
+        }
+
+        if(!user.favorities.includes(courseId)){
+            user.favorities.push(courseId);
+            await user.save();
+
+        }
+
+        res.status(200).json(user);
+
+    }
+    catch(error){
+
+        res.status(500).json({message:"Failed to add favourite"});
+    }
+}
+
+
+export const removeFavourite = async(req,res)=>{
+    const {userId,courseId} = req.params;
+    try{
+        const user = await User.findById(userId);
+        if(!user)
+        {
+            return res.status(401).json({message:"User not found"});
+        }
+
+        user.favorities = user.favorities.filter(id=> id.toString() !== courseId);
+        await user.save();
+
+        res.status(200).json({message:"Favourite removed successfully"});
+
+    }
+    catch(error){
+
+        res.status(500).json({message:"Failed to remove favourite"});
+
+    }
+}
+
+
+export const getUserFavo = async(req,res) =>{
+    const {userId} = req.params;
+    try{
+       const user = await User.findById(userId).populate('favorities');
+       if(!user)
+       {
+           return res.status(401).json({message:"User not found"});
+       }
+
+       res.status(200).json({favorities:user.favorities});
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({message:"Failed to get favourite"});
+    }
+}

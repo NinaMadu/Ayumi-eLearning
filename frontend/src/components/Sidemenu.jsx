@@ -26,14 +26,16 @@ const Sidemenu = () => {
   const dispatch = useDispatch();
 
   const mainMenu = [
+
     { title: 'Home', icon: <FaHome />, path: '/user/user-home' },
     { title: 'Dashboard', icon: <AiFillDashboard />, path: '/user/dashboard' },
     { title: 'Notifications', icon: <FaBell /> },
     { title: 'Discussion', icon: <FaBookOpen /> },
-    { title: 'Favourites', icon: <FaHeart /> },
+    { title: "Favourites", icon: <FaHeart />, path: "/user/favourites" },
     { title: 'Help', icon: <FaQuestionCircle /> },
     { title: 'Courses', icon: <FaBook />, path: '/user/course-cards' },
     { title: 'Quizzes', icon: <MdLibraryBooks />, path: '/user/all-quizes' }, // Fixed icon
+    
   ];
 
   const settingsMenu = [
@@ -80,19 +82,19 @@ const Sidemenu = () => {
   };
 
   const LogoutModal = ({ onConfirm, onCancel }) => (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-slate-200 py-6 px-20 rounded-lg shadow-lg text-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+      <div className="px-20 py-6 text-center rounded-lg shadow-lg bg-slate-200">
         <h3 className="text-lg font-semibold">Confirm Logout</h3>
         <p className="mt-4">Are you sure you want to log out?</p>
-        <div className="mt-6 flex justify-center space-x-12">
+        <div className="flex justify-center mt-6 space-x-12">
           <button
-            className="bg-red-700 text-white py-2 px-4 rounded hover:bg-red-800"
+            className="px-4 py-2 text-white bg-red-700 rounded hover:bg-red-800"
             onClick={onConfirm}
           >
             Yes, Log out
           </button>
           <button
-            className="bg-gray-400 text-gray-900 py-2 px-4 rounded hover:bg-gray-500"
+            className="px-4 py-2 text-gray-900 bg-gray-400 rounded hover:bg-gray-500"
             onClick={onCancel}
           >
             Cancel
@@ -103,11 +105,13 @@ const Sidemenu = () => {
   );
 
   return (
+
     <div
       className={`relative ${open ? 'w-48' : 'w-20'} bg-custom-pink p-4 pt-0 duration-300`}
       style={{ height: '100vh' }}
     >
       <div className="absolute top-3 right-0 cursor-pointer" onClick={() => setOpen(!open)}>
+
         {open ? (
           <FaChevronCircleLeft size={23} className="text-slate-600" />
         ) : (
