@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import UserLayout from "../../components/UserLayout";
+import { Link } from "react-router-dom";
 
 function AllQuizes() {
   const [quizzes, setQuizzes] = useState([]);
@@ -111,9 +112,11 @@ const QuizCard = ({ quiz }) => (
       <p className="text-sm text-gray-500 mb-4">
         <strong>Duration:</strong> {quiz.duration} minutes
       </p>
+      <Link to={`/user/quiz-content/${quiz._id}`} >
       <button className="bg-blue-700 text-white font-medium py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors duration-200">
         Start Quiz
       </button>
+      </Link>
     </div>
   </div>
 );
