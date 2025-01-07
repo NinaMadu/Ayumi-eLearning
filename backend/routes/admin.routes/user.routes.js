@@ -1,5 +1,5 @@
 import express from "express";
-import { deactivateUser, deleteUser,  getAllUsers, getUserById, totalUsers, activateUser, getOnlineUsers, addFavourite, removeFavourite, getUserFavo} from "../../controllers/user.controller.js";
+import { deactivateUser, deleteUser,  getAllUsers, getUserById, totalUsers, activateUser, getOnlineUsers, addFavourite, removeFavourite, getUserFavo, enrollCourse, getUserEnroll, removeEnroll} from "../../controllers/user.controller.js";
 
 
 const router = express.Router();
@@ -14,6 +14,10 @@ router.put('/activate/:id',activateUser);
 router.post('/user/:userId/favorites/:courseId',addFavourite);
 router.delete('/user/:userId/favorites/:courseId',removeFavourite);
 router.get('/user/:userId/favorites',getUserFavo);
+router.post('/user/:userId/enroll/:courseId',enrollCourse);
+router.get('/user/:userId/enrolled-courses',getUserEnroll);
+router.delete('/user/:userId/enroll/:courseId',removeEnroll);
+
 
 
 

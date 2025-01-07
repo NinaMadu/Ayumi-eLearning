@@ -176,3 +176,74 @@ export const getUserFavo = async(req,res) =>{
         res.status(500).json({message:"Failed to get favourite"});
     }
 }
+
+
+export const enrollCourse = async(req,res)=>{
+    const {userId,courseId} = req.params;
+    try{
+        const course= await Course.findById(courseId);
+        if(!course){
+            return res.status(401).json({message:"Course not found"});
+        }
+
+        const user = await User.findById(userId);
+
+        if(!user){
+            return res.status(401).json({message:"User not found"});
+        }
+
+        if(!user.enrolledCourses.includes(courseId)){
+            user.enrolledCourses.push(courseId);
+            await user.save();
+
+        }
+
+        res.status(200).json(user);
+
+    }
+    catch(error){
+
+        res.status(500).json({message:"Failed to add favourite"});
+    }
+
+}
+
+export const removeEnroll = async(req,res)=>{
+    const {userId,courseId} = req.params;
+    try{
+        const user = await User.findById(userId);
+        if(!user)
+        {
+            return res.status(401).json({message:"User not found"});
+        }
+
+        user.enrolledCourses = user.enrolledCourses.filter(id=> id.toString() !== courseId);
+        await user.save();
+
+        res.status(200).json({message:"unenroll successfully"});
+
+    }
+    catch(error){
+
+        res.status(500).json({message:"Failed to unenroll"});
+
+    }
+}
+
+
+export const getUserEnroll = async (req,res)=>{
+    const {userId} = req.params;
+    try{
+       const user = await User.findById(userId).populate('enrolledCourses');
+       if(!user)
+       {
+           return res.status(401).json({message:"User not found"});
+       }
+
+       res.status(200).json({enrolledCourses: user.enrolledCourses});
+    }
+    catch(error){
+        console.error(error);
+        res.status(500).json({message:"Error fetching enrolled courses"});
+    }
+}
