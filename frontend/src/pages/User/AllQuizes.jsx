@@ -114,7 +114,7 @@ const QuizCard = ({ quiz }) => (
       </p>
       <Link to={`/user/quiz-content/${quiz._id}`} >
       <button className="bg-blue-700 text-white font-medium py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors duration-200">
-        Start Quiz
+        View Quiz
       </button>
       </Link>
     </div>
