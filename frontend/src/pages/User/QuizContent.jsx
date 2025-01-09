@@ -21,7 +21,8 @@ const QuizContent = () => {
   const [userAnswers, setUserAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [totalMarks, setTotalMarks] = useState(0);
-  const [quizStarted, setQuizStarted] = useState(false); // Add this state
+  const [quizStarted, setQuizStarted] = useState(false);
+  const [viewResults, setViewResults] = useState(false);
 
   useEffect(() => {
     if (!quizId) {
@@ -72,12 +73,25 @@ const QuizContent = () => {
 
     quiz.questions.forEach((question, index) => {
       if (userAnswers[index] === question.correctAnswer) {
-        score += question.marks; // Add marks for the correct answer
+        score += question.marks;
       }
     });
 
     setTotalMarks(score);
     setQuizSubmitted(true);
+  };
+
+  const handleViewResults = () => {
+    setViewResults(true);
+  };
+
+  const handleTryAgain = () => {
+    setQuizStarted(false);
+    setQuizSubmitted(false);
+    setViewResults(false);
+    setUserAnswers({});
+    setCurrentQuestionIndex(0);
+    setTotalMarks(0);
   };
 
   return (
@@ -309,80 +323,57 @@ const QuizContent = () => {
                     )}
                     .
                   </p>
-                  <table className="min-w-full table-auto border-collapse mt-6 rounded-lg shadow-lg overflow-hidden">
-              <thead className="bg-blue-200 text-slate-800">
-                <tr>
-                  <th className="px-6 py-4 border-b">Question</th>
-                  <th className="px-6 py-4 border-b">Your Answer</th>
-                  <th className="px-6 py-4 border-b">Correct Answer</th>
-                  <th className="px-6 py-4 border-b">Marks</th>
-                </tr>
-              </thead>
-              <tbody>
-                {quiz.questions.map((question, index) => {
-                  const isCorrect =
-                    userAnswers[index] === question.correctAnswer;
-                  return (
-                    <tr
-                      key={index}
-                      className={`${
-                        index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"
-                      } hover:bg-blue-50 transition-colors`}
+                  <div className="flex justify-center gap-4 mt-6">
+                    <button
+                      onClick={handleViewResults}
+                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
                     >
-                      <td className="px-6 py-4 border-b text-gray-800">
-                        {index + 1}
-                      </td>
-                      <td
-                        className={`px-6 py-4 border-b ${
-                          isCorrect
-                            ? "text-green-600 font-semibold"
-                            : "text-red-600 font-semibold"
-                        }`}
-                      >
-                        {userAnswers[index] || "Not Answered"}
-                      </td>
-                      <td className="px-6 py-4 border-b text-gray-800">
-                        {question.correctAnswer}
-                      </td>
-                      <td
-                        className={`px-6 py-4 border-b ${
-                          isCorrect ? "text-green-600" : "text-red-600"
-                        }`}
-                      >
-                        {isCorrect ? question.marks : 0}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-
-            {/* Motivational message */}
-            <div className="mt-6 text-center">
-              <h2 className="text-2xl font-bold">
-                {totalMarks >= quiz.passingScore
-                  ? "Congratulations! You passed the quiz! 🎉"
-                  : "Good effort! Don't give up, try again next time! 💪"}
-              </h2>
-              <p className="text-lg mt-2">
-                {totalMarks >= quiz.passingScore
-                  ? `You scored ${totalMarks} out of ${
-                      quiz.questions.length * 2
-                    } marks. Great job!`
-                  : `You scored ${totalMarks} out of ${
-                      quiz.questions.length * 2
-                    } marks. Keep practicing, you'll get there!`}
-              </p>
-            </div>
-
+                      View Results
+                    </button>
+                    <button
+                      onClick={handleTryAgain}
+                      className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
+                    >
+                      Try Again
+                    </button>
+                  </div>
                 </div>
               )
             )}
-            
           </div>
         )}
-            
       </div>
+
+      {viewResults && (
+        <div className="bg-gray-50 p-8 rounded-lg shadow-md max-w-3xl mx-auto">
+        <h2 className="text-3xl font-semibold text-center text-blue-600 mb-6">Quiz Results</h2>
+        
+        {quiz.questions.map((question, index) => (
+          <div key={index} className="bg-white p-4 mb-6 rounded-lg shadow-sm border border-gray-200">
+            <p className="text-lg font-medium text-gray-800 mb-2">
+              <strong className="text-blue-500">Question {index + 1}:</strong> {question.questionText}
+            </p>
+      
+            <div className="flex items-center space-x-4 mb-4">
+              <div className="flex items-center">
+                <span className="text-sm font-medium text-gray-600">Your Answer:</span>
+                <span className={`ml-2 px-3 py-1 rounded-md ${userAnswers[index] === question.correctAnswer ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  {userAnswers[index]}
+                </span>
+              </div>
+      
+              <div className="flex items-center">
+                <span className="text-sm font-medium text-gray-600">Correct Answer:</span>
+                <span className="ml-2 text-gray-800">{question.correctAnswer}</span>
+              </div>
+            </div>
+      
+            <hr className="border-t border-gray-300" />
+          </div>
+        ))}
+      </div>
+      
+      )}
     </div>
   );
 };
