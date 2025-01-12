@@ -9,6 +9,7 @@ import UserVideoPreview from './pages/User/Video/VideoPreview';
 import AllQuizes from './pages/User/AllQuizes';
 import CourseContent from './pages/User/CourseContent';
 import FavoriteCourses from './pages/User/Favorites';
+import QuizContent from './pages/User/QuizContent';
 
 
 const UserRoutes = () => {
@@ -23,7 +24,7 @@ const UserRoutes = () => {
         <Route path="/user/course-content/:courseId" element={<CourseContent />} />
         <Route path="/user/video/:videoId" element={<UserVideoPreview/>}/>
         <Route path="/user/favourites" element={<FavoriteCourses />} />
-
+        <Route path='/user/quiz-content/:quizId' element={<QuizContent />} />
 
       </Route>
     </Routes>
