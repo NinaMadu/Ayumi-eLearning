@@ -14,14 +14,16 @@ import {
 } from "recharts";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import Course from "../../../../backend/models/course.model";
 
 export const UDashboard = () => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [user, setUser] = useState({
     firstName: "",
+    enrolledCourses: [],
   });
+  const [enrolledCourses, setEnrolledCourses] = useState([]); // Added this state for enrolled courses
 
-  const [initialUser, setInitialUser] = useState({});
   const activityData = [
     { name: "Mon", activity: 30 },
     { name: "Tue", activity: 45 },
@@ -35,16 +37,27 @@ export const UDashboard = () => {
   const fetchUserDetails = async () => {
     if (currentUser && currentUser.email) {
       try {
+        // Fetching user details by email (if applicable)
         const response = await axios.get(
           `http://localhost:5000/api/profile/${currentUser.email}`
         );
         setUser(response.data);
-        setInitialUser(response.data); 
+
+        // Fetching enrolled courses for the user
+        const coursesResponse = await axios.get(
+          `http://localhost:5000//user/${currentUser.id}/enroll/${courseId}` // Make sure the URL is correct
+        );
+        setEnrolledCourses(coursesResponse.data.enrolledCourses);
       } catch (error) {
         console.error("Error fetching user profile:", error);
       }
     }
   };
+
+  useEffect(() => {
+    fetchUserDetails();
+    
+  }, [currentUser]);
 
   return (
     <UserLayout>
@@ -70,11 +83,10 @@ export const UDashboard = () => {
 
           {/* Stats Section */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-            {[
-              {
+            {[{
                 icon: <FaBook />,
                 label: "Courses In Progress",
-                value: 10,
+                value: enrolledCourses.length, // Show actual enrolled courses count
                 bg: "bg-blue-100",
                 textColor: "text-blue-600",
                 borderColors: ["border-blue-500", "border-blue-300"],
@@ -82,7 +94,7 @@ export const UDashboard = () => {
               {
                 icon: <FaCheckCircle />,
                 label: "Courses Completed",
-                value: 10,
+                value: enrolledCourses.filter(course => course.isCompleted).length, // Assuming you have a field for completion
                 bg: "bg-green-100",
                 textColor: "text-green-600",
                 borderColors: ["border-green-500", "border-green-300"],
@@ -100,7 +112,6 @@ export const UDashboard = () => {
                 key={idx}
                 className={`${stat.bg} relative p-4 rounded-lg flex flex-col items-center shadow`}
               >
-                {/* Two-color border */}
                 <div
                   className={`absolute inset-0 rounded-lg border-4 ${stat.borderColors[0]}`}
                   style={{
@@ -121,6 +132,22 @@ export const UDashboard = () => {
                 <p className="text-2xl font-bold">{stat.value}</p>
               </div>
             ))}
+          </div>
+
+          <div className="mt-4">
+            <h2 className="text-xl font-semibold">Your Enrolled Courses:</h2>
+            {enrolledCourses.length > 0 ? (
+              <ul className="list-disc pl-6">
+                {enrolledCourses.map((course) => (
+                  <li key={course._id} className="my-2">
+                    <h3 className="font-medium">{course.name}</h3>
+                    <p>{course.description}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>You are not enrolled in any courses yet.</p>
+            )}
           </div>
 
           {/* Progress Section */}
