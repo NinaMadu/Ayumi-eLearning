@@ -58,12 +58,12 @@ const CourseContent = () => {
   };
 
   return (
-    <div className="bg-gray-50 py-20 min-h-screen font-sans">
+    <div className="min-h-screen py-20 font-sans bg-gray-50">
       <Header />
       <div className="flex h-screen">
         {/* Sidebar */}
-        <div className="w-1/4 text-black font-semibold p-6 shadow-xl bg-white rounded-xl">
-          <h2 className="text-2xl font-bold mb-8 text-blue-800">
+        <div className="w-1/4 p-6 font-semibold text-black bg-white shadow-xl rounded-xl">
+          <h2 className="mb-8 text-2xl font-bold text-blue-800">
             Course Content
           </h2>
           <ul className="space-y-8">
@@ -84,29 +84,29 @@ const CourseContent = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 bg-white p-8 shadow-inner rounded-xl overflow-auto">
+        <div className="flex-1 p-8 overflow-auto bg-white shadow-inner rounded-xl">
           {loading && <p className="text-center text-gray-600">Loading...</p>}
           {error && <p className="text-center text-red-500">{error}</p>}
 
           {selectedCategory === "courseMaterials" && course && (
             <div>
-              <div className="text-black bg-slate-100 p-6 rounded-lg mb-6 shadow-lg">
+              <div className="p-6 mb-6 text-black rounded-lg shadow-lg bg-slate-100">
                 <h1 className="text-3xl font-extrabold text-blue-800">
                   {course.title}
                 </h1>
-                <p className="mt-2 text-md text-gray-600">
+                <p className="mt-2 text-gray-600 text-md">
                   {course.description}
                 </p>
               </div>
 
               <button
                 onClick={() => setExpanded(!expanded)}
-                className="flex items-center px-6 py-3 text-slate-700 rounded-lg shadow hover:bg-slate-300 transition-all duration-200 focus:outline-none"
+                className="flex items-center px-6 py-3 transition-all duration-200 rounded-lg shadow text-slate-700 hover:bg-slate-300 focus:outline-none"
               >
                 {expanded ? (
-                  <FaArrowAltCircleDown className="mr-2 transform rotate-180 transition-transform duration-200" />
+                  <FaArrowAltCircleDown className="mr-2 transition-transform duration-200 transform rotate-180" />
                 ) : (
-                  <FaRegArrowAltCircleDown className="mr-2 transform rotate-0 transition-transform duration-200" />
+                  <FaRegArrowAltCircleDown className="mr-2 transition-transform duration-200 transform rotate-0" />
                 )}
                 {expanded
                   ? "Hide Learning Objectives"
@@ -135,20 +135,20 @@ const CourseContent = () => {
                       key={video._id}
                       className="bg-white rounded-lg shadow-sm"
                     >
-                      <div className="p-4 flex gap-2">
+                      <div className="flex gap-2 p-4">
                         <FaPlayCircle
-                          className="mr-2 transform rotate-180 transition-transform duration-200 hover:text-blue-600 cursor-pointer"
+                          className="mt-2 mr-2 transition-transform duration-200 transform rotate-180 cursor-pointer hover:text-blue-600"
                           onClick={() =>
                             navigate(
-                              `/instructor/videoPreview/${video.videoId}`
+                              `/user/video/${video.videoId}`
                             )
                           }
                         />
                         <h3
-                          className="text-lg text-gray-800 font-semibold hover:bg-slate-50 cursor-pointer"
+                          className="text-lg font-semibold text-gray-800 cursor-pointer hover:bg-slate-50"
                           onClick={() =>
                             navigate(
-                              `/instructor/videoPreview/${video.videoId}`
+                              `/user/video/${video.videoId}`
                             )
                           }
                         >
@@ -168,24 +168,24 @@ const CourseContent = () => {
 
           {selectedCategory === "courseInfo" && course && (
             <div>
-              <h2 className="font-semibold text-xl pb-4">About this Course</h2>
+              <h2 className="pb-4 text-xl font-semibold">About this Course</h2>
               <p>{course.description}</p>
 
               {course.instructor && (
-                <div className="mt-6 gap-8 items-center">
+                <div className="items-center gap-8 mt-6">
                   <div></div>
-                  <h3 className="text-lg font-semibold mb-4 text-gray-900">
+                  <h3 className="mb-4 text-lg font-semibold text-gray-900">
                     Taught by:
                   </h3>
-                  <div className="flex items-center space-x-4 mb-6">
+                  <div className="flex items-center mb-6 space-x-4">
                     {course.instructor.avatar ? (
                       <img
                         src={course.instructor.avatar}
                         alt={course.instructor.name}
-                        className="w-16 h-16 object-cover rounded-full"
+                        className="object-cover w-16 h-16 rounded-full"
                       />
                     ) : (
-                      <div className="w-16 h-16 bg-gray-300 flex items-center justify-center rounded-full">
+                      <div className="flex items-center justify-center w-16 h-16 bg-gray-300 rounded-full">
                         <span className="text-gray-500">No Image</span>
                       </div>
                     )}
@@ -204,7 +204,7 @@ const CourseContent = () => {
                     <tbody>
                       {/* Level */}
                       <tr className="border-b border-gray-200">
-                        <td className="flex items-center p-4 text-gray-700 space-x-2">
+                        <td className="flex items-center p-4 space-x-2 text-gray-700">
                           <FaCheckCircle className="text-blue-500" />
                           <span className="font-semibold">Level</span>
                         </td>
@@ -215,7 +215,7 @@ const CourseContent = () => {
 
                       {/* Commitment */}
                       <tr className="border-b border-gray-200">
-                        <td className="flex items-center p-4 text-gray-700 space-x-2">
+                        <td className="flex items-center p-4 space-x-2 text-gray-700">
                           <FaClock className="text-blue-500" />
                           <span className="font-semibold">Commitment</span>
                         </td>
@@ -226,7 +226,7 @@ const CourseContent = () => {
 
                       {/* Language */}
                       <tr className="border-b border-gray-200">
-                        <td className="flex items-center p-4 text-gray-700 space-x-2">
+                        <td className="flex items-center p-4 space-x-2 text-gray-700">
                           <FaLanguage className="text-blue-500" />
                           <span className="font-semibold">Category</span>
                         </td>
@@ -235,7 +235,7 @@ const CourseContent = () => {
 
                       {/* How to Pass */}
                       <tr className="border-b border-gray-200">
-                        <td className="flex items-center p-4 text-gray-700 space-x-2">
+                        <td className="flex items-center p-4 space-x-2 text-gray-700">
                           <FaCheckCircle className="text-blue-500" />
                           <span className="font-semibold">Prerequisites</span>
                         </td>
@@ -246,11 +246,11 @@ const CourseContent = () => {
 
                       {/* User Ratings */}
                       <tr>
-                        <td className="flex items-center p-4 text-gray-700 space-x-2">
+                        <td className="flex items-center p-4 space-x-2 text-gray-700">
                           <FaStar className="text-yellow-400" />
                           <span className="font-semibold">User Ratings</span>
                         </td>
-                        <td className="p-4 text-gray-600 flex items-center space-x-2">
+                        <td className="flex items-center p-4 space-x-2 text-gray-600">
                           <div className="flex space-x-1 text-yellow-400">
                             <FaStar />
                             <FaStar />

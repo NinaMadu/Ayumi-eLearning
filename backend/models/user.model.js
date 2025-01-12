@@ -51,7 +51,12 @@ const userSchema = new mongoose.Schema(
             type:[mongoose.Schema.Types.ObjectId],
             ref:"Course",
             default: [],
-        }, 
+        },
+        enrolledCourses:{
+            type:[mongoose.Schema.Types.ObjectId],
+            ref:"Course",
+            default: [],
+        } 
 
     }, { timestamps: true }
 );

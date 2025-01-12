@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import UserLayout from '../../components/UserLayout';
 import { FaStar, FaTags, FaDollarSign, FaClock } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
@@ -13,7 +13,10 @@ const CourseIntro = () => {
   const [error, setError] = useState(null);
   const [userId,setUserId] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isEnrolled,setIsEnrolled] = useState(false);
   const [message,setMessage]= useState('');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -43,7 +46,28 @@ const CourseIntro = () => {
         setLoading(false);
       }
     };
+    
+   
+    const checkEnrollmentStatus = async()=>{
+      try{
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/user/${currentUser._id}/enrolled-courses`);
+        const data = await res.json();
 
+        if(res.ok)
+        {
+          const enrolledCourses = data.enrolledCourses || [];
+          const isEnrolledInCourse = enrolledCourses.some(course=>course._id===id);
+          setIsEnrolled(isEnrolledInCourse);
+          // console.log("Enrollment:",isEnrolledInCourse);
+        }
+        else{
+          console.error('Error checking enrollment status');
+        }
+      }
+      catch(error){
+        console.error('Error checking enrollment status');
+      }
+    }
     const checkFavStatus  = async () =>{
       try{
         const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/user/${currentUser._id}/favorites`);
@@ -73,12 +97,38 @@ const CourseIntro = () => {
     if (id) {
       fetchCourse();
       checkFavStatus();
+      checkEnrollmentStatus();
     } else {
       setError('Course ID is missing');
       setLoading(false);
     }
   }, [id, currentUser._id]);
 
+  const handleEnroll = async () =>{
+    try{
+      
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/user/${currentUser._id}/enroll/${id}`,
+      {
+        method:'POST',
+      }
+    );
+    if(res.ok)
+    {
+      setIsEnrolled(true);
+      setMessage('Enrolled Successfully');
+      navigate(`/user/course-content/${id}`);
+    }
+    else{
+      const data = await res.json();
+      setError(data.message||'Error Enrolling');
+    }
+    }
+    catch(error){
+      setError('Error Enrolling');
+    }
+  };
+
+  
   
   const handleAddToFav = async()=>{
     try{
@@ -276,12 +326,13 @@ const CourseIntro = () => {
 
             
                       
-            <Link to={`/user/course-content/${course._id}`}>
-              <button className="w-full px-4 py-2 mt-8 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700">
-                Enroll Now
+            
+              <button className="w-full px-4 py-2 mt-8 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700"
+                onClick={handleEnroll}>
+                {isEnrolled ? 'Go to Course' : 'Enroll Now'}
               </button>
-              </Link>
-              <button
+              
+        <button
           className={`w-full px-4 py-2 mt-8 text-white transition rounded-lg ${
             isFavorite ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'
           }`}
