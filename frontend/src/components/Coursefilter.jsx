@@ -23,7 +23,7 @@ const Coursefilter = ({ selectedFilters, handleFilterChange }) => {
 
       <div className="mb-8">
         <h5 className="font-medium mb-2">Teacher</h5>
-        {['Sewwandi Perera', 'John Doe'].map((teacher) => (
+        {['Sewwandi Perera', 'Saman Wijerathna'].map((teacher) => (
           <label key={teacher} className="block">
             <input
               type="checkbox"
