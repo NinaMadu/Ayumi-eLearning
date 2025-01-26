@@ -70,7 +70,10 @@ const courseSchema = new mongoose.Schema({
     playlist:{
         type: [String],        
     },
-
+    enrolledStudents:{
+        type:Number,
+        default: 0
+    },
     instructor:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Instructor",

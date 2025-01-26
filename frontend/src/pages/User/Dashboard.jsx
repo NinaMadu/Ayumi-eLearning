@@ -7,10 +7,11 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-
 export const UDashboard = () => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const [popularCourses, setPopularCourses] = useState([]);
+  const [recentCourses, setRecentCourses] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,6 +36,46 @@ export const UDashboard = () => {
 
     fetchEnrolledCourses();
   }, [currentUser]);
+
+  useEffect(() => {
+    const fetchPopularCourses = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/course/popular`
+        );
+        const data = await res.json();
+        if (res.ok) {
+          setPopularCourses(data);
+        } else {
+          console.error(data.message || "Failed to fetch popular courses");
+        }
+      } catch (err) {
+        console.error("Error fetching popular courses", err);
+      }
+    };
+
+    fetchPopularCourses();
+  }, []);
+
+  useEffect(() => {
+    const fetchRecentCourses = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/course/recent`
+        );
+        const data = await res.json();
+        if (res.ok) {
+          setRecentCourses(data);
+        } else {
+          console.error(data.message || "Failed to fetch recent courses");
+        }
+      } catch (err) {
+        console.error("Error fetching recent courses", err);
+      }
+    };
+
+    fetchRecentCourses();
+  }, []);
 
   return (
     <UserLayout>
@@ -116,15 +157,13 @@ export const UDashboard = () => {
 
           {/* Enrolled Courses Section */}
           <div className="mt-4">
-            <h2 className="text-xl font-bold mb-4">
-              Enrolled Courses
-            </h2>
+            <h2 className="text-xl font-bold mb-4">My Learning</h2>
             {enrolledCourses.length > 0 ? (
               <div className="space-y-4">
                 {enrolledCourses.map((course) => (
                   <div
                     key={course._id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden border p-4 flex items-center hover:shadow-lg transition-shadow duration-300"
+                    className="bg-white rounded-lg shadow-md overflow-hidden border p-4 flex items-center hover:transition-transform hover:scale-105"
                   >
                     {/* Thumbnail */}
                     <div
@@ -155,12 +194,12 @@ export const UDashboard = () => {
                     <div className="space-y-2 font-semibold">
                       <button
                         className="bg-blue-800 text-white px-4 py-2 rounded-lg text-sm shadow hover:bg-blue-600 transition"
-                        onClick={() => navigate(`/user/course-content/${course._id}`)}
-           
+                        onClick={() =>
+                          navigate(`/user/course-content/${course._id}`)
+                        }
                       >
                         Go To Course
                       </button>
-                      
                     </div>
                   </div>
                 ))}
@@ -171,21 +210,125 @@ export const UDashboard = () => {
               </p>
             )}
           </div>
-        <div className="mt-4">
-            <h2 className="text-xl font-bold mb-4">
+
+          {/* Popular Courses Section */}
+          <div className="mt-4">
+            <h2 className="text-xl font-bold mb-6 text-center">
               Most Popular Courses
             </h2>
-            </div>
+            {popularCourses.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {popularCourses.map((course) => (
+                  <div
+                    key={course._id}
+                    className="bg-white rounded-xl shadow-lg border p-4 hover:transition-transform hover:scale-105"
+                  >
+                    {/* Thumbnail */}
+                    <div
+                      className="w-full h-48 bg-cover bg-center rounded-t-lg mb-4"
+                      style={{
+                        backgroundImage: `url(${
+                          course.introImage || welcomeImage
+                        })`,
+                      }}
+                    ></div>
 
-            <div className="mt-4">
-            <h2 className="text-xl font-bold mb-4">
-              Recently Added
+                    {/* Course Details */}
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-gray-800 truncate mb-2">
+                        {course.title}
+                      </h3>
+                      <p className="text-sm text-gray-500 mb-2">
+                        <span className="font-medium">Category:</span>{" "}
+                        {course.category || "N/A"}
+                      </p>
+                      <p className="text-sm text-gray-500 mb-4">
+                        <span className="font-medium">Duration:</span>{" "}
+                        {course.customDuration || "N/A"} {course.durationUnit}
+                      </p>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div>
+                      <button
+                        className="w-full bg-blue-500 text-white py-2 rounded-lg text-sm font-semibold shadow hover:bg-blue-600 transition"
+                        onClick={() =>
+                          navigate(`/user/courseIntro/${course._id}`)
+                        }
+                      >
+                        View Course
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 text-center">
+                There is no popular course available at the moment.
+              </p>
+            )}
+          </div>
+
+          <div className="mt-8">
+            <h2 className="text-xl font-bold mb-6 text-center">
+              Recently Added Courses
             </h2>
-            </div>
+            {recentCourses.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
+                {recentCourses.map((course) => (
+                  <div
+                    key={course._id}
+                    className="bg-white rounded-xl shadow-lg border p-4 hover:transition-transform hover:scale-105 flex flex-col"
+                  >
+                    {/* Thumbnail */}
+                    <div
+                      className="w-full h-48 bg-cover bg-center rounded-t-lg mb-4"
+                      style={{
+                        backgroundImage: `url(${
+                          course.introImage || welcomeImage
+                        })`,
+                      }}
+                    ></div>
+
+                    {/* Course Details */}
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-gray-800 truncate mb-2">
+                        {course.title}
+                      </h3>
+                      <p className="text-sm text-gray-500 mb-2">
+                        <span className="font-medium">Category:</span>{" "}
+                        {course.category || "N/A"}
+                      </p>
+                      <p className="text-sm text-gray-500 mb-4">
+                        <span className="font-medium">Duration:</span>{" "}
+                        {course.customDuration || "N/A"} {course.durationUnit}
+                      </p>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div>
+                      <button
+                        className="w-full bg-custom-red text-white py-2 rounded-lg text-sm font-semibold shadow hover:bg-red-400 transition"
+                        onClick={() =>
+                          navigate(`/user/courseIntro/${course._id}`)
+                        }
+                      >
+                        Explore Course
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 text-center">
+                No recently added courses available at the moment.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Right Sidebar */}
-        <RightBar />
+        {/* <RightBar /> */}
       </div>
     </UserLayout>
   );
