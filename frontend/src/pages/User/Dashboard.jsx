@@ -116,8 +116,8 @@ export const UDashboard = () => {
 
           {/* Enrolled Courses Section */}
           <div className="mt-4">
-            <h2 className="text-xl font-semibold mb-4">
-              Your Enrolled Courses:
+            <h2 className="text-xl font-bold mb-4">
+              Enrolled Courses
             </h2>
             {enrolledCourses.length > 0 ? (
               <div className="space-y-4">
@@ -152,9 +152,9 @@ export const UDashboard = () => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="space-y-2">
+                    <div className="space-y-2 font-semibold">
                       <button
-                        className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm shadow hover:bg-blue-600 transition"
+                        className="bg-blue-800 text-white px-4 py-2 rounded-lg text-sm shadow hover:bg-blue-600 transition"
                         onClick={() => navigate(`/user/course-content/${course._id}`)}
            
                       >
@@ -171,6 +171,17 @@ export const UDashboard = () => {
               </p>
             )}
           </div>
+        <div className="mt-4">
+            <h2 className="text-xl font-bold mb-4">
+              Most Popular Courses
+            </h2>
+            </div>
+
+            <div className="mt-4">
+            <h2 className="text-xl font-bold mb-4">
+              Recently Added
+            </h2>
+            </div>
         </div>
 
         {/* Right Sidebar */}
