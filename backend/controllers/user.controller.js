@@ -235,13 +235,13 @@ export const removeEnroll = async(req,res)=>{
 
 export const getUserEnroll = async (req,res)=>{
     const {userId} = req.params;
-    try{
+     try{
        const user = await User.findById(userId).populate('enrolledCourses');
        if(!user)
        {
            return res.status(401).json({message:"User not found"});
        }
-
+       //console.log("Enrolled courses:", user.enrolledCourses);
        res.status(200).json({enrolledCourses: user.enrolledCourses});
     }
     catch(error){

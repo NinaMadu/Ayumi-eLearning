@@ -3,61 +3,79 @@ import UserLayout from "../../components/UserLayout";
 import RightBar from "../../components/RightBar";
 import { FaBook, FaCheckCircle, FaCertificate } from "react-icons/fa";
 import welcomeImage from "../../assets/welcome.jpg";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import Course from "../../../../backend/models/course.model";
+import { useNavigate } from "react-router-dom";
 
 export const UDashboard = () => {
   const currentUser = useSelector((state) => state.user.currentUser);
-  const [user, setUser] = useState({
-    firstName: "",
-    enrolledCourses: [],
-  });
-  const [enrolledCourses, setEnrolledCourses] = useState([]); // Added this state for enrolled courses
-
-  const activityData = [
-    { name: "Mon", activity: 30 },
-    { name: "Tue", activity: 45 },
-    { name: "Wed", activity: 40 },
-    { name: "Thu", activity: 35 },
-    { name: "Fri", activity: 50 },
-    { name: "Sat", activity: 55 },
-    { name: "Sun", activity: 60 },
-  ];
-
-  const fetchUserDetails = async () => {
-    if (currentUser && currentUser.email) {
-      try {
-        // Fetching user details by email (if applicable)
-        const response = await axios.get(
-          `http://localhost:5000/api/profile/${currentUser.email}`
-        );
-        setUser(response.data);
-
-        // Fetching enrolled courses for the user
-        const coursesResponse = await axios.get(
-          `http://localhost:5000//user/${currentUser.id}/enroll/${courseId}` // Make sure the URL is correct
-        );
-        setEnrolledCourses(coursesResponse.data.enrolledCourses);
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
-      }
-    }
-  };
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const [popularCourses, setPopularCourses] = useState([]);
+  const [recentCourses, setRecentCourses] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchUserDetails();
-    
+    const fetchEnrolledCourses = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/users/user/${
+            currentUser._id
+          }/enrolled-courses`
+        );
+        const data = await res.json();
+
+        if (res.ok) {
+          setEnrolledCourses(data.enrolledCourses || []);
+        } else {
+          console.error(data.message || "Failed to fetch enrolled courses");
+        }
+      } catch (err) {
+        console.error("Error fetching enrolled courses", err);
+      }
+    };
+
+    fetchEnrolledCourses();
   }, [currentUser]);
+
+  useEffect(() => {
+    const fetchPopularCourses = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/course/popular`
+        );
+        const data = await res.json();
+        if (res.ok) {
+          setPopularCourses(data);
+        } else {
+          console.error(data.message || "Failed to fetch popular courses");
+        }
+      } catch (err) {
+        console.error("Error fetching popular courses", err);
+      }
+    };
+
+    fetchPopularCourses();
+  }, []);
+
+  useEffect(() => {
+    const fetchRecentCourses = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/course/recent`
+        );
+        const data = await res.json();
+        if (res.ok) {
+          setRecentCourses(data);
+        } else {
+          console.error(data.message || "Failed to fetch recent courses");
+        }
+      } catch (err) {
+        console.error("Error fetching recent courses", err);
+      }
+    };
+
+    fetchRecentCourses();
+  }, []);
 
   return (
     <UserLayout>
@@ -83,10 +101,11 @@ export const UDashboard = () => {
 
           {/* Stats Section */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-            {[{
+            {[
+              {
                 icon: <FaBook />,
                 label: "Courses In Progress",
-                value: enrolledCourses.length, // Show actual enrolled courses count
+                value: enrolledCourses.length,
                 bg: "bg-blue-100",
                 textColor: "text-blue-600",
                 borderColors: ["border-blue-500", "border-blue-300"],
@@ -94,7 +113,8 @@ export const UDashboard = () => {
               {
                 icon: <FaCheckCircle />,
                 label: "Courses Completed",
-                value: enrolledCourses.filter(course => course.isCompleted).length, // Assuming you have a field for completion
+                value: enrolledCourses.filter((course) => course.isCompleted)
+                  .length,
                 bg: "bg-green-100",
                 textColor: "text-green-600",
                 borderColors: ["border-green-500", "border-green-300"],
@@ -102,7 +122,8 @@ export const UDashboard = () => {
               {
                 icon: <FaCertificate />,
                 label: "Certificates Earned",
-                value: 10,
+                value: enrolledCourses.filter((course) => course.hasCertificate)
+                  .length,
                 bg: "bg-yellow-100",
                 textColor: "text-yellow-600",
                 borderColors: ["border-yellow-500", "border-yellow-300"],
@@ -134,54 +155,180 @@ export const UDashboard = () => {
             ))}
           </div>
 
+          {/* Enrolled Courses Section */}
           <div className="mt-4">
-            <h2 className="text-xl font-semibold">Your Enrolled Courses:</h2>
+            <h2 className="text-xl font-bold mb-4">My Learning</h2>
             {enrolledCourses.length > 0 ? (
-              <ul className="list-disc pl-6">
+              <div className="space-y-4">
                 {enrolledCourses.map((course) => (
-                  <li key={course._id} className="my-2">
-                    <h3 className="font-medium">{course.name}</h3>
-                    <p>{course.description}</p>
-                  </li>
+                  <div
+                    key={course._id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden border p-4 flex items-center hover:transition-transform hover:scale-105"
+                  >
+                    {/* Thumbnail */}
+                    <div
+                      className="w-24 h-24 bg-cover bg-center rounded-md mr-4"
+                      style={{
+                        backgroundImage: `url(${
+                          course.introImage || welcomeImage
+                        })`,
+                      }}
+                    ></div>
+
+                    {/* Course Details */}
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-gray-800 truncate mb-2">
+                        {course.title}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        <span className="font-medium">Category:</span>{" "}
+                        {course.category || "N/A"}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        <span className="font-medium">Duration:</span>{" "}
+                        {course.customDuration || "N/A"} {course.durationUnit}
+                      </p>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="space-y-2 font-semibold">
+                      <button
+                        className="bg-blue-800 text-white px-4 py-2 rounded-lg text-sm shadow hover:bg-blue-600 transition"
+                        onClick={() =>
+                          navigate(`/user/course-content/${course._id}`)
+                        }
+                      >
+                        Go To Course
+                      </button>
+                    </div>
+                  </div>
                 ))}
-              </ul>
+              </div>
             ) : (
-              <p>You are not enrolled in any courses yet.</p>
+              <p className="text-gray-600">
+                You are not enrolled in any courses yet.
+              </p>
             )}
           </div>
 
-          {/* Progress Section */}
-          <div className="mb-8">
-            <h3 className="text-xl font-semibold mb-4">My Learnings</h3>
-            <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-6 justify-items-center">
-              {Array(3)
-                .fill(null)
-                .map((_, idx) => (
+          {/* Popular Courses Section */}
+          <div className="mt-4">
+            <h2 className="text-xl font-bold mb-6 text-center">
+              Most Popular Courses
+            </h2>
+            {popularCourses.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {popularCourses.map((course) => (
                   <div
-                    key={idx}
-                    className="bg-white p-4 rounded-xl shadow-lg w-full max-w-xs"
+                    key={course._id}
+                    className="bg-white rounded-xl shadow-lg border p-4 hover:transition-transform hover:scale-105"
                   >
+                    {/* Thumbnail */}
                     <div
-                      className="w-full h-32 bg-gray-300 rounded-md mb-4"
+                      className="w-full h-48 bg-cover bg-center rounded-t-lg mb-4"
                       style={{
-                        background:
-                          "linear-gradient(to right, #4A90E2, #50C878)",
+                        backgroundImage: `url(${
+                          course.introImage || welcomeImage
+                        })`,
                       }}
                     ></div>
-                    <p className="text-lg font-medium text-center">
-                      Course Name
-                    </p>
-                    <p className="text-gray-500 text-sm text-center">
-                      Progress: 90%
-                    </p>
+
+                    {/* Course Details */}
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-gray-800 truncate mb-2">
+                        {course.title}
+                      </h3>
+                      <p className="text-sm text-gray-500 mb-2">
+                        <span className="font-medium">Category:</span>{" "}
+                        {course.category || "N/A"}
+                      </p>
+                      <p className="text-sm text-gray-500 mb-4">
+                        <span className="font-medium">Duration:</span>{" "}
+                        {course.customDuration || "N/A"} {course.durationUnit}
+                      </p>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div>
+                      <button
+                        className="w-full bg-blue-500 text-white py-2 rounded-lg text-sm font-semibold shadow hover:bg-blue-600 transition"
+                        onClick={() =>
+                          navigate(`/user/courseIntro/${course._id}`)
+                        }
+                      >
+                        View Course
+                      </button>
+                    </div>
                   </div>
                 ))}
-            </div>
+              </div>
+            ) : (
+              <p className="text-gray-600 text-center">
+                There is no popular course available at the moment.
+              </p>
+            )}
+          </div>
+
+          <div className="mt-8">
+            <h2 className="text-xl font-bold mb-6 text-center">
+              Recently Added Courses
+            </h2>
+            {recentCourses.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
+                {recentCourses.map((course) => (
+                  <div
+                    key={course._id}
+                    className="bg-white rounded-xl shadow-lg border p-4 hover:transition-transform hover:scale-105 flex flex-col"
+                  >
+                    {/* Thumbnail */}
+                    <div
+                      className="w-full h-48 bg-cover bg-center rounded-t-lg mb-4"
+                      style={{
+                        backgroundImage: `url(${
+                          course.introImage || welcomeImage
+                        })`,
+                      }}
+                    ></div>
+
+                    {/* Course Details */}
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-gray-800 truncate mb-2">
+                        {course.title}
+                      </h3>
+                      <p className="text-sm text-gray-500 mb-2">
+                        <span className="font-medium">Category:</span>{" "}
+                        {course.category || "N/A"}
+                      </p>
+                      <p className="text-sm text-gray-500 mb-4">
+                        <span className="font-medium">Duration:</span>{" "}
+                        {course.customDuration || "N/A"} {course.durationUnit}
+                      </p>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div>
+                      <button
+                        className="w-full bg-custom-red text-white py-2 rounded-lg text-sm font-semibold shadow hover:bg-red-400 transition"
+                        onClick={() =>
+                          navigate(`/user/courseIntro/${course._id}`)
+                        }
+                      >
+                        Explore Course
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 text-center">
+                No recently added courses available at the moment.
+              </p>
+            )}
           </div>
         </div>
 
         {/* Right Sidebar */}
-        <RightBar />
+        {/* <RightBar /> */}
       </div>
     </UserLayout>
   );

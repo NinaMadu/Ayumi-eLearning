@@ -156,3 +156,27 @@ export const addVideoToPlaylist = async (req, res) => {
   }
 };
 
+export const getPopularCourses = async (req, res) => {
+  try {
+    const popularCourses = await Course.find()
+      .sort({ enrolledStudents: -1 }) // Sort by enrolledStudents in descending order
+      .limit(10); // Limit to top 10 courses
+
+    res.status(200).json(popularCourses);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch popular courses", error: err });
+  }
+}
+
+// Controller to get recently added courses
+export const getRecentlyAddedCourses = async (req, res) => {
+  try {
+    const recentCourses = await Course.find()
+      .sort({ createdAt: -1 }) // Sort by newest first
+      .limit(10); // Limit the results
+    res.status(200).json(recentCourses);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch recently added courses" });
+  }
+};
+
