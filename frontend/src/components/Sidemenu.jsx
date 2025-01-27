@@ -34,7 +34,7 @@ const Sidemenu = () => {
     { title: "Favourites", icon: <FaHeart />, path: "/user/favourites" },
     { title: 'Help', icon: <FaQuestionCircle /> },
     { title: 'Courses', icon: <FaBook />, path: '/user/course-cards' },
-    { title: 'Quizzes', icon: <MdLibraryBooks />, path: '/user/all-quizes' }, // Fixed icon
+    { title: 'Quizzes', icon: <MdLibraryBooks />, path: '/user/all-quizes' }, 
     
   ];
 
@@ -129,7 +129,7 @@ const Sidemenu = () => {
             <li
               key={index}
               className={`flex items-center gap-x-4 p-2 font-medium hover:bg-custom-gradient hover:text-white cursor-pointer rounded-md mt-2 ${
-                location.pathname === menu.path ? 'bg-red-500 text-white' : 'text-slate-600'
+                location.pathname === menu.path ? 'bg-custom-gradient text-white' : 'text-slate-600'
               }`}
               onClick={() => handleMenuClick(menu)}
             >
