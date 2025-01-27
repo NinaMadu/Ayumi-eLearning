@@ -195,6 +195,8 @@ export const enrollCourse = async(req,res)=>{
         if(!user.enrolledCourses.includes(courseId)){
             user.enrolledCourses.push(courseId);
             await user.save();
+            course.students.push(userId);
+            await course.save();
 
         }
 
