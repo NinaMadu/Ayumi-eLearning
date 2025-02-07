@@ -1,15 +1,24 @@
 
 import Video from "../models/video.model.js";
-import { storage } from "../firebase/firebaseAdmin.js";
+import { storage } from "../firebase/firebase.js";
+// import multer from "multer";
+import { Upload } from "tus-js-client";
+import { Readable } from "stream";
+
+import { ref, uploadBytesResumable, getDownloadURL  } from 'firebase/storage';
 import axios from 'axios'; 
 // import {  ref , deleteObject } from 'firebase/storage';
 import dotenv from 'dotenv';
+// import multer from 'multer';
 import Course from "../models/course.model.js";
 
 
 dotenv.config();
+// const upload = multer({ dest: 'uploads/' }); 
 
 const accessToken = process.env.VITE_ACCESS_TOKEN;
+
+// const upload = multer();
 
 const headerPost = {
     Accept: 'application/vnd.vimeo.*+json;version=3.4',
@@ -17,36 +26,113 @@ const headerPost = {
     'Content-Type': 'application/json'
 };
 
+export const uploadVideo = async (req, res) => {
+  try {
+      const { title, description, courseId } = req.body;
+      const thumbnailFile = req.files['thumbnail'][0];
+      const videoFile = req.files['video'][0];
 
-export const uploadVideo = async (req,res)=>{
-    try{
-        const {title, description, thumbnailUrl, videoId} = req.body;
+      if (!videoFile) {
+          return res.status(400).json({ message: "No video file provided" });
+      }
 
-        const newVideo = new Video ({
-            title,
-            description,
-            thumbnailUrl,
-            videoId
+     // Step 1: Upload thumbnail to Firebase Storage
+     const thumbnailUrl = await handleUploadThumbnail(thumbnailFile);
 
-        })
+     // Step 2: Upload video to Vimeo
+     const videoId = await handleVideoUpload(videoFile);
 
 
-        await newVideo.save();
+     const video = new Video({
+      title,
+      description,
+      thumbnailUrl,
+      videoId,
+      courseId,
+  });
+  await video.save();
 
-        return res.status(201).json({
-            message: 'Video uploaded successfully',
-            video: newVideo
-        })
+  // console.log(video);
 
-       
+  await Course.findByIdAndUpdate(courseId, { $push: { playlist: videoId } });
 
-    }
-    catch(error){
 
-        console.error('Error uploading video:', error);
-        res.status(500).json({message:'Server error'});
-    }
+
+
+  res.status(200).json({ message: 'Video uploaded successfully', video });
+} catch (error) {
+  console.error('Error uploading video:', error);
+  res.status(500).json({ message: 'Server error during video upload', error });
+}
 };
+
+
+      
+     
+
+async function handleUploadThumbnail(file) {
+  const fileName = `${Date.now()}-${file.originalname}`;
+  const storageRef = ref(storage, `uploads/${fileName}`);
+  const uploadTask = uploadBytesResumable(storageRef, file.buffer);
+
+  return new Promise((resolve, reject) => {
+      uploadTask.on(
+          'state_changed',
+          null,
+          (error) => reject(error),
+          async () => resolve(await getDownloadURL(storageRef))
+      );
+  });
+}
+
+async function handleVideoUpload(file) {
+  const fileSize = file.size.toString();
+
+  // Step 1: Create a video on Vimeo
+  const response = await axios.post(
+      'https://api.vimeo.com/me/videos',
+      { upload: { approach: 'tus', size: fileSize } },
+      { headers: headerPost }
+  );
+
+  const videoUri = response.data.uri;
+  const videoId = videoUri.split('/').pop();
+  const uploadUrl = response.data.upload.upload_link;
+
+  return new Promise((resolve, reject) => {
+    const upload = new Upload(file.buffer, {
+        endpoint: uploadUrl,
+        retryDelays: [0, 3000, 5000, 10000, 20000],
+        metadata: {
+            filename: file.originalname,
+            filetype: file.mimetype,
+        },
+        onError: (error) => {
+            reject(new Error(`Video upload failed: ${error}`));
+        },
+        onProgress: (bytesUploaded, bytesTotal) => {
+            const percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
+            console.log(`${percentage}% uploaded`);
+        },
+        onSuccess: () => {
+            console.log('Video uploaded successfully');
+            resolve(videoId);
+        },
+    });
+
+    upload.start();
+});
+}
+
+
+
+
+
+
+
+
+
+
 
 export const deleteCurrentThumbnail = async (req,res)=>{
     
