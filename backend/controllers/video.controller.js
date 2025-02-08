@@ -71,63 +71,143 @@ export const uploadVideo = async (req, res) => {
      
 
 async function handleUploadThumbnail(file) {
-  const fileName = `${Date.now()}-${file.originalname}`;
+  // const storage = getStorage();
+  console.log("File being uploaded: ", file);
+  if(!file)
+  {
+      console.error("No file was provided for upload");
+      return;
+  }
+
+  const fileName = `${Date.now()}-${file.originalname}`;; 
+  // console.log("File name: ", fileName);
   const storageRef = ref(storage, `uploads/${fileName}`);
   const uploadTask = uploadBytesResumable(storageRef, file.buffer);
 
   return new Promise((resolve, reject) => {
-      uploadTask.on(
-          'state_changed',
-          null,
-          (error) => reject(error),
-          async () => resolve(await getDownloadURL(storageRef))
+      uploadTask.on('state_changed',
+          (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log(`Upload is ${progress}% done`);
+          },
+          (error)=>{
+              console.error("Upload failed", error);
+              reject(error);
+          },
+          
+          () => {
+              getDownloadURL(uploadTask.snapshot.ref)
+              .then((url)=>{
+                      console.log("Thumbnail URL: ", url);
+                      // setThumbnailUploaded(true);
+                      // coso
+                      resolve(url);
+              })
+              .catch((error)=>{
+                  console.error("Failed to get download URL", error);
+                  reject(error);
+              });
+          }
       );
   });
-}
+};
 
 async function handleVideoUpload(file) {
-  const fileSize = file.size.toString();
+  // const file = file;
+    const fileSize = file.size.toString();
+    console.log("videoUpload function");
 
-  // Step 1: Create a video on Vimeo
-  const response = await axios.post(
-      'https://api.vimeo.com/me/videos',
-      { upload: { approach: 'tus', size: fileSize } },
-      { headers: headerPost }
-  );
+    try{
 
-  const videoUri = response.data.uri;
-  const videoId = videoUri.split('/').pop();
-  const uploadUrl = response.data.upload.upload_link;
+        const response = await axios(
+            
+            { 
+    
+                
+                method: 'post',
+                url:`https://api.vimeo.com/me/videos`,
+                headers: headerPost,
+                data:{
+                    upload:{
+                        approach:'tus',
+                        size: fileSize,
+                    }
+               } 
+            }             
+               
+                               
+            
+        );
+    
+        const videoUri = response.data.uri;
+        const videoId = videoUri.split('/').pop();
+    
+        return new Promise((resolve, reject) => {
 
-  return new Promise((resolve, reject) => {
-    const upload = new Upload(file.buffer, {
-        endpoint: uploadUrl,
-        retryDelays: [0, 3000, 5000, 10000, 20000],
-        metadata: {
-            filename: file.originalname,
-            filetype: file.mimetype,
-        },
-        onError: (error) => {
-            reject(new Error(`Video upload failed: ${error}`));
-        },
-        onProgress: (bytesUploaded, bytesTotal) => {
-            const percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
-            console.log(`${percentage}% uploaded`);
-        },
-        onSuccess: () => {
-            console.log('Video uploaded successfully');
-            resolve(videoId);
-        },
-    });
+            const upload = new Upload(Readable.from(file.buffer),{
+                endpoint:'https://api.vimeo.com/me/videos',
+                uploadUrl:response.data.upload.upload_link,
+        
+                retryDelays: [0, 3000, 5000, 10000, 20000],
+                chunkSize: getChunkSize(file.size),
+              metadata: {
+                filename: file.originalname,
+                filetype: file.mimetype
+              },
 
-    upload.start();
-});
-}
+              headers: {},
+              onError: function(error) {
+                console.log('Failed because: ' + error);
+              },
+
+              uploadSize: file.size,
+              onProgress: function(bytesUploaded, bytesTotal) {
+                let percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
+                console.log(bytesUploaded, bytesTotal, percentage + '%');
+                // setPr?ogress(Number(percentage));
+                console.log(Number(percentage));
+              },
+              onSuccess: function() {
+                console.log('Download %s from %s', upload.file.name, upload.url);
+                resolve(videoId);
+                
+              },
+            });
+        
+            
+           upload.start();
+        
+           console.log(videoId);    
+         
+            // setFormData({...formData, videoId});
+        })
+        
+
+
+    } catch(error){
+        console.log(error);
+        throw error;
+    }
+   
+
+        
+    }
 
 
 
 
 
+    function getChunkSize(fileSize) {
+      if (fileSize < 100 * 1024 * 1024) { // If file is less than 100MB
+          return 5242880; // 5MB
+      } else if (fileSize < 500 * 1024 * 1024) { // If file is less than 500MB
+          return 16777216; // 16MB
+      } else if (fileSize < 2 * 1024 * 1024 * 1024) { // If file is less than 2GB
+          return 33554432; // 32MB
+      } else {
+          return 67108864; // 64MB for large videos
+      }
+  }
 
 
 
