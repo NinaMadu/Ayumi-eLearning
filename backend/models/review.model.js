@@ -2,13 +2,7 @@ import mongoose from "mongoose";
 
 const reviewSchema = new mongoose.Schema(
     {
-        user:{
-            type: mongoose.Schema.Types.ObjectId,
-            ref:"User",
-    
-        },
-
-        course:{
+       course:{
             type:mongoose.Schema.Types.ObjectId,
             ref:"Course",  
 
