@@ -14,6 +14,8 @@ const CourseIntro = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [message, setMessage] = useState("");
+  const [reviews, setReviews] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
 
   const navigate = useNavigate();
 
@@ -97,10 +99,35 @@ const CourseIntro = () => {
       }
     };
 
+    const fetchReviews = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/reviews/${id}`
+        );
+        const data = await res.json();
+  
+        if (res.ok) {
+          setReviews(data.reviews || []);
+          if (data.reviews.length > 0) {
+            const totalRating = data.reviews.reduce((sum, review) => sum + review.rating, 0);
+            const avgRating = totalRating / data.reviews.length;
+            setAverageRating(avgRating.toFixed(1)); 
+          } else {
+            setAverageRating("N/A");
+          }
+        } else {
+          console.error("Error fetching course reviews");
+        }
+      } catch (error) {
+        console.error("Error fetching reviews",error);
+      }
+    };
+
     if (id) {
       fetchCourse();
       checkFavStatus();
       checkEnrollmentStatus();
+      fetchReviews();
     } else {
       setError("Course ID is missing");
       setLoading(false);
@@ -389,41 +416,70 @@ const CourseIntro = () => {
             </div>
 
             {/* Statistical Ratings and Reviews */}
-            <div className="mt-10">
-              {/* Average Rating */}
-              <div className="flex items-center space-x-2 text-center">
-                <FaStar className="text-yellow-500" />
-                <p className="text-lg text-gray-700">
-                  <strong>Average Rating:</strong> 4.5 / 5
-                </p>
-              </div>
+<div className="mt-10">
+  {/* Average Rating */}
+  <div className="flex items-center space-x-2 text-center">
+  
+  <p className="text-lg text-gray-700">
+    <strong>Average Rating:</strong> {averageRating} / 5
+  </p>
+</div>
 
-              {/* Star Rating UI */}
-              <div className="flex items-center mt-4 space-x-1">
-                <FaStar className="text-yellow-500" />
-                <FaStar className="text-yellow-500" />
-                <FaStar className="text-yellow-500" />
-                <FaStar className="text-yellow-500" />
-                <FaStar className="text-gray-300" />{" "}
-                {/* Empty star for the 5th rating */}
-              </div>
+  {/* Star Rating UI */}
+  <div className="flex items-center mt-4 space-x-1">
+  {Array.from({ length: 5 }, (_, index) => {
+    const roundedRating = Math.round(averageRating || 0); // Round the rating to nearest integer
 
-              {/* Sample Reviews */}
-              <div className="mt-6">
-                <h3 className="text-2xl font-semibold text-gray-900">
-                  What Students Are Saying...
-                </h3>
+    return (
+      <FaStar
+        key={index}
+        className={
+          index < roundedRating
+            ? "text-yellow-500" // Filled star
+            : "text-gray-300" // Empty star
+        }
+      />
+    );
+  })}
+</div>
 
-                <div className="p-4 mt-4 bg-white rounded-lg shadow-md">
-                  <p className="italic text-gray-700">
-                    "This course exceeded my expectations! The content was
-                    well-structured, and the instructor was highly
-                    knowledgeable."
-                  </p>
-                  <p className="mt-2 text-gray-600">- Student 1</p>
-                </div>
-              </div>
-            </div>
+
+  {/* Reviews Section */}
+  <div className="mt-6">
+  <h3 className="text-2xl font-semibold text-gray-900">
+    What Students Are Saying...
+  </h3>
+
+  {reviews.length > 0 ? (
+    reviews.map((review, index) => (
+      <div key={index} className="p-4 mt-4 bg-white rounded-lg shadow-md">
+        {/* Star Rating for Each Review */}
+        <div className="flex items-center space-x-1">
+          {Array.from({ length: 5 }, (_, starIndex) => (
+            <FaStar
+              key={starIndex}
+              className={
+                starIndex < Math.round(review.rating) 
+                  ? "text-yellow-500"  // Filled star
+                  : "text-gray-300"    // Empty star
+              }
+            />
+          ))}
+        </div>
+
+        {/* Review Content */}
+        <p className="italic text-gray-700 mt-2">"{review.comment}"</p>
+        <p className="mt-2 text-gray-600">- {currentUser.firstName || "anonymous"} {currentUser.lastName}</p>
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-600 mt-4">No reviews yet.</p>
+  )}
+</div>
+
+  
+</div>
+
           </div>
         </div>
       </div>
