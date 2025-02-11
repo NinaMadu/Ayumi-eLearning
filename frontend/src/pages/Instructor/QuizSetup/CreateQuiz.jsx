@@ -48,6 +48,25 @@ const CreateQuiz = () => {
     );
   }
 
+  const handleDelete = async (quizId) => {
+    if (window.confirm('Are you sure you want to delete this quiz?')) {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/quiz/${quizId}`, {
+          method: 'DELETE',
+        });
+        if (res.ok) {
+          setQuizzes((prevQuizzes) => prevQuizzes.filter((quiz) => quiz._id !== quizId));
+          alert('Quiz deleted successfully');
+        } else {
+          const data = await res.json();
+          alert(data.message || 'Failed to delete quiz');
+        }
+      } catch (error) {
+        alert('Error deleting quiz');
+      }
+    }
+  };
+
   return (
     <AdminLayout>
       {/* Add New Quiz Button */}
@@ -92,13 +111,13 @@ const CreateQuiz = () => {
               <div className="flex gap-4 mt-4 sm:mt-0">
                 <button
                   className="text-blue-800 hover:text-blue-600"
-                  onClick={() => navigate()}
+                  onClick={() => navigate(`/instructor/edit-quiz-first/${quiz._id}`)}
                 >
                   <FaEdit size={20} />
                 </button>
                 <button
                   className="text-red-700 hover:text-red-500"
-                  onClick={() => {}}
+                  onClick={() => {handleDelete(quiz._id)}}
                 >
                   <FaTrash size={20} />
                 </button>

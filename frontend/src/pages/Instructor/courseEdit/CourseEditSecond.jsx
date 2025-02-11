@@ -13,7 +13,7 @@ const CourseEditSecond = () => {
   const dispatch = useDispatch();
     const { courseId } = useParams();
 
-  const { state } = useLocation(); // get the course data passed through `state`
+  const { state } = useLocation(); 
   const formData = useSelector((state) => state.course);
 
   // Fetch the course data if not passed through location state

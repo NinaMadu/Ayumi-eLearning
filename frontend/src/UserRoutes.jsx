@@ -27,8 +27,7 @@ const UserRoutes = () => {
         <Route path="/user/favourites" element={<FavoriteCourses />} />
         <Route path='/user/quiz-content/:quizId' element={<QuizContent />} />
         <Route path='/user/add-review/:courseId' element={<Reviews />} />
-
-
+      
       </Route>
     </Routes>
   );
