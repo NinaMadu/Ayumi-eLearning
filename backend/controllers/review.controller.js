@@ -20,9 +20,9 @@ export const addReview = async (req, res) => {
             return res.status(400).json({ message: "Rating must be between 1 and 5" });
         }
 
-        // ✅ Save the review with courseId
+        // save the review with courseId
         const review = new Review({
-            courseId: course._id,  // Ensure it's saved as ObjectId
+            courseId: course._id,
             rating,
             comment,
         });
@@ -35,7 +35,6 @@ export const addReview = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 };
-
 
 export const getCourseReviews = async (req, res) => {
     try {
@@ -52,12 +51,12 @@ export const getCourseReviews = async (req, res) => {
             return res.status(404).json({ message: "Course not found" });
         }
 
-        // ✅ Fetch reviews for this course
-        const reviews = await Review.find({ courseId: courseId }).populate("courseId");
+        // Fetch reviews for this course
+        const reviews = await Review.find({ course: courseId });
 
-        res.status(200).json(reviews);
+        res.status(200).json({ reviews });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Server Error", error });
+        console.error("Error fetching course reviews:", error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 };
