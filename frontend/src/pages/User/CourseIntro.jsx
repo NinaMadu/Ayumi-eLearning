@@ -469,7 +469,7 @@ const CourseIntro = () => {
 
         {/* Review Content */}
         <p className="italic text-gray-700 mt-2">"{review.comment}"</p>
-        <p className="mt-2 text-gray-600">- {currentUser.firstName || "anonymous"} {currentUser.lastName}</p>
+        <p className="mt-2 text-gray-600">- {review.firstName || "anonymous"} {review.lastName}</p>
       </div>
     ))
   ) : (

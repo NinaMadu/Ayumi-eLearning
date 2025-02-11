@@ -4,7 +4,7 @@ import Course from "../models/course.model.js";
 
 export const addReview = async (req, res) => {
     try {
-      const { course, rating, comment } = req.body; // Change `courseId` to `course`
+      const { course, rating, comment, firstName, lastName } = req.body; // Change `courseId` to `course`
   
       // Validate course format
       if (!mongoose.Types.ObjectId.isValid(course)) {
@@ -25,6 +25,8 @@ export const addReview = async (req, res) => {
         course, // Change `courseId` to `course`
         rating,
         comment,
+        firstName, 
+        lastName
       });
   
       await review.save();
