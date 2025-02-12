@@ -130,17 +130,23 @@ export const deleteCourse = async (req, res) => {
 export const addVideoToPlaylist = async (req, res) => {
   try {
     const { id } = req.params; // Course ID
-    const { videoId } = req.body;
+    const { videoId ,title, videoDuration } = req.body;
 
     // Validate the videoId
-    if (!videoId) {
+    if (!videoId || !videoDuration) {
       return res.status(400).json({ message: "Video ID is required" });
     }
 
     // Find the course and update its playlist
     const updatedCourse = await Course.findByIdAndUpdate(
       id,
-      { $addToSet: { playlist: videoId } }, // Prevent duplicates in the playlist
+      { $addToSet: {
+         playlist: {
+          videoId,
+          title,
+          videoDuration 
+         },
+         } }, // Prevent duplicates in the playlist
       { new: true } // Return the updated course
     );
 

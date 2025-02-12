@@ -262,7 +262,9 @@ export const updateVideo = async (req, res) => {
         return res.status(404).json({message:'Course not found'});
       }
 
-      const playlist = course.playlist.filter((id)=>id.trim() !== '');
+      const validplaylist = course.playlist.filter((video)=>video.videoId && video.videoId.trim() !== '');
+      
+      const playlist = validplaylist.map((video)=>video.videoId);
       
       const videos = await Video.find({videoId:{$in:playlist}});
       res.status(200).json({

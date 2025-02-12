@@ -67,9 +67,23 @@ const courseSchema = new mongoose.Schema({
     courseMaterial:{
         type: [String],
     },
-    playlist:{
-        type: [String],        
-    },
+    playlist:[
+        {
+            videoId:{
+                type: String,
+                required:true,
+            },
+            title:{
+                type:String,
+            },
+            videoDuration:{
+                type:Number,
+                required:true,
+            }
+
+        }
+    ],           
+    
     enrolledStudents:{
         type:Number,
         default: 0
