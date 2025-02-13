@@ -1,81 +1,128 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import AdminLayout from '../../../components/AdminLayout';
-import { useSelector, useDispatch } from 'react-redux';
-import { resetQuizData, updateQuizData } from '../../../redux/quizSlice';
-import axios from 'axios';
-import useCancelConfirmation from "../../../hooks/useCancelConfirmation";
+import React, { useState, useEffect } from "react";
+import {
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/20/solid";
+import { useNavigate, Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addQuestion,
+  updateQuestion,
+  deleteQuestion,
+  resetQuizData,
+  setQuestions,
+} from "../../../redux/quizSlice";
+import axios from "axios"; // Import axios for API calls
+import AdminLayout from "../../../components/AdminLayout";
 
 const QuizSecondEditPage = () => {
-  const { triggerCancel, confirmationBox } = useCancelConfirmation();
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    questionType: "",
+    questionText: "",
+    answers: [],
+    correctAnswer: "",
+    marks: "",
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
+
   const dispatch = useDispatch();
-  const { quizId } = useParams();
+  const { quizId } = useParams(); // Get quizId from the URL
+  const questions = useSelector((state) => state.quiz.questions || []);
+  const navigate = useNavigate();
 
-  const { state } = useLocation();
-  const formData = useSelector((state) => state.quiz); // Access quiz data from Redux store
-
+  // Fetch quiz data when the component mounts
   useEffect(() => {
-    if (state) {
-      dispatch(resetQuizData(state)); // Pre-fill with passed data
-    } else if (formData._id) {
-      const fetchQuizData = async () => {
-        try {
-          const response = await axios.get(`http://localhost:5000/api/quiz/${formData._id}`);
-          dispatch(updateQuizData(response.data.quiz)); // Dispatch to store if the quizId exists
-        } catch (error) {
-          console.error('Error fetching quiz data:', error);
-        }
-      };
-      fetchQuizData();
-    }
-  }, [state, formData._id, dispatch]);
+    const fetchQuizData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/quiz/${quizId}`);
+        dispatch(setQuestions(response.data.quiz.questions || [])); // Set questions in Redux
+      } catch (error) {
+        console.error("Error fetching quiz data:", error);
+      }
+    };
+
+    fetchQuizData();
+  }, [quizId, dispatch]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    dispatch(resetQuizData({ ...formData, [id]: value })); // Update formData in Redux
+    setFormData({ ...formData, [id]: value });
+  };
+
+  const handleSaveQuestion = () => {
+    // Ensure question type and text are provided
+    if (!formData.questionText.trim() || !formData.questionType.trim()) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    // Validation for multipleChoice questions
+    if (formData.questionType === "multipleChoice") {
+      if (formData.answers.length === 0) {
+        alert("Please add at least one answer for multiple-choice questions.");
+        return;
+      }
+
+      if (!formData.correctAnswer) {
+        alert("Please specify the correct answer.");
+        return;
+      }
+    }
+
+    // Validation for shortAnswer questions
+    if (formData.questionType === "shortAnswer" && !formData.correctAnswer) {
+      alert("Please specify the correct answer for short answer question.");
+      return;
+    }
+
+    // Save or update the question
+    if (isEditing) {
+      dispatch(updateQuestion({ index: editIndex, question: formData }));
+      setIsEditing(false);
+      setEditIndex(null);
+    } else {
+      dispatch(addQuestion(formData));
+    }
+
+    // Reset form data after saving
+    setFormData({
+      questionType: "",
+      questionText: "",
+      answers: [],
+      correctAnswer: "",
+      marks: "",
+    });
+  };
+
+  const handleEditQuestion = (index) => {
+    setFormData(questions[index]);
+    setIsEditing(true);
+    setEditIndex(index);
+  };
+
+  const handleDeleteQuestion = (index) => {
+    dispatch(deleteQuestion(index));
+  };
+
+  const handleCancel = () => {
+    dispatch(resetQuizData());
+    navigate("/instructor/create-quiz");
+  };
+
+  const addAnswer = () => {
+    setFormData({
+      ...formData,
+      answers: [...formData.answers, ""],
+    });
   };
 
   const handleAnswerChange = (index, e) => {
     const updatedAnswers = [...formData.answers];
     updatedAnswers[index] = e.target.value;
-    dispatch(resetQuizData({ ...formData, answers: updatedAnswers }));
-  };
-
-  const addAnswer = () => {
-    const updatedAnswers = [...formData.answers, ''];
-    dispatch(resetQuizData({ ...formData, answers: updatedAnswers }));
-  };
-
-  const handleSaveQuestion = () => {
-    if (formData._id) {
-      // Update existing question (replace with your API call to save changes)
-      axios.put(`http://localhost:5000/api/quiz/${formData._id}`, formData)
-        .then(response => {
-          alert('Question updated successfully!');
-          navigate(`/instructor/edit-quiz-third/${quizId}`, { state: formData });
-        })
-        .catch(err => console.error('Error updating question:', err));
-    } else {
-      // Save new question (replace with your API call to save the question)
-      axios.post('http://localhost:5000/api/quiz', formData)
-        .then(response => {
-          alert('Question saved successfully!');
-          navigate(`/instructor/edit-quiz-third/${quizId}`, { state: formData });
-        })
-        .catch(err => console.error('Error saving question:', err));
-    }
-  };
-
-  const handleNext = () => {
-    console.log(formData);
-    navigate(`/instructor/edit-quiz-third/${quizId}`, { state: formData });
-  };
-
-  const handleBack = () => {
-    console.log(formData);
-    navigate(`/instructor/edit-quiz-first/${quizId}`, { state: formData });
+    setFormData({ ...formData, answers: updatedAnswers });
   };
 
   return (
@@ -86,7 +133,7 @@ const QuizSecondEditPage = () => {
             <h1 className="text-3xl font-semibold">Step 02</h1>
             <button
               className="border p-2 bg-red-600 text-white font-medium rounded-lg"
-              onClick={triggerCancel}
+              onClick={handleCancel}
             >
               Cancel Process
             </button>
@@ -97,7 +144,7 @@ const QuizSecondEditPage = () => {
             <h1
               className="mb-6 text-xl font-medium border-2 rounded-lg p-3 text-white justify-center flex"
               style={{
-                background: "linear-gradient(to right, #D16262, #C53B3B)"
+                background: "linear-gradient(to right, #D16262, #C53B3B)",
               }}
             >
               Questions Setup
@@ -112,7 +159,7 @@ const QuizSecondEditPage = () => {
                   id="questionType"
                   className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
                   onChange={handleChange}
-                  value={formData.questionType || ''}
+                  value={formData.questionType}
                 >
                   <option value="">Select Type</option>
                   <option value="multipleChoice">Multiple Choice</option>
@@ -130,10 +177,9 @@ const QuizSecondEditPage = () => {
                   id="questionText"
                   className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
                   onChange={handleChange}
-                  value={formData.questionText || ''}
+                  value={formData.questionText}
                 />
               </div>
-
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
                 <label className="col-span-1">Marks:</label>
                 <input
@@ -141,21 +187,23 @@ const QuizSecondEditPage = () => {
                   id="marks"
                   className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
                   onChange={handleChange}
-                  value={formData.marks || ''}
+                  value={formData.marks || ""}
                 />
               </div>
 
               {formData.questionType === "multipleChoice" &&
-                formData.answers?.map((answer, index) => (
+                formData.answers.map((answer, index) => (
                   <div
                     key={index}
                     className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4"
                   >
-                    <label className="col-span-1 whitespace-nowrap">{`Answer ${index + 1}:`}</label>
+                    <label className="col-span-1 whitespace-nowrap">{`Answer ${
+                      index + 1
+                    }:`}</label>
                     <input
                       type="text"
                       className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
-                      value={answer || ''}
+                      value={answer}
                       onChange={(e) => handleAnswerChange(index, e)}
                     />
                   </div>
@@ -182,7 +230,7 @@ const QuizSecondEditPage = () => {
                     id="correctAnswer"
                     className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
                     onChange={handleChange}
-                    value={formData.correctAnswer || ''}
+                    value={formData.correctAnswer}
                   >
                     <option value="">Select Answer</option>
                     <option value="True">True</option>
@@ -191,6 +239,7 @@ const QuizSecondEditPage = () => {
                 </div>
               )}
 
+              {/* Correct Answer for Multiple Choice */}
               {formData.questionType === "multipleChoice" && (
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
                   <label className="col-span-1 whitespace-nowrap">
@@ -200,10 +249,10 @@ const QuizSecondEditPage = () => {
                     id="correctAnswer"
                     className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
                     onChange={handleChange}
-                    value={formData.correctAnswer || ''}
+                    value={formData.correctAnswer}
                   >
                     <option value="">Select Correct Answer</option>
-                    {formData.answers?.map((answer, index) => (
+                    {formData.answers.map((answer, index) => (
                       <option key={index} value={answer}>
                         {answer}
                       </option>
@@ -212,6 +261,7 @@ const QuizSecondEditPage = () => {
                 </div>
               )}
 
+              {/* Correct Answer for Short Answer */}
               {formData.questionType === "shortAnswer" && (
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4">
                   <label className="col-span-1 whitespace-nowrap">
@@ -222,7 +272,7 @@ const QuizSecondEditPage = () => {
                     id="correctAnswer"
                     className="col-span-3 p-2 border border-slate-200 rounded-lg w-full"
                     onChange={handleChange}
-                    value={formData.correctAnswer || ''}
+                    value={formData.correctAnswer}
                   />
                 </div>
               )}
@@ -230,26 +280,74 @@ const QuizSecondEditPage = () => {
               <div className="flex justify-end">
                 <button
                   type="button"
-                  className="bg-blue-800 font-semibold text-white py-2 px-6 rounded-lg"
+                  className="bg-blue-800  font-semibold text-white py-2 px-6 rounded-lg"
                   onClick={handleSaveQuestion}
                 >
-                  Save Question
+                  {isEditing ? "Update Question" : "Save Question"}
                 </button>
               </div>
             </form>
           </div>
 
+          {/* Saved Questions */}
+          <div className="my-6">
+            <h2 className="text-xl font-semibold mb-4">Saved Questions</h2>
+            {questions.length === 0 ? (
+              <p>No questions have been saved yet.</p>
+            ) : (
+              questions.map((question, index) => (
+                <div
+                  key={index}
+                  className="border p-4 rounded-lg shadow-md flex justify-between items-center"
+                >
+                  <div>
+                    <h3 className="font-medium">{`Question ${index + 1}: ${
+                      question.questionText
+                    }`}</h3>
+                    <p>{`Type: ${question.questionType}`}</p>
+                    {question.answers.length > 0 && (
+                      <ul className="list-disc pl-5">
+                        {question.answers.map((answer, i) => (
+                          <li key={i}>{answer}</li>
+                        ))}
+                      </ul>
+                    )}
+                    <p>{`Correct Answer: ${question.correctAnswer}`}</p>
+                    <p className="text-gray-500">Marks: {question.marks}</p>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      className="text-blue-700"
+                      onClick={() => handleEditQuestion(index)}
+                    >
+                      <PencilIcon className="h-5 w-5" />
+                    </button>
+                    <button
+                      className="text-red-500"
+                      onClick={() => handleDeleteQuestion(index)}
+                    >
+                      <TrashIcon className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
           {/* Navigation */}
           <div className="flex justify-between mt-6">
-            <button onClick={handleBack} className="bg-gray-400 text-white p-2 rounded-full shadow-lg flex pr-4">
-              <ChevronLeftIcon className="h-6 w-6" />
-              <p>Back</p>
-            </button>
+            <Link to={`/instructor/edit-quiz-first/${quizId}`}>
+              <div className="bg-gray-400 text-white p-2 rounded-full shadow-lg flex pr-4">
+                <ChevronLeftIcon className="h-6 w-6" />
+                <p>Back</p>
+              </div>
+            </Link>
 
-            <button onClick={handleNext} className="bg-gray-400 text-white p-2 pl-4 rounded-full shadow-lg flex">
-              <p>Next</p>
-              <ChevronRightIcon className="h-6 w-6" />
-            </button>
+            <Link to={`/instructor/edit-quiz-third/${quizId}`}>
+              <div className="bg-gray-400 text-white p-2 pl-4 rounded-full shadow-lg flex">
+                <p>Next</p>
+                <ChevronRightIcon className="h-6 w-6" />
+              </div>
+            </Link>
           </div>
         </div>
       </div>

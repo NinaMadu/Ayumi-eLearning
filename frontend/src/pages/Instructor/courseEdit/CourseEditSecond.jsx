@@ -52,6 +52,9 @@ const CourseEditSecond = () => {
     navigate(`/instructor/edit-course-first/${courseId}`, { state: formData });
   };
 
+  const handleSaveQuestion=()=>{
+    console.log("Question saved!");
+  }
   return (
     <AdminLayout>
       {confirmationBox}
