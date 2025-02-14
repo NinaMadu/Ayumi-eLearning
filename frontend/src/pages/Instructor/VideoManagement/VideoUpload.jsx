@@ -215,19 +215,38 @@ export default function VideoUpload() {
         
     };
     
-    const getDuration = async (videoId) => {
-        try {
-          const response = await axios.get(`https://api.vimeo.com/videos/${videoId}`, {
-            headers: headerPost,
-          });
-          const duration = response.data.duration;
-          console.log('Video duration:', duration);
-          return duration;
-        } catch (error) {
-          console.error('Error fetching video duration:', error);
-          return null;
+    const getDuration = async (videoId, maxRetries = 15, interval = 5000) => {
+        for (let i = 0; i < maxRetries; i++) {
+          try {
+            const response = await axios.get(`https://api.vimeo.com/videos/${videoId}`, {
+              headers: headerPost,
+            });
+      
+            const videoData = response.data;
+            console.log(`Attempt ${i + 1} - Video data:`, videoData);
+      
+            if (videoData.transcode.status === 'complete') {
+              console.log('Video transcode complete. Duration:', videoData.duration);
+              return videoData.duration;
+            } else {
+              console.log(
+                `Video still processing... Status: ${videoData.status}, Transcode: ${videoData.transcode.status}, Duration: ${videoData.duration}`
+              );
+            }
+          } catch (error) {
+            console.error(`Attempt ${i + 1} - Error fetching video duration:`, error.response?.data || error.message);
+          }
+      
+          // Wait before retrying
+          await new Promise((resolve) => setTimeout(resolve, interval));
         }
+      
+        console.error('Video duration could not be fetched after retries.');
+        return null;
       };
+      
+
+
 
 
     const handleSubmit = async () => {
@@ -239,7 +258,7 @@ export default function VideoUpload() {
                 const thumbnailUrl = await handleUploadThumbnail(thumbnailFile);
                 console.log("Thumbnail URL:",thumbnailUrl);
                 //video upload here
-                const {videoId} = await handleVideoUpload(videoFile);
+                const videoId = await handleVideoUpload(videoFile);
                 
 
                 // console.log("Video ID:",videoId);
