@@ -348,19 +348,21 @@ const CourseIntro = () => {
                   }
                 >
                   <div className="flex items-center w-full">
-                    <p className="text-[16px] font-semibold w-full text-center">
-                      {course.enrollmentOptions === "free" ? (
-                        <span className="font-bold">Free Course</span>
-                      ) : (
-                        <>
-                          <span className="font-bold">Paid Course</span>-{" "}
-                          {parseFloat(
-                            course.customPrice.$numberDecimal
-                          ).toFixed(2)}{" "}
-                          {course.priceUnit}
-                        </>
-                      )}
-                    </p>
+                  <p className="text-[16px] font-semibold w-full text-center">
+  {course.enrollmentOptions === "free" ? (
+    <span className="font-bold">Free Course</span>
+  ) : (
+    <span 
+      className="font-bold cursor-pointer text-blue-600 " 
+      onClick={() => navigate(`/user/payment`)}
+    >
+      Paid Course
+    </span>
+  )}{" "}
+  {course.enrollmentOptions !== "free" &&
+    `${parseFloat(course.customPrice.$numberDecimal).toFixed(2)} ${course.priceUnit}`}
+</p>
+
                   </div>
                 </div>
               </div>

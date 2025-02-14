@@ -10,6 +10,7 @@ import AllQuizes from './pages/User/AllQuizes';
 import CourseContent from './pages/User/CourseContent';
 import FavoriteCourses from './pages/User/Favorites';
 import QuizContent from './pages/User/QuizContent';
+import Payment from './components/Payment';
 
 
 const UserRoutes = () => {
@@ -25,6 +26,7 @@ const UserRoutes = () => {
         <Route path="/user/video/:videoId" element={<UserVideoPreview/>}/>
         <Route path="/user/favourites" element={<FavoriteCourses />} />
         <Route path='/user/quiz-content/:quizId' element={<QuizContent />} />
+        <Route path='/user/payment' element={<Payment />} />
 
       </Route>
     </Routes>
