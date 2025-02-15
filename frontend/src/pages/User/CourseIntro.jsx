@@ -354,7 +354,7 @@ const CourseIntro = () => {
   ) : (
     <span 
       className="font-bold cursor-pointer text-blue-600 " 
-      onClick={() => navigate(`/user/payment`)}
+      onClick={() => navigate(`/user/courseIntro/${id}/payment`)}
     >
       Paid Course
     </span>

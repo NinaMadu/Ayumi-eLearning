@@ -26,7 +26,7 @@ const UserRoutes = () => {
         <Route path="/user/video/:videoId" element={<UserVideoPreview/>}/>
         <Route path="/user/favourites" element={<FavoriteCourses />} />
         <Route path='/user/quiz-content/:quizId' element={<QuizContent />} />
-        <Route path='/user/payment' element={<Payment />} />
+        <Route path='/user/courseIntro/:id/payment' element={<Payment />} />
 
       </Route>
     </Routes>
