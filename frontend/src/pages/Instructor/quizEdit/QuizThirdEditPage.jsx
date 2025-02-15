@@ -11,6 +11,7 @@ import {
   updateMarkPoint,
   setDuration,
   setQuestions,
+  updateQuestion,
 } from "../../../redux/quizSlice";
 import axios from "axios";
 import useCancelConfirmation from "../../../hooks/useCancelConfirmation";
@@ -39,7 +40,7 @@ const QuizThirdEditPage = () => {
 
         // Populate Redux state with fetched quiz data
         dispatch(updateQuizData(quiz.quizData));
-        dispatch(setQuestions(quiz.questions || []));
+        dispatch(updateQuestion(quiz.questions || []));
         dispatch(setTotalMarks(quiz.totalMarks || 0));
         dispatch(setPassingScore(quiz.passingScore || 0));
         dispatch(setDuration(quiz.duration || 0));

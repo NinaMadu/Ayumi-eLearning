@@ -34,6 +34,7 @@ import AdminHome from './components/AdminHome';
 import QuizFirstEditPage from './pages/Instructor/quizEdit/QuizFirstEditPage';
 import QuizSecondEditPage from './pages/Instructor/quizEdit/QuizSecondEditPage';
 import QuizThirdEditPage from './pages/Instructor/quizEdit/QuizThirdEditPage';
+import Statistics from './pages/Instructor/Statistics';
 
 
 const InstructorRoutes = () => {
@@ -70,6 +71,7 @@ const InstructorRoutes = () => {
         <Route path="/instructor/edit-quiz-first/:quizId" element={<QuizFirstEditPage/>} />
         <Route path="/instructor/edit-quiz-second/:quizId" element={<QuizSecondEditPage/>} />
         <Route path="/instructor/edit-quiz-third/:quizId" element={<QuizThirdEditPage/>} />
+        <Route path="/instructor/statistics" element={<Statistics/>} />
         
 
 

@@ -23,7 +23,7 @@ const QuizSecondEditPage = () => {
     questionText: "",
     answers: [],
     correctAnswer: "",
-    marks: "",
+   
   });
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);

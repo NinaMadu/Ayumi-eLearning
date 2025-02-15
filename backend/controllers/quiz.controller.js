@@ -111,7 +111,13 @@ export const editQuiz = async (req, res) => {
       duration,
       totalMarks,
       passingScore, 
-      questions 
+      questions:{
+        questionText,
+        questionType,
+        answers,
+        correctAnswer,
+        marks
+      } 
     } = req.body;
 
     const updatedQuiz = await Quiz.findByIdAndUpdate(id, {
@@ -122,7 +128,13 @@ export const editQuiz = async (req, res) => {
       duration,
       totalMarks,
       passingScore,
-      questions,
+      questions:{
+        questionText,
+        questionType,
+        answers,
+        correctAnswer,
+        marks
+      },
     }, { new: true });
     if(!updatedQuiz){
       return res.status(404).json({ message: "Quiz not found" });
