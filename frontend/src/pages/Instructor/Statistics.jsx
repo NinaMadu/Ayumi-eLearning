@@ -1,75 +1,69 @@
 import React, { useEffect, useState } from "react";
-import AdminLayout from '../../components/AdminLayout';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import AdminLayout from "../../components/AdminLayout";
+import { Line } from "react-chartjs-2"; // If you're using Line chart
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
 
-// Register the chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale, 
+  LinearScale, 
+  PointElement,    // Register PointElement
+  LineElement,     // Register LineElement (if you're using a Line chart)
+  Title, 
+  Tooltip, 
+  Legend
+);
 
 const Statistics = () => {
-  const [error, setError] = useState(null);
+  const [userData, setUserData] = useState([]);
+  const [months, setMonths] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [userCount, setUserCount] = useState(0);
-  const [courseCount, setCourseCount] = useState(0);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchUserCount = async () => {
+    const fetchMonthlyUserSignups = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/count`);
-        const data = await response.json();
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/monthly-signups`);
+        const result = await response.json();
+
+        console.log("API Response:", result);
 
         if (response.ok) {
-          setUserCount(data.userCount);
+          const data = result.data;
+          const formattedMonths = data.map((entry) => {
+            const date = new Date(entry.year, entry.month - 1); // Month is 0-based
+            return date.toLocaleString("default", { month: "short", year: "numeric" });
+          });
+
+          setUserData(data.map((entry) => entry.userCount));
+          setMonths(formattedMonths);
         } else {
-          setError(data.message || 'Failed to fetch user count');
+          setError(result.message || "Failed to fetch monthly signups");
         }
       } catch (err) {
-        setError('Error fetching user count');
+        console.error("Fetch Error:", err);
+        setError(err.message || "Error fetching monthly signups");
       } finally {
         setLoading(false);
       }
     };
-    fetchUserCount();
+
+    fetchMonthlyUserSignups();
   }, []);
 
-  useEffect(() => {
-    const fetchCourseCount = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/course/count`);
-        const data = await response.json();
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
-        if (response.ok) {
-          setCourseCount(data.courseCount);
-        } else {
-          setError(data.message || 'Failed to fetch course count');
-        }
-      } catch (err) {
-        setError('Error fetching course count');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCourseCount();
-  }, []);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-
-  // Data for the chart
   const chartData = {
-    labels: ['Users', 'Courses'],
+    labels: months,
     datasets: [
       {
-        label: 'Count',
-        data: [userCount, courseCount],
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
+        label: "User Signups",
+        data: userData,
+        borderColor: "rgba(54, 162, 235, 1)",
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        fill: true,  // Fill area under the line (for Line chart)
+        tension: 0.4, // Makes the line smooth
       },
     ],
   };
@@ -79,7 +73,7 @@ const Statistics = () => {
     plugins: {
       title: {
         display: true,
-        text: 'Statistics Overview',
+        text: "User Signups Per Month",
       },
     },
     scales: {
@@ -94,7 +88,7 @@ const Statistics = () => {
       <div>
         <h1 className="text-3xl font-semibold mb-4">Statistics</h1>
         <div className="mb-8">
-          <Bar data={chartData} options={chartOptions} />
+          <Line data={chartData} options={chartOptions} />
         </div>
       </div>
     </AdminLayout>
