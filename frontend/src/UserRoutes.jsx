@@ -22,7 +22,7 @@ const UserRoutes = () => {
         <Route path="/user/all-quizes" element={<AllQuizes />} />
         <Route path="/user/courseIntro/:id" element={<CourseIntro />}/>
         <Route path="/user/course-content/:courseId" element={<CourseContent />} />
-        <Route path="/user/video/:videoId" element={<UserVideoPreview/>}/>
+        <Route path="/user/course/:courseId/video/:videoId" element={<UserVideoPreview/>}/>
         <Route path="/user/favourites" element={<FavoriteCourses />} />
         <Route path='/user/quiz-content/:quizId' element={<QuizContent />} />
 

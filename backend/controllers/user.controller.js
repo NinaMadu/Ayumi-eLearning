@@ -1,5 +1,6 @@
 import Course from "../models/course.model.js";
 import User from "../models/user.model.js";
+import UserProgress from "../models/userProgress.model.js";
 
 
 // Retrieve all users
@@ -248,4 +249,146 @@ export const getUserEnroll = async (req,res)=>{
         console.error(error);
         res.status(500).json({message:"Error fetching enrolled courses"});
     }
+}
+
+
+export const calculateCourseProgress = async (req,res)=>{
+
+    const {userId,courseId} = req.params;
+    try{
+
+        const course = await Course.findById(courseId);
+        if(!course) 
+        {
+            return res.status(401).json({message:"Course not found"});
+        }
+
+        //calculate total duration
+        const totalDuration = course.playlist.reduce((sum,video)=> sum+video.videoDuration,0);
+
+
+        //userProgress
+        const userProgress = await UserProgress.findOne({userId,courseId});
+        if(!userProgress)//no progress yet
+        {
+            return res.status(200).json({message:"No progress found"});
+        }
+
+
+        //calculate watched duration
+        const watchedDuration = userProgress.watchedVideos.reduce((sum, video)=>sum+video.watchedTime,0);
+
+        //calculate progress percentage
+        const progress = (watchedDuration/totalDuration)*100;
+
+        res.status(200).json({progress});
+
+
+    }
+    catch(error){
+        // console.error("Error calculating progress: ",error.message);
+        res.status(500).json({message:"Failed to calculate progress"});
+
+    }
+}
+
+
+export const getUserProgress = async (req,res)=>{
+    // serProgress/:userId/:courseId/:videoId
+    const {userId,courseId,videoId} = req.params;
+    try{
+        const userProgress = await UserProgress.findOne({
+            userId,
+            courseId
+        });
+
+        if(!userProgress){
+            return res.status(401).json({
+                message:"No progress found",
+                watchedTime:0,
+            });
+        };
+
+        const videoProgress = userProgress.watchedVideos.find(video=>video.videoId === videoId);
+        if(!videoProgress){
+            return res.status(401).json({
+                message:"No progress found",
+                watchedTime:0,
+            });
+        };
+
+        return res.status(200).json({  
+            message:"Progress fetched successfully",
+            watchedTime:videoProgress.watchedTime
+         })
+
+
+    }
+    catch(error){
+        console.error("Error fetching progress: ",error.message);
+        res.status(500).json({message:"Failed to fetch progress"});
+
+    }
+
+
+};
+    
+
+
+export const updateUserProgress = async (req,res)=>{
+
+    const {videoId, userId, courseId, watchedTime} = req.body;
+
+    try{
+        let userProgress = await UserProgress.findOne({
+            userId, 
+            courseId
+        });
+
+        if(!userProgress){
+            userProgress = new UserProgress({
+                userId,
+                courseId,
+                watchedVideos:[{
+                    videoId,
+                    watchedTime,
+                }]
+            });
+        }
+        else{
+            const videoIndex = userProgress.watchedVideos.findIndex((v)=>v.videoId===videoId);
+            if(videoIndex > -1)
+            {
+                if(watchedTime> userProgress.watchedVideos[videoIndex].watchedTime)
+                {
+                    userProgress.watchedVideos[videoIndex].watchedTime = watchedTime;
+
+                }
+                else{
+                    userProgress.watchedVideos.push({
+                        videoId,
+                        watchedTime
+                    });
+                }
+
+            }
+
+            
+        
+        
+        }
+        await userProgress.save();
+            res.status(200).json({
+                message:"Progress updated successfully"
+            });
+
+    }
+    catch(error){
+        console.error("Error updating progress: ",error.message);
+        res.status(500).json({message:"Failed to update progress"});
+
+    }
+
+   
+
 }

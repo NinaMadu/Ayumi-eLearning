@@ -40,6 +40,7 @@ app.use('/api/profile', userDetailRoutes);
 app.use('/api/instructorProfile', instructorDetailRoutes);
 app.use('/api/instructor', instructorRoutes);
 
+
  // Use user routes
 
 const PORT = process.env.PORT || 5000;

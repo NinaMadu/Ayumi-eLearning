@@ -1,5 +1,6 @@
 import express from "express";
-import { deactivateUser, deleteUser,  getAllUsers, getUserById, totalUsers, activateUser, getOnlineUsers, addFavourite, removeFavourite, getUserFavo, enrollCourse, getUserEnroll, removeEnroll} from "../../controllers/user.controller.js";
+import { deactivateUser, deleteUser,  getAllUsers, getUserById, totalUsers, activateUser, getOnlineUsers, addFavourite, removeFavourite, getUserFavo, enrollCourse, getUserEnroll, removeEnroll, calculateCourseProgress, getUserProgress, updateUserProgress} from "../../controllers/user.controller.js";
+// import { get } from "mongoose";
 
 
 const router = express.Router();
@@ -17,7 +18,9 @@ router.get('/user/:userId/favorites',getUserFavo);
 router.post('/user/:userId/enroll/:courseId',enrollCourse);
 router.get('/user/:userId/enrolled-courses',getUserEnroll);
 router.delete('/user/:userId/enroll/:courseId',removeEnroll);
-
+router.get('/user/:userId/course/:courseId/progress',calculateCourseProgress);
+router.get('/userProgress/:userId/:courseId/:videoId',getUserProgress);
+router.post('/userProgressUpdate',updateUserProgress);
 
 
 
