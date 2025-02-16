@@ -268,7 +268,7 @@ const Statistics = () => {
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Average Ratings Per Course</h2>
            
   <table className="min-w-full bg-white rounded-xl overflow-hidden shadow-md">
-    <thead className="bg-gradient-to-r from-blue-800 to-blue-500">
+    <thead className="bg-gradient-to-r from-slate-400 to-slate-500">
       <tr>
         <th className="px-8 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
           Course Name
