@@ -25,8 +25,8 @@ export const getMessagesByCourse = async (req, res) => {
       const { courseId } = req.params;
   
       const messages = await Discussion.find({ course: courseId })
-        .populate("user", "name email")
-        .populate("replies.user", "name email")
+        .populate("user", "firstName email avatar")
+        .populate("replies.user", "firstName email avatar")
         .sort({ createdAt: 1 });
   
       res.status(200).json({ success: true, messages });
@@ -48,7 +48,7 @@ export const replyToMessage = async (req, res) => {
           $push: { replies: { user: userId, message } },
         },
         { new: true }
-      ).populate("replies.user", "name email");
+      ).populate("replies.user", "firstName email avatar");
   
       if (!updatedMessage) {
         return res.status(404).json({ success: false, message: "Message not found" });
