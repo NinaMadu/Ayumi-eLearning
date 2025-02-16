@@ -55,10 +55,14 @@ const CourseContent = () => {
           axios.get(`${API_BASE_URL}/api/course/${courseId}`),
           axios.get(`${API_BASE_URL}/api/courses/${courseId}/videos`),
           axios.get(`${API_BASE_URL}/api/users/user/${userId}/course/${courseId}/progress`),
+          
+        
         ]);
         setCourse(courseRes.data.course);
         setVideos(videosRes.data.videos);
         console.log("Response:",progressRes);
+        setProgress(progressRes.data.progress);
+        console.log("Progress:",progress);
       } catch (err) {
         setError("Error fetching course details or videos");
       } finally {

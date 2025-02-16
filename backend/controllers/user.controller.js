@@ -264,14 +264,32 @@ export const calculateCourseProgress = async (req,res)=>{
         }
 
         //calculate total duration
-        const totalDuration = course.playlist.reduce((sum,video)=> sum+video.videoDuration,0);
+
+        const totalDuration = course.playlist.reduce((sum,video)=> {
+            if(typeof video === 'object' && video.videoDuration)
+            {
+                return sum+video.videoDuration;
+            }
+
+            return sum;
+        },0);
+
+        if (totalDuration === 0) {
+            return res.status(200).json({
+                message: "No valid videos with duration found in the course playlist.",
+                progress: 0,
+                totalDuration,
+                watchedDuration: 0,
+            });
+        }
 
 
         //userProgress
         const userProgress = await UserProgress.findOne({userId,courseId});
         if(!userProgress)//no progress yet
         {
-            return res.status(200).json({message:"No progress found"});
+            const progress = 0;
+            return res.status(200).json({message:"No progress found",progress});
         }
 
 
@@ -281,7 +299,7 @@ export const calculateCourseProgress = async (req,res)=>{
         //calculate progress percentage
         const progress = (watchedDuration/totalDuration)*100;
 
-        res.status(200).json({progress});
+        res.status(200).json({watchedDuration,totalDuration,progress});
 
 
     }
@@ -359,18 +377,19 @@ export const updateUserProgress = async (req,res)=>{
             const videoIndex = userProgress.watchedVideos.findIndex((v)=>v.videoId===videoId);
             if(videoIndex > -1)
             {
-                if(watchedTime> userProgress.watchedVideos[videoIndex].watchedTime)
+                if(watchedTime > userProgress.watchedVideos[videoIndex].watchedTime)
                 {
                     userProgress.watchedVideos[videoIndex].watchedTime = watchedTime;
 
                 }
-                else{
-                    userProgress.watchedVideos.push({
-                        videoId,
-                        watchedTime
-                    });
-                }
+                
 
+            }
+            else{
+                userProgress.watchedVideos.push({
+                    videoId,
+                    watchedTime,
+                });
             }
 
             
