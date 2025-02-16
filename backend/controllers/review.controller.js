@@ -3,61 +3,91 @@ import Review from "../models/review.model.js";
 import Course from "../models/course.model.js";
 
 export const addReview = async (req, res) => {
-    try {
-      const { course, rating, comment, firstName, lastName } = req.body; // Change `courseId` to `course`
-  
-      // Validate course format
-      if (!mongoose.Types.ObjectId.isValid(course)) {
-        return res.status(400).json({ message: "Invalid Course ID" });
-      }
-  
-      // Validate course existence
-      const courseExists = await Course.findById(course);
-      if (!courseExists) return res.status(404).json({ message: "Course not found" });
-  
-      // Validate rating
-      if (rating < 1 || rating > 5) {
-        return res.status(400).json({ message: "Rating must be between 1 and 5" });
-      }
-  
-      // Save the review with course
-      const review = new Review({
-        course, // Change `courseId` to `course`
-        rating,
-        comment,
-        firstName, 
-        lastName
-      });
-  
-      await review.save();
-      res.status(201).json({ message: "Review Added", review });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server Error" });
+  try {
+    const { course, rating, comment, firstName, lastName } = req.body; // Change `courseId` to `course`
+
+    // Validate course format
+    if (!mongoose.Types.ObjectId.isValid(course)) {
+      return res.status(400).json({ message: "Invalid Course ID" });
     }
-  };
+
+    // Validate course existence
+    const courseExists = await Course.findById(course);
+    if (!courseExists)
+      return res.status(404).json({ message: "Course not found" });
+
+    // Validate rating
+    if (rating < 1 || rating > 5) {
+      return res
+        .status(400)
+        .json({ message: "Rating must be between 1 and 5" });
+    }
+
+    // Save the review with course
+    const review = new Review({
+      course, // Change `courseId` to `course`
+      rating,
+      comment,
+      firstName,
+      lastName,
+    });
+
+    await review.save();
+    res.status(201).json({ message: "Review Added", review });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
 
 export const getCourseReviews = async (req, res) => {
-    try {
-        const { courseId } = req.params;
+  try {
+    const { courseId } = req.params;
 
-        // Validate courseId format
-        if (!mongoose.Types.ObjectId.isValid(courseId)) {
-            return res.status(400).json({ message: "Invalid Course ID" });
-        }
-
-        // Validate course existence
-        const course = await Course.findById(courseId);
-        if (!course) {
-            return res.status(404).json({ message: "Course not found" });
-        }
-
-        // Fetch reviews for this course
-        const reviews = await Review.find({ course: courseId });
-
-        res.status(200).json({ reviews });
-    } catch (error) {
-        console.error("Error fetching course reviews:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+    // Validate courseId format
+    if (!mongoose.Types.ObjectId.isValid(courseId)) {
+      return res.status(400).json({ message: "Invalid Course ID" });
     }
+
+    // Validate course existence
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    // Fetch reviews for this course
+    const reviews = await Review.find({ course: courseId });
+
+    res.status(200).json({ reviews });
+  } catch (error) {
+    console.error("Error fetching course reviews:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const getCourseReviewAverage = async (req, res) => {
+  const { courseId } = req.params;
+
+  // Validate courseId format (check if it's a valid MongoDB ObjectId)
+  if (!mongoose.Types.ObjectId.isValid(courseId)) {
+    return res.status(400).json({ message: "Invalid course ID" });
+  }
+
+  try {
+    // Correctly instantiate the ObjectId with `new`
+    const reviews = await Review.aggregate([
+      { $match: { course: new mongoose.Types.ObjectId(courseId) } },  // Create a new ObjectId here
+      { $group: { _id: "$course", averageRating: { $avg: "$rating" }, totalRatings: { $sum: 1 } } }
+    ]);
+
+    if (reviews.length === 0) {
+      return res.json({ averageRating: 0, totalRatings: 0 }); // Default average rating is 0 if no reviews found
+    }
+
+    const { averageRating, totalRatings } = reviews[0];
+    res.json({ averageRating: averageRating ? averageRating.toFixed(1) : 0, totalRatings });
+  } catch (err) {
+    console.error("Error in getAverageRating:", err);
+    res.status(500).json({ message: "Error fetching average rating." });
+  }
 };
