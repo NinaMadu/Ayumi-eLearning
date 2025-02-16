@@ -6,6 +6,7 @@ import SignUp from './pages/Signup';
 import Signin from './pages/Signin';
 import LandingPage from './pages/LandingPage';
 import Profile from './components/Profile';
+import Discussion from './pages/User/Discussion';
 
 const CommonRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const CommonRoutes = () => {
       <Route path="/about" element={<About />} />
       <Route path="/sign-in" element={<Signin />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/discussion" element={<Discussion />} />
     </Routes>
   );
 };
