@@ -10,6 +10,7 @@ const Discussion = ({ courseId, currentUserId }) => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [replyingTo, setReplyingTo] = useState(null);
+    const [filteredMessages, setFilteredMessages] = useState([]);
     const navigate = useNavigate();
     const currentUser = useSelector((state) => state.user.currentUser);
 
@@ -32,6 +33,19 @@ const Discussion = ({ courseId, currentUserId }) => {
 
         fetchMessages();
     }, [courseId]);
+
+    useEffect(() => {
+        if (!searchText.trim()) {
+            setFilteredMessages(messages);
+        } else {
+            const lowerSearchText = searchText.toLowerCase();
+            const filtered = messages.filter((msg) =>
+                msg.message.toLowerCase().includes(lowerSearchText) ||
+                msg.replies?.some(reply => reply.message.toLowerCase().includes(lowerSearchText))
+            );
+            setFilteredMessages(filtered);
+        }
+    }, [searchText, messages]);
 
     const handleSendMessage = async () => {
         if (newMessage.trim()) {
@@ -84,27 +98,33 @@ const Discussion = ({ courseId, currentUserId }) => {
     };
 
 
-    const handleReaction = async (messageId, reactionType) => {
+    const handleReaction = async (messageId) => {
         try {
-            await axios.post(`/api/discussion/${courseId}/${messageId}/react`, { reactionType });
-
+            const response = await fetch(`${API_BASE_URL}/api/discussion/${messageId}/like`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userId: currentUser._id }), // Send current user ID
+            });
+    
+            if (!response.ok) {
+                throw new Error("Failed to toggle like");
+            }
+    
+            const data = await response.json();
+    
+            // Update messages state after liking/unliking
             setMessages((prevMessages) =>
-                prevMessages.map((message) =>
-                    message._id === messageId
-                        ? {
-                            ...message,
-                            reactions: {
-                                ...message.reactions,
-                                [reactionType]: (message.reactions?.[reactionType] || 0) + 1,
-                            },
-                        }
-                        : message
+                prevMessages.map((msg) =>
+                    msg._id === messageId ? { ...msg, likes: data.updatedMessage.likes } : msg
                 )
             );
         } catch (error) {
-            console.error('Error updating reaction:', error);
+            console.error("Error toggling like:", error);
         }
     };
+    
 
     return (
         <div>
@@ -119,17 +139,14 @@ const Discussion = ({ courseId, currentUserId }) => {
                             onChange={(e) => setSearchText(e.target.value)}
                             className="rounded-2xl bg-gray-100 py-3 px-5 w-full"
                         />
-                    </div>
-                    <div className="h-12 w-12 p-2 bg-yellow-500 rounded-full text-white font-semibold flex items-center justify-center">
-                        RA
-                    </div>
+                    </div>                    
                 </div>
 
                 <div className="flex flex-row justify-between bg-white">
                     <div className="w-full px-5 flex flex-col justify-between">
                         <div className="flex flex-col mt-5">
-                        {messages.length > 0 ? (
-    messages.map((message) => {
+                        {filteredMessages.length > 0 ? (
+    filteredMessages.map((message) => {
         const isCurrentUser = message.user._id === currentUser._id;
         return (
             <div key={message._id} className="flex flex-col mb-4">
@@ -151,12 +168,10 @@ const Discussion = ({ courseId, currentUserId }) => {
                         <img src={message.user.avatar} className="object-cover h-8 w-8 rounded-full" alt="Sender" />
                     )}
                     <div className="flex space-x-2 items-center">
-                        <button onClick={() => handleReaction(message._id, 'like')} className="text-blue-500">
-                            👍 {message.reactions?.like || 0}
-                        </button>
-                        <button onClick={() => handleReaction(message._id, 'dislike')} className="text-red-500">
-                            👎 {message.reactions?.dislike || 0}
-                        </button>
+                    <button onClick={() => handleReaction(message._id)} className="text-blue-500">
+    👍 {message.likes.length} {/* Display like count */}
+</button>
+                       
                         <button
                             onClick={() => handleReply(message)}
                             className="text-gray-600 ml-2"
