@@ -56,21 +56,21 @@ const CourseIntro = () => {
           }/enrolled-courses`
         );
         const data = await res.json();
-
+  
         if (res.ok) {
           const enrolledCourses = data.enrolledCourses || [];
           const isEnrolledInCourse = enrolledCourses.some(
             (course) => course._id === id
           );
-          setIsEnrolled(isEnrolledInCourse);
-          // console.log("Enrollment:",isEnrolledInCourse);
+          setIsEnrolled(isEnrolledInCourse); // Update the enrollment status
         } else {
           console.error("Error checking enrollment status");
         }
       } catch (error) {
         console.error("Error checking enrollment status");
-      }
-    };
+      }};
+
+
     const checkFavStatus = async () => {
       try {
         const res = await fetch(
@@ -117,10 +117,11 @@ const CourseIntro = () => {
           method: "POST",
         }
       );
+  
       if (res.ok) {
-        setIsEnrolled(true);
+        setIsEnrolled(true); // Set enrolled to true
         setMessage("Enrolled Successfully");
-        navigate(`/user/course-content/${id}`);
+        navigate(`/user/course-content/${id}`); // Navigate to the course content page
       } else {
         const data = await res.json();
         setError(data.message || "Error Enrolling");
@@ -129,6 +130,7 @@ const CourseIntro = () => {
       setError("Error Enrolling");
     }
   };
+  
 
   const handleAddToFav = async () => {
     try {
@@ -368,11 +370,24 @@ const CourseIntro = () => {
               </div>
 
               <button
-                className="w-full px-4 py-2 mt-8 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700"
-                onClick={handleEnroll}
-              >
-                {isEnrolled ? "Go to Course" : "Enroll Now"}
-              </button>
+  className="w-full px-4 py-2 mt-8 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700"
+  onClick={() => {
+    if (isEnrolled) {
+      // If the user is already enrolled, go directly to the course page
+      navigate(`/user/course-content/${id}`);
+    } else if (course.enrollmentOptions === "paid") {
+      // If the course is paid, navigate to the payment page
+      navigate(`/user/courseIntro/${id}/payment`);
+    } else {
+      // If the course is free, enroll the user and navigate to the course page
+      handleEnroll();
+    }
+  }}
+>
+  {isEnrolled ? "Go to Course" : "Enroll Now"}
+</button>
+
+  
 
               <button
                 className={`w-full px-4 py-2 mt-8 text-white transition rounded-lg ${

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from "@stripe/react-stripe-js";
 import { FaLock } from "react-icons/fa";
@@ -10,6 +10,7 @@ const CheckoutForm = () => {
   const { id } = useParams();
   const stripe = useStripe();
   const elements = useElements();
+  const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -71,89 +72,86 @@ const CheckoutForm = () => {
       setMessage(error.message);
     } else if (paymentIntent.status === "succeeded") {
       setMessage("✅ Payment Successful!");
+      setTimeout(() => {
+        navigate(`/user/course-content/${id}`);
+      }, 2000);
     }
 
     setLoading(false);
   };
 
   return (
-    
-      
     <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-2xl mx-auto">
-       <h2 className="text-3xl font-bold text-blue-900 text-center mb-6">
-  Pay Here
-</h2>
+      <h2 className="text-3xl font-bold text-blue-900 text-center mb-6">Pay Here</h2>
 
+      <div>
+        <label className="block text-gray-700 font-medium">Name on Card</label>
+        <input
+          type="text"
+          value={cardholderName}
+          onChange={(e) => setCardholderName(e.target.value)}
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"
+          placeholder="John Doe"
+          required
+        />
+      </div>
 
-        <div>
-          <label className="block text-gray-700 font-medium">Name on Card</label>
-          <input
-            type="text"
-            value={cardholderName}
-            onChange={(e) => setCardholderName(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"
-            placeholder="John Doe"
-            required
-          />
+      <div>
+        <label className="block text-gray-700 font-medium">Course Price</label>
+        <input
+          type="number"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"
+          placeholder="Enter course price"
+          min="0.01"
+          step="0.01"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-gray-700 font-medium">Card Number</label>
+        <div className="w-full p-3 border border-gray-300 rounded-lg bg-white">
+          <CardNumberElement className="w-full" />
         </div>
+      </div>
 
+      <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-gray-700 font-medium">Course Price</label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"
-            placeholder="Enter course price"
-            min="0.01"
-            step="0.01"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-gray-700 font-medium">Card Number</label>
+          <label className="block text-gray-700 font-medium">Expiry Date</label>
           <div className="w-full p-3 border border-gray-300 rounded-lg bg-white">
-            <CardNumberElement className="w-full" />
+            <CardExpiryElement className="w-full" />
           </div>
         </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-gray-700 font-medium">Expiry Date</label>
-            <div className="w-full p-3 border border-gray-300 rounded-lg bg-white">
-              <CardExpiryElement className="w-full" />
-            </div>
-          </div>
-          <div>
-            <label className="block text-gray-700 font-medium">CVC</label>
-            <div className="w-full p-3 border border-gray-300 rounded-lg bg-white">
-              <CardCvcElement className="w-full" />
-            </div>
+        <div>
+          <label className="block text-gray-700 font-medium">CVC</label>
+          <div className="w-full p-3 border border-gray-300 rounded-lg bg-white">
+            <CardCvcElement className="w-full" />
           </div>
         </div>
+      </div>
 
-        <button
-          type="submit"
-          className="w-full flex justify-center items-center gap-3 bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition disabled:bg-gray-400"
-          disabled={!stripe || loading || !price || parseFloat(price) <= 0}
-        >
-          {loading ? (
-            <span className="animate-spin h-6 w-6 border-4 border-white border-t-transparent rounded-full"></span>
-          ) : (
-            <>
-              <FaLock className="text-white" /> Pay Now
-            </>
-          )}
-        </button>
-
-        {message && (
-          <p className={`text-center ${message.includes("Successful") ? "text-green-600" : "text-red-500"}`}>
-            {message}
-          </p>
+      <button
+        type="submit"
+        className="w-full flex justify-center items-center gap-3 bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition disabled:bg-gray-400"
+        disabled={!stripe || loading || !price || parseFloat(price) <= 0}
+      >
+        {loading ? (
+          <span className="animate-spin h-6 w-6 border-4 border-white border-t-transparent rounded-full"></span>
+        ) : (
+          <>
+            <FaLock className="text-white" /> Pay Now
+          </>
         )}
-      </form>
+      </button>
 
+      {message && (
+        <p className={`text-center ${message.includes("Successful") ? "text-green-600" : "text-red-500"}`}>
+          {message}
+        </p>
+      )}
+    </form>
   );
 };
 
@@ -173,17 +171,14 @@ const Payment = () => {
           <li>✅ Click the "Pay Now" button to complete the process.</li>
           <li>✅ After payment, you will receive a confirmation email.</li>
         </ul>
-        
       </div>
 
       {/* Right side with payment form and background image */}
       <div
         className="w-1/2 p-8 flex items-center justify-center bg-white shadow-lg rounded-2xl bg-cover bg-center"
-        style={{ backgroundImage: `url('../src/assets/bg2.jpg')` }}
+        
       >
         <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg w-full max-w-3xl mx-auto">
-
-         
           <Elements stripe={stripePromise}>
             <CheckoutForm />
           </Elements>
