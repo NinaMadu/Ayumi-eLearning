@@ -93,10 +93,11 @@ export default function UserVideoPreview() {
     setIsPlaying(true);
   });
 
-  player.on('pause', () => {
+  player.on('pause', async() => {
     console.log('video is paused');
     setIsPlaying(false);
-    updateWatchedTime(watchedTime);
+    const currentTime = await player.getCurrentTime();
+    updateWatchedTime(Math.floor(currentTime));
   });
 
   player.on('timeupdate', (data) => {
@@ -108,10 +109,11 @@ export default function UserVideoPreview() {
     setWatchedTime(Math.floor(data.seconds));
   });
 
-  player.on('ended', () => {
+  player.on('ended', async () => {
     console.log('video is ended');
     setIsPlaying(false);
-    updateWatchedTime(watchedTime);
+    const currentTime = await player.getCurrentTime();
+    updateWatchedTime(Math.floor(currentTime));
   });
 
   player.ready().then(()=>{
