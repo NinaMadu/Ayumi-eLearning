@@ -2,13 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Header from "../../components/Header";
-import {
-  FaCalendarTimes,
-  FaClock,
-  FaLevelUpAlt,
-  FaListAlt,
-  FaTimesCircle,
-} from "react-icons/fa";
+import { FaCalendarTimes, FaClock, FaLevelUpAlt, FaListAlt } from "react-icons/fa";
+import Timer from "../../components/Timer";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -23,6 +18,9 @@ const QuizContent = () => {
   const [totalMarks, setTotalMarks] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
   const [viewResults, setViewResults] = useState(false);
+  const [quizFinished, setQuizFinished] = useState(false);
+  const [timerFinished, setTimerFinished] = useState(false);
+  const [quizDuration, setQuizDuration] = useState(0);
 
   useEffect(() => {
     if (!quizId) {
@@ -35,6 +33,7 @@ const QuizContent = () => {
       try {
         const { data } = await axios.get(`${API_BASE_URL}/api/quiz/${quizId}`);
         setQuiz(data.quiz);
+        setQuizDuration(data.quiz.duration * 60); // Set duration in seconds
       } catch (err) {
         setError(err.response?.data?.message || "Error fetching quiz");
       } finally {
@@ -46,7 +45,7 @@ const QuizContent = () => {
   }, [quizId]);
 
   const handleStartQuiz = () => {
-    setQuizStarted(true); // Set quizStarted to true when the user clicks Start
+    setQuizStarted(true);
   };
 
   const handleNext = () => {
@@ -79,6 +78,7 @@ const QuizContent = () => {
 
     setTotalMarks(score);
     setQuizSubmitted(true);
+    setQuizFinished(true);
   };
 
   const handleViewResults = () => {
@@ -92,6 +92,14 @@ const QuizContent = () => {
     setUserAnswers({});
     setCurrentQuestionIndex(0);
     setTotalMarks(0);
+    setTimerFinished(false);
+  };
+
+  const handleTimeUp = () => {
+    setQuizFinished(true);
+    setTimerFinished(true);
+    handleSubmit();
+    alert("Time's up!");
   };
 
   return (
@@ -105,15 +113,14 @@ const QuizContent = () => {
           </p>
         )}
         {quiz && (
-          <div className="bg-slate-50 rounded-lg p-8 ">
+          <div className="bg-slate-50 rounded-lg p-8">
             {/* Quiz Header */}
-            {!quizStarted && ( // Check if the quiz has started
+            {!quizStarted && (
               <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 mb-8 mt-8">
                 <h1 className="text-4xl font-extrabold text-gray-800 tracking-tight">
                   {quiz.quizTitle}
                 </h1>
                 <p className="text-md text-gray-600 mt-4">{quiz.description}</p>
-
                 <div className="mt-8 space-y-6">
                   <div className="flex items-center gap-3 text-gray-800">
                     <FaListAlt className="text-blue-600" />
@@ -121,9 +128,7 @@ const QuizContent = () => {
                   </div>
                   <div className="flex items-center gap-3 text-gray-800">
                     <FaLevelUpAlt className="text-blue-600" />
-                    <span className="text-lg font-medium">
-                      {quiz.difficulty}
-                    </span>
+                    <span className="text-lg font-medium">{quiz.difficulty}</span>
                   </div>
                   <div className="flex items-center gap-3 text-gray-800">
                     <FaClock className="text-blue-600" />
@@ -143,8 +148,11 @@ const QuizContent = () => {
             )}
 
             {/* Quiz Content */}
-            {quizStarted && !quizSubmitted ? (
+            {quizStarted && !quizSubmitted && !timerFinished && (
               <>
+                {/* Timer */}
+                <Timer duration={quizDuration} onTimeUp={handleTimeUp} />
+
                 {/* Current Question */}
                 <div className="space-y-10 p-4 bg-white rounded-md shadow-md">
                   <h2 className="text-2xl font-bold text-gray-800">
@@ -216,164 +224,121 @@ const QuizContent = () => {
                   )}
                   {quiz.questions[currentQuestionIndex].questionType ===
                     "shortAnswer" && (
-                    <textarea
-                      name={`question-${currentQuestionIndex}`}
-                      className="w-full border rounded-md p-4 focus:outline-none focus:ring-1 focus:ring-blue-950 placeholder-gray-400"
-                      placeholder="Write your answer here..."
-                      rows="4"
-                      onChange={(e) => handleAnswerChange(e.target.value)}
-                    ></textarea>
+                    <input
+                      type="text"
+                      placeholder="Your answer"
+                      onChange={(e) =>
+                        handleAnswerChange(e.target.value)
+                      }
+                      className="w-full p-4 border border-gray-300 rounded-md"
+                    />
                   )}
-
-                  <div className="text-sm text-gray-600 mt-4 flex justify-between items-center">
-                    <span>
-                      <strong>Marks:</strong>{" "}
-                      {quiz.questions[currentQuestionIndex].marks}
-                    </span>
-                    <span className="text-blue-700 italic">
-                      Question Type:{" "}
-                      {quiz.questions[currentQuestionIndex].questionType}
-                    </span>
-                  </div>
+                  
                 </div>
 
-                {/* Navigation Buttons */}
                 <div className="flex justify-between mt-8">
                   <button
                     onClick={handlePrevious}
                     disabled={currentQuestionIndex === 0}
-                    className={`px-4 py-2 rounded ${
-                      currentQuestionIndex === 0
-                        ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                        : "bg-gray-500 text-white font-semibold hover:bg-gray-400"
-                    }`}
+                    className="px-6 py-3 bg-gray-300 text-white font-semibold rounded-md disabled:opacity-50"
                   >
                     Previous
                   </button>
-
                   {currentQuestionIndex === quiz.questions.length - 1 ? (
                     <button
                       onClick={handleSubmit}
-                      className="px-4 py-2 rounded bg-green-700 text-white font-semibold hover:bg-green-600"
+                      className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md"
                     >
-                      Save and Submit
+                      Submit Quiz
                     </button>
                   ) : (
                     <button
                       onClick={handleNext}
-                      className="px-4 py-2 rounded bg-blue-800 text-white font-semibold hover:bg-blue-600"
+                      disabled={currentQuestionIndex === quiz.questions.length - 1}
+                      className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md disabled:opacity-50"
                     >
                       Next
                     </button>
                   )}
                 </div>
               </>
-            ) : (
-              quizSubmitted && (
-                <div
-                  className={`text-center p-10 rounded-lg ${
-                    totalMarks >= quiz.passingScore
-                      ? "bg-green-50 border-green-400 border-2"
-                      : "bg-red-100 border-red-200 border-2"
-                  }`}
-                >
-                  {/* Conditional Congratulatory Message */}
-                  <h2
-                    className={`text-3xl font-bold ${
-                      totalMarks >= quiz.passingScore
-                        ? "text-green-800"
-                        : "text-red-800"
-                    }`}
-                  >
-                    {totalMarks >= quiz.passingScore
-                      ? "Congratulations!!!"
-                      : "Better Luck Next Time!"}
-                  </h2>
-
-                  <div className="flex justify-center items-center mt-4">
-                    <div
-                      className={`p-4 rounded-full shadow-xl ${
-                        totalMarks >= quiz.passingScore
-                          ? "bg-green-500"
-                          : "bg-red-500"
-                      }`}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-16 w-16 text-white"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 14l9 3-3-9-9-3-3 9 3 9z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-
-                  <p className="text-xl text-gray-800 mt-6">
-                    You scored <strong>{totalMarks}</strong> marks out of{" "}
-                    {quiz.questions.reduce(
-                      (acc, question) => acc + question.marks,
-                      0
-                    )}
-                    .
-                  </p>
-                  <div className="flex justify-center gap-4 mt-6">
-                    <button
-                      onClick={handleViewResults}
-                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-                    >
-                      View Results
-                    </button>
-                    <button
-                      onClick={handleTryAgain}
-                      className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
-                    >
-                      Try Again
-                    </button>
-                  </div>
-                </div>
-              )
             )}
+
+            {/* Quiz Submission and Results */}
+            {quizSubmitted && !viewResults && (
+              <div className="space-y-8 ">
+                <h3 className="text-2xl font-bold text-gray-800">
+                  Quiz Completed!
+                </h3>
+                <p className="text-lg text-gray-700">
+                  Your total score is: {totalMarks} /{" "}
+                  {quiz.questions.reduce((acc, q) => acc + q.marks, 0)}
+                </p>
+                <div className="flex gap-4">
+                <button
+                  onClick={handleViewResults}
+                  className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-800 text-white font-semibold text-lg rounded-md shadow-lg transform hover:scale-105 transition-all duration-200"
+                >
+                  View Results
+                </button>
+                <button
+                  onClick={handleTryAgain}
+                  className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-700 text-white font-semibold text-lg rounded-md shadow-lg transform hover:scale-105 transition-all duration-200"
+                >
+                  Try Again
+                </button>
+                  </div>
+              </div>
+            )}
+
+{viewResults && (
+  <div className="bg-white p-6 rounded-lg shadow-lg animate-fade-in">
+    <h3 className="text-3xl font-bold text-gray-800 mb-6">
+      Detailed Results
+    </h3>
+    <div className="space-y-6">
+      {quiz.questions.map((question, idx) => (
+        <div
+          key={idx}
+          className="border-b border-gray-200 pb-6 last:border-b-0 transition-all hover:bg-gray-50 rounded-lg p-4"
+        >
+          <p className="text-xl font-semibold text-gray-800 mb-2">
+            {question.questionText}
+          </p>
+          <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+            <div>
+              <span className="font-medium">Correct Answer:</span>{" "}
+              <span className="text-green-600">{question.correctAnswer}</span>
+            </div>
+            <div>
+              <span className="font-medium">Your Answer:</span>{" "}
+              <span
+                className={
+                  userAnswers[idx] === question.correctAnswer
+                    ? "text-green-600"
+                    : "text-red-600"
+                }
+              >
+                {userAnswers[idx] || "No Answer"}
+              </span>
+            </div>
+          </div>
+          <p className="text-sm text-gray-500 mt-2">
+            Marks: <span className="font-medium">{question.marks}</span>
+          </p>
+        </div>
+      ))}
+    </div>
+    <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+      <p className="text-2xl font-bold text-gray-800">
+        Total Marks: <span className="text-blue-600">{totalMarks}</span>
+      </p>
+    </div>
+  </div>
+)}
           </div>
         )}
       </div>
-
-      {viewResults && (
-        <div className="bg-gray-50 p-8 rounded-lg shadow-md max-w-3xl mx-auto">
-        <h2 className="text-3xl font-semibold text-center text-blue-600 mb-6">Quiz Results</h2>
-        
-        {quiz.questions.map((question, index) => (
-          <div key={index} className="bg-white p-4 mb-6 rounded-lg shadow-sm border border-gray-200">
-            <p className="text-lg font-medium text-gray-800 mb-2">
-              <strong className="text-blue-500">Question {index + 1}:</strong> {question.questionText}
-            </p>
-      
-            <div className="flex items-center space-x-4 mb-4">
-              <div className="flex items-center">
-                <span className="text-sm font-medium text-gray-600">Your Answer:</span>
-                <span className={`ml-2 px-3 py-1 rounded-md ${userAnswers[index] === question.correctAnswer ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                  {userAnswers[index]}
-                </span>
-              </div>
-      
-              <div className="flex items-center">
-                <span className="text-sm font-medium text-gray-600">Correct Answer:</span>
-                <span className="ml-2 text-gray-800">{question.correctAnswer}</span>
-              </div>
-            </div>
-      
-            <hr className="border-t border-gray-300" />
-          </div>
-        ))}
-      </div>
-      
-      )}
     </div>
   );
 };
