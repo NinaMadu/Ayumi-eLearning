@@ -1,32 +1,30 @@
-import mongoose from "mongoose";
+
+
+import mongoose from 'mongoose';
 
 const paymentSchema = new mongoose.Schema(
-    {
-        
-        user:{
-            type: mongoose.Schema.Types.ObjectId,
-            ref:"User",
-
-        },
-        
-        course:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Course",
-
-        },      
-
-        amount:{
-            type:double,
-            require:true,
-                    
-        },
-        
-    },{timestamps:true}
+  {
+    name: {
+      type: String,
+      required: true
+    },
+    cardNumber: {
+      type: String,
+      required: true
+    },
+    expiry: {
+      type: String,
+      required: true
+    },
+    cvv: {
+      type: String,
+      required: true
+    }
+  },
+  { timestamps: true }
 );
 
-const Payment = mongoose.model("Payment", paymentSchema);
+const Payment = mongoose.model('Payment', paymentSchema);
 
+// Default export
 export default Payment;
-
-
-

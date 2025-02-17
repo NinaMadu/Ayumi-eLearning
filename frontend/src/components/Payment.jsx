@@ -1,0 +1,191 @@
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from "@stripe/react-stripe-js";
+import { FaLock } from "react-icons/fa";
+
+const stripePromise = loadStripe("pk_test_51QrNO7Q1RO73bAfeNF6ZRm1cYTZiPfvpw5chvd9mLmiZfiAJgYEotvSLEfZw9rpeBKBvdfkD8NDXBkjlT4qPztKQ00ENoImvvf");
+
+const CheckoutForm = () => {
+  const { id } = useParams();
+  const stripe = useStripe();
+  const elements = useElements();
+  const navigate = useNavigate();
+  const [clientSecret, setClientSecret] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [cardholderName, setCardholderName] = useState("");
+  const [price, setPrice] = useState("");
+  const [course, setCourse] = useState(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/course/${id}`);
+        const data = await res.json();
+
+        if (res.ok) {
+          setCourse(data.course);
+          setPrice(data.course.customPrice.$numberDecimal);
+        } else {
+          setError(data.message || "Failed to fetch course details");
+        }
+      } catch (err) {
+        setError("Error fetching course details");
+      }
+    };
+
+    fetchCourse();
+  }, [id]);
+
+  useEffect(() => {
+    if (price && parseFloat(price) > 0) {
+      fetch("http://localhost:5000/api/payment/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: (parseFloat(price) * 0.00339256).toFixed(0),
+          currency: "usd",
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => setClientSecret(data.clientSecret));
+    }
+  }, [price]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+
+    setLoading(true);
+    setMessage("");
+
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: elements.getElement(CardNumberElement),
+        billing_details: { name: cardholderName },
+      },
+    });
+
+    if (error) {
+      setMessage(error.message);
+    } else if (paymentIntent.status === "succeeded") {
+      setMessage("✅ Payment Successful!");
+      setTimeout(() => {
+        navigate(`/user/course-content/${id}`);
+      }, 2000);
+    }
+
+    setLoading(false);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-2xl mx-auto">
+      <h2 className="text-3xl font-bold text-blue-900 text-center mb-6">Pay Here</h2>
+
+      <div>
+        <label className="block text-gray-700 font-medium">Name on Card</label>
+        <input
+          type="text"
+          value={cardholderName}
+          onChange={(e) => setCardholderName(e.target.value)}
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"
+          placeholder="John Doe"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-gray-700 font-medium">Course Price</label>
+        <input
+          type="number"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"
+          placeholder="Enter course price"
+          min="0.01"
+          step="0.01"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-gray-700 font-medium">Card Number</label>
+        <div className="w-full p-3 border border-gray-300 rounded-lg bg-white">
+          <CardNumberElement className="w-full" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-gray-700 font-medium">Expiry Date</label>
+          <div className="w-full p-3 border border-gray-300 rounded-lg bg-white">
+            <CardExpiryElement className="w-full" />
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 font-medium">CVC</label>
+          <div className="w-full p-3 border border-gray-300 rounded-lg bg-white">
+            <CardCvcElement className="w-full" />
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        className="w-full flex justify-center items-center gap-3 bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition disabled:bg-gray-400"
+        disabled={!stripe || loading || !price || parseFloat(price) <= 0}
+      >
+        {loading ? (
+          <span className="animate-spin h-6 w-6 border-4 border-white border-t-transparent rounded-full"></span>
+        ) : (
+          <>
+            <FaLock className="text-white" /> Pay Now
+          </>
+        )}
+      </button>
+
+      {message && (
+        <p className={`text-center ${message.includes("Successful") ? "text-green-600" : "text-red-500"}`}>
+          {message}
+        </p>
+      )}
+    </form>
+  );
+};
+
+const Payment = () => {
+  return (
+    <div className="min-h-screen flex">
+      {/* Left side with payment instructions */}
+      <div className="w-1/2 p-10 flex flex-col justify-center bg-blue-100">
+        <h2 className="text-3xl font-bold text-blue-900 mb-4">Payment Information</h2>
+        <p className="text-lg text-blue-800">
+          Welcome to the secure payment portal. Please follow the instructions below to complete your transaction:
+        </p>
+        <ul className="mt-4 text-blue-700 space-y-2">
+          <li>✅ Select your preferred payment method.</li>
+          <li>✅ Enter your payment details carefully.</li>
+          <li>✅ Double-check the course fee before proceeding.</li>
+          <li>✅ Click the "Pay Now" button to complete the process.</li>
+          <li>✅ After payment, you will receive a confirmation email.</li>
+        </ul>
+      </div>
+
+      {/* Right side with payment form and background image */}
+      <div
+        className="w-1/2 p-8 flex items-center justify-center bg-white shadow-lg rounded-2xl bg-cover bg-center"
+        
+      >
+        <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg w-full max-w-3xl mx-auto">
+          <Elements stripe={stripePromise}>
+            <CheckoutForm />
+          </Elements>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Payment;
