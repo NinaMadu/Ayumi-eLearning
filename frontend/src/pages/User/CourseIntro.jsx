@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import UserLayout from "../../components/UserLayout";
-import { FaStar, FaTags, FaDollarSign, FaClock } from "react-icons/fa";
+import { FaStar, FaTags, FaClock } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
 const CourseIntro = () => {
   const currentUser = useSelector((state) => state.user.currentUser);
-  const { id } = useParams(); //course Id
+  const { id } = useParams(); // Course ID
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,23 +22,13 @@ const CourseIntro = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        console.log(id);
         const res = await fetch(
           `${import.meta.env.VITE_API_BASE_URL}/api/course/${id}`
         );
         const data = await res.json();
-        // console.log(data.course._id);
-
-        console.log(currentUser._id);
-        setUserId(currentUser._id);
-
-        // const userRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/profile/${currentUser.email}`);
-        // const userData = await userRes.json();
 
         if (res.ok) {
           setCourse(data.course);
-          // console.log(course.data);
-          // setUser(userData.user);
           setLoading(false);
         } else {
           setError(data.message || "Failed to fetch course details");
@@ -65,7 +55,6 @@ const CourseIntro = () => {
             (course) => course._id === id
           );
           setIsEnrolled(isEnrolledInCourse);
-          // console.log("Enrollment:",isEnrolledInCourse);
         } else {
           console.error("Error checking enrollment status");
         }
@@ -73,6 +62,7 @@ const CourseIntro = () => {
         console.error("Error checking enrollment status");
       }
     };
+
     const checkFavStatus = async () => {
       try {
         const res = await fetch(
@@ -81,16 +71,11 @@ const CourseIntro = () => {
           }/favorites`
         );
         const data = await res.json();
-        console.log(data);
-        // console.log(data +" Hello");
 
         if (res.ok) {
           const favCourses = data.favorities || [];
-          console.log(favCourses);
           const isFav = favCourses.some((course) => course._id == id);
-          console.log(isFav);
           setIsFavorite(isFav);
-          console.log(isFavorite);
         } else {
           console.error("Error fetching favorite status");
         }
@@ -105,13 +90,16 @@ const CourseIntro = () => {
           `${import.meta.env.VITE_API_BASE_URL}/api/reviews/${id}`
         );
         const data = await res.json();
-  
+
         if (res.ok) {
           setReviews(data.reviews || []);
           if (data.reviews.length > 0) {
-            const totalRating = data.reviews.reduce((sum, review) => sum + review.rating, 0);
+            const totalRating = data.reviews.reduce(
+              (sum, review) => sum + review.rating,
+              0
+            );
             const avgRating = totalRating / data.reviews.length;
-            setAverageRating(avgRating.toFixed(1)); 
+            setAverageRating(avgRating.toFixed(1));
           } else {
             setAverageRating("N/A");
           }
@@ -119,7 +107,7 @@ const CourseIntro = () => {
           console.error("Error fetching course reviews");
         }
       } catch (error) {
-        console.error("Error fetching reviews",error);
+        console.error("Error fetching reviews", error);
       }
     };
 
@@ -169,7 +157,6 @@ const CourseIntro = () => {
       );
 
       if (res.ok) {
-        // setUser(data);
         setIsFavorite(true);
         setMessage("Successfully Added to Favorites");
       } else {
@@ -193,7 +180,6 @@ const CourseIntro = () => {
       );
 
       if (res.ok) {
-        // setUser(data);
         setIsFavorite(false);
         setMessage("Successfully Removed from Favorites");
       } else {
@@ -222,7 +208,6 @@ const CourseIntro = () => {
   }
 
   const instructor = course.instructor;
-  // const isFavorite = id?.favorites?.includes(id);
 
   return (
     <UserLayout>
@@ -252,7 +237,7 @@ const CourseIntro = () => {
         </p>
       </div>
 
-      <div className="px-4 py-8 mx-auto max-w-7xl">
+      <div className="px-4 py-12 mx-auto max-w-7xl">
         <div className="flex flex-col md:flex-row">
           {/* Left Section */}
           <div className="md:w-1/2">
@@ -302,7 +287,7 @@ const CourseIntro = () => {
             </div>
 
             {/* What You'll Learn */}
-            <div className="p-6 mt-8 bg-white rounded-lg shadow-md">
+            <div className="p-6 mt-10 bg-white rounded-lg shadow-md">
               <h3 className="mb-4 text-2xl font-semibold text-gray-900">
                 What You'll Learn
               </h3>
@@ -317,7 +302,7 @@ const CourseIntro = () => {
             </div>
 
             {/* What You Need to Know */}
-            <div className="p-6 mt-8 bg-white rounded-lg shadow-md">
+            <div className="p-6 mt-10 bg-white rounded-lg shadow-md">
               <h3 className="mb-4 text-2xl font-semibold text-gray-900">
                 What You Need to Know
               </h3>
@@ -349,7 +334,6 @@ const CourseIntro = () => {
                 </p>
               </div>
 
-              {/* New addition for course duration */}
               <div className="flex items-center space-x-2 text-center">
                 <FaClock className="text-blue-600" />
                 <p className="text-lg text-gray-700">
@@ -393,14 +377,14 @@ const CourseIntro = () => {
               </div>
 
               <button
-                className="w-full px-4 py-2 mt-8 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700"
+                className="w-full px-4 py-2 font-bold mt-8 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700"
                 onClick={handleEnroll}
               >
                 {isEnrolled ? "Go to Course" : "Enroll Now"}
               </button>
 
               <button
-                className={`w-full px-4 py-2 mt-8 text-white transition rounded-lg ${
+                className={`w-full px-4 py-2 mt-8 font-bold text-white transition rounded-lg ${
                   isFavorite
                     ? "bg-red-600 hover:bg-red-700"
                     : "bg-blue-600 hover:bg-blue-700"
@@ -415,71 +399,111 @@ const CourseIntro = () => {
               )}
             </div>
 
-            {/* Statistical Ratings and Reviews */}
-<div className="mt-10">
-  {/* Average Rating */}
-  <div className="flex items-center space-x-2 text-center">
-  
-  <p className="text-lg text-gray-700">
-    <strong>Average Rating:</strong> {averageRating} / 5
-  </p>
-</div>
+           
+            
+        {/* Auto-Sliding Reviews Section */}
+        <div className="mt-6">
+        <div className="mt-10">
+              {/* Average Rating */}
+              <div className="flex items-center space-x-2 text-center">
+                <p className="text-lg text-gray-700">
+                  <strong>Average Rating:</strong> {averageRating} / 5
+                </p>
+              </div>
 
-  {/* Star Rating UI */}
-  <div className="flex items-center mt-4 space-x-1">
-  {Array.from({ length: 5 }, (_, index) => {
-    const roundedRating = Math.round(averageRating || 0); // Round the rating to nearest integer
+              {/* Star Rating UI */}
+              <div className="flex items-center mt-4 space-x-1">
+                {Array.from({ length: 5 }, (_, index) => {
+                  const roundedRating = Math.round(averageRating || 0); // Round the rating to nearest integer
 
-    return (
-      <FaStar
-        key={index}
-        className={
-          index < roundedRating
-            ? "text-yellow-500" // Filled star
-            : "text-gray-300" // Empty star
-        }
-      />
-    );
-  })}
-</div>
+                  return (
+                    <FaStar
+                      key={index}
+                      className={
+                        index < roundedRating
+                          ? "text-yellow-500" // Filled star
+                          : "text-gray-300" // Empty star
+                      }
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          <h3 className="text-2xl font-semibold text-gray-900">
+            What Students Are Saying...
+          </h3>
 
+          {/* Reviews Container */}
+          <div className="relative overflow-hidden h-64 mt-4 ">
+            {reviews.length > 0 ? (
+              <div className="flex animate-slide gap-6">
+                {[...reviews, ...reviews].map((review, index) => (
+                  <div
+                    key={index}
+                    className="w-full sm:w-1/2 p-4 bg-white rounded-lg shadow-md flex-shrink-0"
+                  >
+                    {/* Star Rating */}
+                    <div className="flex items-center space-x-1">
+                      {Array.from({ length: 5 }, (_, starIndex) => (
+                        <FaStar
+                          key={starIndex}
+                          className={
+                            starIndex < Math.round(review.rating)
+                              ? "text-yellow-500" // Filled star
+                              : "text-gray-300" // Empty star
+                          }
+                        />
+                      ))}
+                    </div>
 
-  {/* Reviews Section */}
-  <div className="mt-6">
-  <h3 className="text-2xl font-semibold text-gray-900">
-    What Students Are Saying...
-  </h3>
+                    {/* Review Content */}
+                    <p className="italic text-gray-700 mt-2">
+                      "{review.comment}"
+                    </p>
+                    <p className="mt-2 text-gray-600">
+                      - {review.firstName || "anonymous"} {review.lastName}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600 mt-4">No reviews yet.</p>
+            )}
+          </div>
 
-  {reviews.length > 0 ? (
-    reviews.map((review, index) => (
-      <div key={index} className="p-4 mt-4 bg-white rounded-lg shadow-md">
-        {/* Star Rating for Each Review */}
-        <div className="flex items-center space-x-1">
-          {Array.from({ length: 5 }, (_, starIndex) => (
-            <FaStar
-              key={starIndex}
-              className={
-                starIndex < Math.round(review.rating) 
-                  ? "text-yellow-500"  // Filled star
-                  : "text-gray-300"    // Empty star
-              }
-            />
-          ))}
+          {/* Add CSS for Animation */}
+          <style>
+            {`
+                    @keyframes slide {
+                      0% {
+                        transform: translateX(0);
+                      }
+                      100% {
+                        transform: translateX(-${reviews.length * 30}%);
+                      }
+                    }
+
+                    .animate-slide {
+                      animation: slide ${reviews.length * 5}s linear infinite;
+                    }
+
+                    @media (max-width: 640px) {
+                      @keyframes slide {
+                        0% {
+                          transform: translateX(0);
+                        }
+                        100% {
+                          transform: translateX(-${reviews.length * 100}%);
+                        }
+                      }
+
+                      .animate-slide {
+                        animation: slide ${reviews.length * 5}s linear infinite;
+                      }
+                    }
+                  `}
+          </style>
         </div>
-
-        {/* Review Content */}
-        <p className="italic text-gray-700 mt-2">"{review.comment}"</p>
-        <p className="mt-2 text-gray-600">- {review.firstName || "anonymous"} {review.lastName}</p>
-      </div>
-    ))
-  ) : (
-    <p className="text-gray-600 mt-4">No reviews yet.</p>
-  )}
-</div>
-
-  
-</div>
-
           </div>
         </div>
       </div>
