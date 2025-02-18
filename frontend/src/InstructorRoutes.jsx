@@ -31,6 +31,10 @@ import CourseEditThird from './pages/Instructor/courseEdit/CourseEditThird';
 import VideoManagementMenu from './pages/Instructor/CourseVideos/CourseVideosMenu';
 import CourseVideoList from './pages/Instructor/CourseVideos/CourseVideoList';
 import AdminHome from './components/AdminHome';
+import QuizFirstEditPage from './pages/Instructor/quizEdit/QuizFirstEditPage';
+import QuizSecondEditPage from './pages/Instructor/quizEdit/QuizSecondEditPage';
+import QuizThirdEditPage from './pages/Instructor/quizEdit/QuizThirdEditPage';
+import Statistics from './pages/Instructor/Statistics';
 
 
 const InstructorRoutes = () => {
@@ -64,6 +68,10 @@ const InstructorRoutes = () => {
         <Route path="/instructor/edit-course-third/:courseId" element={<CourseEditThird/>} />
         <Route path="/instructor/video-management-menu" element={<VideoManagementMenu/>} />
         <Route path="/instructor/course-video-list/:courseId" element={<CourseVideoList/>} />
+        <Route path="/instructor/edit-quiz-first/:quizId" element={<QuizFirstEditPage/>} />
+        <Route path="/instructor/edit-quiz-second/:quizId" element={<QuizSecondEditPage/>} />
+        <Route path="/instructor/edit-quiz-third/:quizId" element={<QuizThirdEditPage/>} />
+        <Route path="/instructor/statistics" element={<Statistics/>} />
         
 
 

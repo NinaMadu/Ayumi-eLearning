@@ -1,4 +1,5 @@
 import Course from "../models/course.model.js";
+import asyncHandler from "express-async-handler";
 
 // Create a new course
 export const createCourse = async (req, res) => {
@@ -180,3 +181,37 @@ export const getRecentlyAddedCourses = async (req, res) => {
   }
 };
 
+
+export const getEnrolledStudents = async (req, res) => {
+  try {
+    const { id } = req.params; // Extract course ID from the request parameters
+
+    // Find the course by its ID
+    const course = await Course.findById(id);
+
+    // If the course doesn't exist, return a 404 error
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: 'Course not found',
+      });
+    }
+
+    // Check if the course has a students array, if not return empty array
+    const enrolledStudents = Array.isArray(course.students) ? course.students.length : 0;
+
+    // Return the number of enrolled students
+    res.status(200).json({
+      success: true,
+      enrolledStudents,
+    });
+  } catch (error) {
+    console.error('Error fetching enrolled students:', error);
+
+    // Handle any unexpected errors
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+};

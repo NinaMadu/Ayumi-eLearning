@@ -249,3 +249,44 @@ export const getUserEnroll = async (req,res)=>{
         res.status(500).json({message:"Error fetching enrolled courses"});
     }
 }
+
+export const getMonthlyUserSignups = async (req, res) => {
+    try {
+      // Aggregate users by month and year based on createdAt
+      const result = await User.aggregate([
+        {
+          $project: {
+            month: { $month: "$createdAt" }, // Extract month from createdAt
+            year: { $year: "$createdAt" },   // Extract year from createdAt
+          },
+        },
+        {
+          $group: {
+            _id: { year: "$year", month: "$month" }, // Group by year and month
+            userCount: { $sum: 1 }, // Count users in each group
+          },
+        },
+        {
+          $sort: { "_id.year": 1, "_id.month": 1 }, // Sort by year and month
+        },
+      ]);
+  
+      // If no data is found, return an empty array
+      if (!result || result.length === 0) {
+        return res.status(200).json({ message: "No user signup data found", data: [] });
+      }
+  
+      // Format the result for better readability (optional)
+      const formattedResult = result.map((entry) => ({
+        year: entry._id.year,
+        month: entry._id.month,
+        userCount: entry.userCount,
+      }));
+  
+      // Return the result
+      res.status(200).json({ message: "User signup data retrieved successfully", data: formattedResult });
+    } catch (error) {
+      console.error("Error retrieving user signups:", error);
+      res.status(500).json({ message: "Error retrieving user signups", error: error.message });
+    }
+  };

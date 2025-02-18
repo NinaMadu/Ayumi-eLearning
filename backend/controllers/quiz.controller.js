@@ -98,3 +98,50 @@ export const getQuizById = async (req, res) => {
     res.status(500).json({ message: "Error retrieving quiz", error });
   }
 };
+
+export const editQuiz = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { 
+      quizTitle, 
+      description, 
+      category, 
+      difficulty, 
+      duration,
+      totalMarks,
+      passingScore, 
+      questions:{
+        questionText,
+        questionType,
+        answers,
+        correctAnswer,
+        marks
+      } 
+    } = req.body;
+
+    const updatedQuiz = await Quiz.findByIdAndUpdate(id, {
+      quizTitle,
+      description,
+      category,
+      difficulty,
+      duration,
+      totalMarks,
+      passingScore,
+      questions:{
+        questionText,
+        questionType,
+        answers,
+        correctAnswer,
+        marks
+      },
+    }, { new: true });
+    if(!updatedQuiz){
+      return res.status(404).json({ message: "Quiz not found" });
+    }
+    res.status(200).json({ message: "Quiz updated successfully", quiz: updatedQuiz });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error updating quiz", error });
+  }
+};
