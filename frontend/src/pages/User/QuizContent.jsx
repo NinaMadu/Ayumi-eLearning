@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Header from "../../components/Header";
-import { FaCalendarTimes, FaClock, FaLevelUpAlt, FaListAlt } from "react-icons/fa";
+import {
+  FaCalendarTimes,
+  FaClock,
+  FaLevelUpAlt,
+  FaListAlt,
+} from "react-icons/fa";
 import Timer from "../../components/Timer";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -128,7 +133,9 @@ const QuizContent = () => {
                   </div>
                   <div className="flex items-center gap-3 text-gray-800">
                     <FaLevelUpAlt className="text-blue-600" />
-                    <span className="text-lg font-medium">{quiz.difficulty}</span>
+                    <span className="text-lg font-medium">
+                      {quiz.difficulty}
+                    </span>
                   </div>
                   <div className="flex items-center gap-3 text-gray-800">
                     <FaClock className="text-blue-600" />
@@ -227,13 +234,10 @@ const QuizContent = () => {
                     <input
                       type="text"
                       placeholder="Your answer"
-                      onChange={(e) =>
-                        handleAnswerChange(e.target.value)
-                      }
+                      onChange={(e) => handleAnswerChange(e.target.value)}
                       className="w-full p-4 border border-gray-300 rounded-md"
                     />
                   )}
-                  
                 </div>
 
                 <div className="flex justify-between mt-8">
@@ -254,7 +258,9 @@ const QuizContent = () => {
                   ) : (
                     <button
                       onClick={handleNext}
-                      disabled={currentQuestionIndex === quiz.questions.length - 1}
+                      disabled={
+                        currentQuestionIndex === quiz.questions.length - 1
+                      }
                       className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md disabled:opacity-50"
                     >
                       Next
@@ -275,67 +281,71 @@ const QuizContent = () => {
                   {quiz.questions.reduce((acc, q) => acc + q.marks, 0)}
                 </p>
                 <div className="flex gap-4">
-                <button
-                  onClick={handleViewResults}
-                  className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-800 text-white font-semibold text-lg rounded-md shadow-lg transform hover:scale-105 transition-all duration-200"
-                >
-                  View Results
-                </button>
-                <button
-                  onClick={handleTryAgain}
-                  className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-700 text-white font-semibold text-lg rounded-md shadow-lg transform hover:scale-105 transition-all duration-200"
-                >
-                  Try Again
-                </button>
-                  </div>
+                  <button
+                    onClick={handleViewResults}
+                    className="px-8 py-3 bg-gradient-to-r from-green-600 to-green-800 text-white font-semibold text-lg rounded-md shadow-lg transform hover:scale-105 transition-all duration-200"
+                  >
+                    View Results
+                  </button>
+                  <button
+                    onClick={handleTryAgain}
+                    className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-700 text-white font-semibold text-lg rounded-md shadow-lg transform hover:scale-105 transition-all duration-200"
+                  >
+                    Try Again
+                  </button>
+                </div>
               </div>
             )}
 
-{viewResults && (
-  <div className="bg-white p-6 rounded-lg shadow-lg animate-fade-in">
-    <h3 className="text-3xl font-bold text-gray-800 mb-6">
-      Detailed Results
-    </h3>
-    <div className="space-y-6">
-      {quiz.questions.map((question, idx) => (
-        <div
-          key={idx}
-          className="border-b border-gray-200 pb-6 last:border-b-0 transition-all hover:bg-gray-50 rounded-lg p-4"
-        >
-          <p className="text-xl font-semibold text-gray-800 mb-2">
-            {question.questionText}
-          </p>
-          <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
-            <div>
-              <span className="font-medium">Correct Answer:</span>{" "}
-              <span className="text-green-600">{question.correctAnswer}</span>
-            </div>
-            <div>
-              <span className="font-medium">Your Answer:</span>{" "}
-              <span
-                className={
-                  userAnswers[idx] === question.correctAnswer
-                    ? "text-green-600"
-                    : "text-red-600"
-                }
-              >
-                {userAnswers[idx] || "No Answer"}
-              </span>
-            </div>
-          </div>
-          <p className="text-sm text-gray-500 mt-2">
-            Marks: <span className="font-medium">{question.marks}</span>
-          </p>
-        </div>
-      ))}
-    </div>
-    <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-      <p className="text-2xl font-bold text-gray-800">
-        Total Marks: <span className="text-blue-600">{totalMarks}</span>
-      </p>
-    </div>
-  </div>
-)}
+            {viewResults && (
+              <div className="bg-white p-6 rounded-lg shadow-lg animate-fade-in">
+                <h3 className="text-3xl font-bold text-gray-800 mb-6">
+                  Detailed Results
+                </h3>
+                <div className="space-y-6">
+                  {quiz.questions.map((question, idx) => (
+                    <div
+                      key={idx}
+                      className="border-b border-gray-200 pb-6 last:border-b-0 transition-all hover:bg-gray-50 rounded-lg p-4"
+                    >
+                      <p className="text-xl font-semibold text-gray-800 mb-2">
+                        {question.questionText}
+                      </p>
+                      <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+                        <div>
+                          <span className="font-medium">Correct Answer:</span>{" "}
+                          <span className="text-green-600">
+                            {question.correctAnswer}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="font-medium">Your Answer:</span>{" "}
+                          <span
+                            className={
+                              userAnswers[idx] === question.correctAnswer
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }
+                          >
+                            {userAnswers[idx] || "No Answer"}
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-500 mt-2">
+                        Marks:{" "}
+                        <span className="font-medium">{question.marks}</span>
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+                  <p className="text-2xl font-bold text-gray-800">
+                    Total Marks:{" "}
+                    <span className="text-blue-600">{totalMarks}</span>
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
