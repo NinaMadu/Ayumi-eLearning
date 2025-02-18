@@ -11,6 +11,7 @@ import CourseContent from './pages/User/CourseContent';
 import FavoriteCourses from './pages/User/Favorites';
 import QuizContent from './pages/User/QuizContent';
 import Reviews from './pages/User/Reviews';
+import Help from './pages/User/Help';
 
 
 const UserRoutes = () => {
@@ -27,6 +28,8 @@ const UserRoutes = () => {
         <Route path="/user/favourites" element={<FavoriteCourses />} />
         <Route path='/user/quiz-content/:quizId' element={<QuizContent />} />
         <Route path='/user/add-review/:courseId' element={<Reviews />} />
+        <Route path='/user/help' element={<Help/>} />
+        
 
 
       </Route>
