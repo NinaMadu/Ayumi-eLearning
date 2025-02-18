@@ -32,7 +32,7 @@ const Sidemenu = () => {
     { title: 'Notifications', icon: <FaBell /> },
     { title: 'Discussion', icon: <FaBookOpen /> },
     { title: "Favourites", icon: <FaHeart />, path: "/user/favourites" },
-    { title: 'Help', icon: <FaQuestionCircle /> },
+    { title: 'Help', icon: <FaQuestionCircle />,path:'/user/help' },
     { title: 'Courses', icon: <FaBook />, path: '/user/course-cards' },
     { title: 'Quizzes', icon: <MdLibraryBooks />, path: '/user/all-quizes' }, 
     

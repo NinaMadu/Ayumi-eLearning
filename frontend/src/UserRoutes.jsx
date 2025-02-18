@@ -12,6 +12,7 @@ import FavoriteCourses from './pages/User/Favorites';
 import QuizContent from './pages/User/QuizContent';
 import Reviews from './pages/User/Reviews';
 import Payment from './components/Payment';
+import Help from './pages/User/Help';
 
 
 const UserRoutes = () => {
@@ -29,6 +30,10 @@ const UserRoutes = () => {
         <Route path='/user/quiz-content/:quizId' element={<QuizContent />} />
         <Route path='/user/add-review/:courseId' element={<Reviews />} />
         <Route path='/user/courseIntro/:id/payment' element={<Payment />} />
+        <Route path='/user/help' element={<Help/>} />
+        
+
+
       </Route>
     </Routes>
   );
