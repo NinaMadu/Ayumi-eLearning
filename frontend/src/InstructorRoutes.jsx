@@ -31,6 +31,7 @@ import CourseEditThird from './pages/Instructor/courseEdit/CourseEditThird';
 import VideoManagementMenu from './pages/Instructor/CourseVideos/CourseVideosMenu';
 import CourseVideoList from './pages/Instructor/CourseVideos/CourseVideoList';
 import AdminHome from './components/AdminHome';
+import UserChat from './pages/Instructor/Message/UserChat';
 
 
 const InstructorRoutes = () => {
@@ -64,7 +65,7 @@ const InstructorRoutes = () => {
         <Route path="/instructor/edit-course-third/:courseId" element={<CourseEditThird/>} />
         <Route path="/instructor/video-management-menu" element={<VideoManagementMenu/>} />
         <Route path="/instructor/course-video-list/:courseId" element={<CourseVideoList/>} />
-        
+        <Route path="/instructor/chat" element={<UserChat/>} />
 
 
       </Route>
