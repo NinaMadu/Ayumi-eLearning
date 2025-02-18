@@ -1,6 +1,7 @@
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import { FaPaperPlane } from "react-icons/fa";
+import UserLayout from "../../components/UserLayout";
 
 const GetInTouch = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
@@ -39,7 +40,8 @@ const GetInTouch = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <UserLayout>
+    <div className="py-4 flex">
       {/* Left Side - Background Image */}
       <div 
         className="w-1/2 bg-cover bg-center relative" 
@@ -49,10 +51,10 @@ const GetInTouch = () => {
       </div>
 
       {/* Right Side - Contact Form */}
-      <div className="w-1/2 flex items-center justify-center p-10 bg-white">
+      <div className="w-1/2 flex items-center justify-center px-10  bg-white">
         <div className="max-w-lg w-full">
           <h2 className="text-3xl font-bold text-red-700 text-center mb-6">Get in Touch</h2>
-          <p className="text-center text-gray-600 mb-6">
+          <p className="text-center text-gray-600 ">
             Have questions or feedback? Fill out the form below, and we'll get back to you soon!
           </p>
 
@@ -70,7 +72,7 @@ const GetInTouch = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                 placeholder="Enter your full name"
                 required
               />
@@ -114,6 +116,7 @@ const GetInTouch = () => {
         </div>
       </div>
     </div>
+    </UserLayout>
   );
 };
 

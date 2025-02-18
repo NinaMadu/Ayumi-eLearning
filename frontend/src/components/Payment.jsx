@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, useStripe, useElements, CardNumberElement, CardExpiryElement, CardCvcElement } from "@stripe/react-stripe-js";
 import { FaLock } from "react-icons/fa";
+import UserLayout from "./UserLayout";
 
 const stripePromise = loadStripe("pk_test_51QrNO7Q1RO73bAfeNF6ZRm1cYTZiPfvpw5chvd9mLmiZfiAJgYEotvSLEfZw9rpeBKBvdfkD8NDXBkjlT4qPztKQ00ENoImvvf");
 
@@ -81,6 +82,7 @@ const CheckoutForm = () => {
   };
 
   return (
+   
     <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-2xl mx-auto">
       <h2 className="text-3xl font-bold text-blue-900 text-center mb-6">Pay Here</h2>
 
@@ -157,6 +159,7 @@ const CheckoutForm = () => {
 
 const Payment = () => {
   return (
+    <UserLayout>
     <div className="min-h-screen flex">
       {/* Left side with payment instructions */}
       <div className="w-1/2 p-10 flex flex-col justify-center bg-blue-100">
@@ -185,7 +188,10 @@ const Payment = () => {
         </div>
       </div>
     </div>
+    </UserLayout>
   );
+  
 };
+
 
 export default Payment;
