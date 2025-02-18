@@ -30,7 +30,8 @@ const UserChat = () => {
               // Flatten the conversations by conversationId
               Object.keys(fetchedConversations).forEach(conversationId => {
                 const messages = fetchedConversations[conversationId];
-                const latestMessage = messages[messages.length - 1]; // Get the most recent message
+                const latestMessage = messages[messages.length - 1];
+                console.log(latestMessage) // Get the most recent message
                 const instructor = messages[0]?.receiver === currentUser._id
                   ? messages[0]?.sender
                   : messages[0]?.receiver; // Get instructor based on the first message
@@ -108,7 +109,9 @@ const UserChat = () => {
                       />
                       <div>
                         <div className="font-semibold">{user?.firstName}</div>
-                        <div className="text-sm text-gray-600">{conversation.latestMessage?.text}</div>
+                        <div className="text-sm text-gray-600">
+                {conversation.latestMessage ? conversation.latestMessage.message : "No message yet"}
+              </div>
                       </div>
                     </div>
                   </div>
