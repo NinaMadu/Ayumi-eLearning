@@ -117,7 +117,7 @@ const CourseContent = () => {
         style={{ width: `${progress}%` }}
       ></div>
     </div>
-    <p className="mt-2 text-gray-600">{progress}% Complete</p>
+    <p className="mt-2 text-gray-600">{progress.toFixed(2)}% Completed</p>
   </div>
 )}
 

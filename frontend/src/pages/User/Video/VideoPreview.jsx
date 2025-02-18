@@ -40,7 +40,7 @@ export default function UserVideoPreview() {
 
   useEffect(() => {
     fetchVideoData();
-    setUpVimeoPlayer();
+    // setUpVimeoPlayer();
 
     return () => {
       if(vimeoPlayerRef.current)
@@ -49,19 +49,40 @@ export default function UserVideoPreview() {
 
       }
       
-    }
+    };
   }, [videoId]);
+
+  // useEffect(()=>{
+  //   if(watchedTime !== undefined)
+  //   {
+  //     setUpVimeoPlayer();
+  //   }
+  // },[watchedTime]);
 
   const fetchVideoData = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/video/${videoId}`);
-      setTitle(response.data.video.title);
-      setDescription(response.data.video.description);
+
+
+      const[ videoResponse, progressResponse ] = await Promise.all([
+        axios.get(`${API_BASE_URL}/api/video/${videoId}`),
+        axios.get(`${API_BASE_URL}/api/users/userProgress/${userId}/${courseId}/${videoId}`)
+      ]);
+
+      setTitle(videoResponse.data.video.title);
+      setDescription(videoResponse.data.video.description);
+      setWatchedTime(progressResponse.data.watchedTime || 0 );
+      setUpVimeoPlayer(progressResponse.data.watchedTime || 0 );
+
+
+      // const response = await axios.get(`${API_BASE_URL}/api/video/${videoId}`);
+      // setTitle(response.data.video.title);
+      // setDescription(response.data.video.description);
     
 
 
-      const progressResponse = await axios.get(`${API_BASE_URL}/api/users/userProgress/${userId}/${courseId}/${videoId}`);
-      setWatchedTime(progressResponse.data.watchedTime || 0 );
+      // const progressResponse = await axios.get(`${API_BASE_URL}/api/users/userProgress/${userId}/${courseId}/${videoId}`);
+      // setWatchedTime(progressResponse.data.watchedTime || 0 );
+      // console.log(progressResponse.data.watchedTime);
       // console.log(currentUser);
     
     
@@ -76,30 +97,61 @@ export default function UserVideoPreview() {
     }
   };
 
-  const setUpVimeoPlayer = () =>{
-    if(!playerRef.current) return;
+  const setUpVimeoPlayer = (initialTime) =>{
+    if(!playerRef.current || vimeoPlayerRef.current) return;
   
 
   const player = new Player(playerRef.current, {
     id: videoId,
-    autoplay: true,
+    responsive: true,
+    // width: '100%',
+    // height: '100%',
+    autoplay: false,
   });
 
   vimeoPlayerRef.current = player;
+
+
+  player.ready().then(async()=>{
+
+    console.log('Player is ready');
+    console.log(initialTime);
+
+    // setIsPlaying(true);
+
+    if(initialTime>0)
+    {
+      try{
+        await player.setCurrentTime(initialTime);
+        console.log('set current time',initialTime);
+      }
+      catch(error){
+        console.error('Error setting current time:', error);
+
+      }      
+    }
+  });
+
+
 
 
   //listen
 
   player.on('play', () => {
     console.log('video is playing');
-    setIsPlaying(true);
+    // setIsPlaying(true);
   });
 
   player.on('pause', async() => {
     console.log('video is paused');
-    setIsPlaying(false);
-    const currentTime = await player.getCurrentTime();
-    const duration = await player.getDuration();
+    // setIsPlaying(false);
+    // const currentTime = await player.getCurrentTime();
+    // const duration = await player.getDuration();
+
+    const [currentTime, duration] = await Promise.all([
+      player.getCurrentTime(),
+      player.getDuration()
+    ]);
 
     if(Math.floor(currentTime) === Math.floor(duration))
     {
@@ -107,7 +159,7 @@ export default function UserVideoPreview() {
         return;
     }
 
-    setIsPlaying(false);
+    // setIsPlaying(false);
     updateWatchedTime(Math.floor(currentTime));
     
   });
@@ -123,19 +175,12 @@ export default function UserVideoPreview() {
 
   player.on('ended', async () => {
     console.log('video is ended');
-    setIsPlaying(false);
+    // setIsPlaying(false);
     const currentTime = await player.getCurrentTime();
     updateWatchedTime(Math.floor(currentTime));
   });
 
-  player.ready().then(()=>{
-    if(watchedTime>0)
-    {
-      player.setCurrentTime(watchedTime).catch((error)=>{
-          console.error('Error setting current time:', error);
-      });
-    }
-  });
+  
 
 };
 
@@ -166,87 +211,30 @@ export default function UserVideoPreview() {
   
 
   return (
+    
     <UserLayout>
-    <div
-      style={{
-        fontFamily: 'Roboto, sans-serif',
-        maxWidth: '800px',
-        margin: '0 auto',
-        padding: '20px',
-        backgroundColor: '#f9f9f9',
-        borderRadius: '8px',
-        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
-      }}
-    >
-      {/* Video Title */}
-      <h1
-        style={{
-          fontSize: '32px',
-          fontWeight: 'bold',
-          color: '#333',
-          marginBottom: '20px',
-          textAlign: 'center',
-        }}
-      >
+    <div className="max-w-4xl p-5 mx-auto rounded-lg shadow-md bg-gray-50">
+      <h1 className="mb-6 text-3xl font-bold text-center text-gray-800">
         {title}
       </h1>
 
-      {/* Video Player */}
-      <div
-        style={{
-          position: 'relative',
-          overflow: 'hidden',
-          paddingBottom: '56.25%', // 16:9 aspect ratio
-          borderRadius: '10px',
-          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.15)',
-          marginBottom: '20px',
-        }}
-      >
+      {/* Responsive Video Player Container */}
+      <div className="relative w-full h-0 pb-[56.25%] rounded-lg overflow-hidden shadow-lg mb-6">
         <div
-            ref={playerRef}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-            }}
-          ></div>
-
+          ref={playerRef}
+          className="absolute top-0 left-0 w-full h-full "
+        />
       </div>
 
-      {/* Description Section */}
-      <div
-        style={{
-          backgroundColor: '#fff',
-          borderRadius: '8px',
-          padding: '15px 20px',
-          boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <h2
-          style={{
-            fontSize: '20px',
-            fontWeight: 'bold',
-            color: '#444',
-            marginBottom: '10px',
-          }}
-        >
+      <div className="p-5 bg-white rounded-lg shadow">
+        <h2 className="mb-3 text-xl font-bold text-gray-700">
           Description
         </h2>
-        <p
-          style={{
-            fontSize: '16px',
-            lineHeight: '1.6',
-            color: '#555',
-            whiteSpace: 'pre-wrap',
-            marginBottom: '0',
-          }}
-        >
+        <p className="text-gray-600 whitespace-pre-wrap">
           {description}
         </p>
       </div>
     </div>
-    </UserLayout>
+  </UserLayout>
   );
 }
