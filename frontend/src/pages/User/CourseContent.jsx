@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import Discussion from "../../components/Discussion.jsx";
+import Messaging from "./Message.jsx";
 import {
   FaArrowAltCircleDown,
   FaRegArrowAltCircleDown,
@@ -68,7 +69,7 @@ const CourseContent = () => {
             Course Content
           </h2>
           <ul className="space-y-8">
-            {["courseMaterials", "notes", "messages", "courseInfo"].map(
+            {["courseMaterials", "notes", "courseInfo","messages","contact Instructor"].map(
               (category) => (
                 <li
                   key={category}
@@ -282,8 +283,12 @@ const CourseContent = () => {
 
           {selectedCategory === "messages" && (
             <Discussion courseId={courseId} />
-          )
-          
+          )          
+          }
+
+          {selectedCategory === "contact Instructor" && (
+            <Messaging instructor={course.instructor} />
+          )          
           }
 
 

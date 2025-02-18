@@ -80,6 +80,29 @@ export const getMessagesByInstructor = async (req, res) => {
   }
 };
 
+// Get Conversation Between a User and an Instructor
+export const getUserInstructorConversation = async (req, res) => {
+  try {
+    const { userId, instructorId } = req.params;
+    
+    // Generate conversation ID
+    const conversationId = generateConversationId(userId, instructorId);
+
+    // Fetch messages for this conversation
+    const messages = await Message.find({ conversationId }).sort({ createdAt: 1 });
+
+    if (!messages.length) {
+      return res.status(404).json({ success: false, message: "No conversation found" });
+    }
+
+    res.status(200).json({ success: true, messages });
+  } catch (error) {
+    console.error("Error fetching user-instructor conversation:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
 // Delete a Single Message
 export const deleteMessage = async (req, res) => {
   try {
