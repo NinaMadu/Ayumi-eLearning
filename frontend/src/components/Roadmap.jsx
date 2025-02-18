@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import UserLayout from "./UserLayout";
 import { FaLanguage, FaGraduationCap, FaPassport, FaPlane, FaHome } from "react-icons/fa";
 
 const JapanRoadmap = () => {
+  const [hoveredIndex, setHoveredIndex] = useState(null);
   const steps = [
     {
       year: "Step 1",
@@ -73,9 +74,9 @@ const JapanRoadmap = () => {
 
   return (
     <UserLayout>
-      <div className="bg-gray-50 min-h-screen p-8">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-4xl font-bold text-center text-gray-800 mb-12">
+      <div className="bg-gray-50 min-h-screen p-4">
+        <div className="max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
             Roadmap to Japan from Sri Lanka
           </h1>
 
@@ -91,6 +92,8 @@ const JapanRoadmap = () => {
                 className={`flex ${
                   index % 2 === 0 ? "flex-row" : "flex-row-reverse"
                 } items-center mb-8`}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
               >
                 {/* Year */}
                 <div className="w-1/2 px-4">
@@ -100,8 +103,10 @@ const JapanRoadmap = () => {
                 </div>
 
                 {/* Card */}
-                <div className="w-1/2 px-4">
-                  <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="w-1/2 px-2">
+                  <div className={`bg-white p-3 rounded-lg shadow-lg transition-all duration-300 ${
+                    hoveredIndex === index ? "scale-110" : "scale-90"
+                  }`}>
                     {/* Icon */}
                     <div className="flex justify-center mb-4">
                       {step.icon}
@@ -111,19 +116,29 @@ const JapanRoadmap = () => {
                     <img
                       src={step.image}
                       alt={step.title}
-                      className="w-full h-32 object-cover rounded-t-lg mb-4"
+                      className={`w-full ${
+                        hoveredIndex === index ? "h-48" : "h-24"
+                      } object-cover rounded-t-lg transition-all duration-300`}
                     />
 
                     {/* Title */}
-                    <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                    <h2 className={`text-xl font-semibold text-gray-800  ${
+                      hoveredIndex === index ? "text-2xl" : "text-lg"
+                    }`}>
                       {step.title}
                     </h2>
 
                     {/* Description */}
-                    <p className="text-gray-600 mb-4">{step.description}</p>
+                    <p className={`text-gray-600 mb-4 ${
+                      hoveredIndex === index ? "block" : "hidden"
+                    }`}>
+                      {step.description}
+                    </p>
 
                     {/* Additional Details */}
-                    <div className="bg-gray-100 p-4 rounded-lg">
+                    <div className={`bg-gray-100 p-4 rounded-lg ${
+                      hoveredIndex === index ? "block" : "hidden"
+                    }`}>
                       <h3 className="text-lg font-semibold text-gray-800 mb-2">
                         More Information:
                       </h3>
