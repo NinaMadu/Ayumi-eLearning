@@ -57,15 +57,17 @@ export default function UserVideoPreview() {
       const response = await axios.get(`${API_BASE_URL}/api/video/${videoId}`);
       setTitle(response.data.video.title);
       setDescription(response.data.video.description);
-      
+    
 
 
       const progressResponse = await axios.get(`${API_BASE_URL}/api/users/userProgress/${userId}/${courseId}/${videoId}`);
       setWatchedTime(progressResponse.data.watchedTime || 0 );
-    
+      // console.log(currentUser);
     
     
     } catch (error) {
+      // console.log(userId);
+      // console.log(currentUser);
       console.error('Error fetching video data:', error);
       setTitle('Video Not Found');
       setDescription(
@@ -97,7 +99,17 @@ export default function UserVideoPreview() {
     console.log('video is paused');
     setIsPlaying(false);
     const currentTime = await player.getCurrentTime();
+    const duration = await player.getDuration();
+
+    if(Math.floor(currentTime) === Math.floor(duration))
+    {
+        console.log('Paused at the end, Skipping updateWatched time');
+        return;
+    }
+
+    setIsPlaying(false);
     updateWatchedTime(Math.floor(currentTime));
+    
   });
 
   player.on('timeupdate', (data) => {

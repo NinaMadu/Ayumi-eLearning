@@ -321,7 +321,7 @@ export const getUserProgress = async (req,res)=>{
         });
 
         if(!userProgress){
-            return res.status(401).json({
+            return res.status(200).json({
                 message:"No progress found",
                 watchedTime:0,
             });
@@ -329,7 +329,7 @@ export const getUserProgress = async (req,res)=>{
 
         const videoProgress = userProgress.watchedVideos.find(video=>video.videoId === videoId);
         if(!videoProgress){
-            return res.status(401).json({
+            return res.status(200).json({
                 message:"No progress found",
                 watchedTime:0,
             });
@@ -353,61 +353,95 @@ export const getUserProgress = async (req,res)=>{
     
 
 
-export const updateUserProgress = async (req,res)=>{
+export const updateUserProgress = async (req, res) => {
+    const { userId, courseId, videoId, watchedTime } = req.body;
 
-    const {videoId, userId, courseId, watchedTime} = req.body;
-
-    try{
-        let userProgress = await UserProgress.findOne({
-            userId, 
-            courseId
+    try {
+      const progress = await UserProgress.findOne({ userId, courseId });
+  
+      if (progress) {
+        // Check if the video progress already exists in watchedVideos
+        const videoProgress = progress.watchedVideos.find(v => v.videoId === videoId);
+  
+        if (videoProgress) {
+          // Update watchedTime if it's greater than the existing time
+          if (watchedTime > videoProgress.watchedTime) {
+            videoProgress.watchedTime = watchedTime;
+          }
+        } else {
+          // Push new video progress entry if not found
+          progress.watchedVideos.push({ videoId, watchedTime });
+        }
+  
+        progress.updatedAt = new Date();
+        await progress.save();
+      } else {
+        // If progress doesn't exist, create a new one
+        const newProgress = new UserProgress({
+          userId,
+          courseId,
+          watchedVideos: [{ videoId, watchedTime }],
         });
-
-        if(!userProgress){
-            userProgress = new UserProgress({
-                userId,
-                courseId,
-                watchedVideos:[{
-                    videoId,
-                    watchedTime,
-                }]
-            });
-        }
-        else{
-            const videoIndex = userProgress.watchedVideos.findIndex((v)=>v.videoId===videoId);
-            if(videoIndex > -1)
-            {
-                if(watchedTime > userProgress.watchedVideos[videoIndex].watchedTime)
-                {
-                    userProgress.watchedVideos[videoIndex].watchedTime = watchedTime;
-
-                }
-                
-
-            }
-            else{
-                userProgress.watchedVideos.push({
-                    videoId,
-                    watchedTime,
-                });
-            }
-
-            
-        
-        
-        }
-        await userProgress.save();
-            res.status(200).json({
-                message:"Progress updated successfully"
-            });
-
+  
+        await newProgress.save();
+      }
+  
+      res.status(200).json({ message: 'Progress updated successfully' });
+    } catch (error) {
+      console.error('Error updating user progress:', error);
+      res.status(500).json({ message: 'Internal server error' });
     }
-    catch(error){
-        console.error("Error updating progress: ",error.message);
-        res.status(500).json({message:"Failed to update progress"});
+  };
+  
+  
 
-    }
 
-   
+// export const updateUserProgress = async (req, res) => {
+//     const { videoId, userId, courseId, watchedTime } = req.body;
 
-}
+//     try {
+//         // First try to update if the video entry already exists
+//         const updated = await UserProgress.findOneAndUpdate(
+//             {
+//                 userId,
+//                 courseId,
+//                 "watchedVideos.videoId": videoId
+//             },
+//             {
+//                 $set: {
+//                     "watchedVideos.$[elem].watchedTime": watchedTime
+//                 }
+//             },
+//             {
+//                 arrayFilters: [{ "elem.videoId": videoId }],
+//                 new: true
+//             }
+//         );
+
+//         // If no matching document found, create a new entry
+//         if (!updated) {
+//             await UserProgress.findOneAndUpdate(
+//                 { userId, courseId },
+//                 {
+//                     $addToSet: {  // Use $addToSet instead of $push to prevent duplicates
+//                         watchedVideos: {
+//                             videoId,
+//                             watchedTime
+//                         }
+//                     }
+//                 },
+//                 { 
+//                     upsert: true,
+//                     new: true 
+//                 }
+//             );
+//         }
+
+//         res.status(200).json({
+//             message: "Progress updated successfully"
+//         });
+//     } catch (error) {
+//         console.error("Error updating progress: ", error.message);
+//         res.status(500).json({ message: "Failed to update progress" });
+//     }
+// }

@@ -34,6 +34,9 @@ const userProgressSchema = new mongoose.Schema(
     {timestamps: true}
 );
 
+userProgressSchema.index({userId:1,courseId:1},{unique:true});
+
+
 
 const UserProgress = mongoose.model("UserProgress", userProgressSchema);
 export default UserProgress;
