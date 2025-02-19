@@ -80,7 +80,7 @@ const Home = () => {
                   style={{
                     background: 'linear-gradient(to right, #2B3090, #8487BE )',
                   }}  >
-                  Learn more
+                  View Roadmap
                 </button>
               </div>
             </div>

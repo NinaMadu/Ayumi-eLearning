@@ -10,6 +10,7 @@ import Pic4 from "../assets/Pic4.jpg";
 import Pic5 from "../assets/Pic5.jpg";
 import Pic6 from "../assets/Pic6.jpg";
 import Notices from "../components/Notices";
+import { Link } from "react-router-dom";
 
 const UserHome = () => {
   const settings = {
@@ -72,14 +73,16 @@ const UserHome = () => {
                 >
                   Our Courses
                 </button>
+                <Link to={"/roadmap"}>
                 <button
                   className="py-2 px-8 rounded-xl text-white font-medium"
                   style={{
                     background: "linear-gradient(to right, #2B3090, #8487BE )",
                   }}
                 >
-                  Learn more
+                  View Roadmap
                 </button>
+                </Link>
               </div>
             </div>
             
