@@ -11,9 +11,10 @@ import videoRoutes from "./routes/video.route.js";
 import userDetailRoutes from "./routes/userDetail.routes.js";
 import instructorDetailRoutes from "./routes/instructorDetail.route.js";
 import instructorRoutes from "./routes/admin.routes/instructor.routes.js";
-import reviewRoutes from "./routes/review.route.js"
 import paymentRoutes from "./routes/payment.routes.js";
-
+import reviewRoutes from "./routes/review.route.js";
+import discussion from "./routes/discussion.route.js";
+import message from "./routes/message.route.js";
 
 
 dotenv.config();
@@ -44,7 +45,8 @@ app.use('/api/instructorProfile', instructorDetailRoutes);
 app.use('/api/instructor', instructorRoutes);
 app.use("/api/reviews",reviewRoutes );
 app.use('/api/payment',paymentRoutes);
-
+app.use("/api/discussion",discussion);
+app.use('/api/message', message);
 
  // Use user routes
 

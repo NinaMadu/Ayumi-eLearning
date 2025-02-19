@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
+import Discussion from "../../components/Discussion.jsx";
+import Messaging from "./Message.jsx";
 import {
   FaArrowAltCircleDown,
   FaRegArrowAltCircleDown,
@@ -91,7 +93,7 @@ const CourseContent = () => {
             Course Content
           </h2>
           <ul className="space-y-8">
-            {["courseMaterials", "notes", "messages", "courseInfo"].map(
+            {["courseMaterials", "notes", "courseInfo","messages","contact Instructor"].map(
               (category) => (
                 <li
                   key={category}
@@ -309,6 +311,27 @@ const CourseContent = () => {
               )}
             </div>
           )}
+
+          {selectedCategory === "notes" && (
+            <div>
+              <h2 className="pb-4 text-xl font-semibold">Notes</h2>
+              <p className="text-gray-600">
+                Notes are not available for this course.
+              </p>
+            </div>
+          )}
+
+          {selectedCategory === "messages" && (
+            <Discussion courseId={courseId} />
+          )          
+          }
+
+          {selectedCategory === "contact Instructor" && (
+            <Messaging instructor={course.instructor} />
+          )          
+          }
+
+
           <div className="overflow-x-auto"></div>
         </div>
       </div>
