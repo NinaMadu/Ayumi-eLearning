@@ -23,7 +23,7 @@ const headerPost = {
 
 export default function VideoUpload() {
     const location = useLocation();
-      const { courseId } = location.state;
+    const { courseId } = location.state;
     const { currentUser } = useSelector((state) => state.user);
     const navigate = useNavigate();
 
@@ -35,6 +35,7 @@ export default function VideoUpload() {
         thumbnailUrl: '',
         videoId: ''
     });
+    // const [duration, setDuration] = useState(0);
 
     const [error, setError] = useState(false);
     const [uploading, setUploading] = useState(false);
@@ -172,15 +173,25 @@ export default function VideoUpload() {
               headers: {},
               onError: function(error) {
                 console.log('Failed because: ' + error);
+                reject(error);
               },
               onProgress: function(bytesUploaded, bytesTotal) {
                 let percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
                 console.log(bytesUploaded, bytesTotal, percentage + '%');
                 setProgress(Number(percentage));
               },
-              onSuccess: function() {
+              onSuccess: async function() {
                 console.log('Download %s from %s', upload.file.name, upload.url);
-                resolve(videoId);
+                console.log('video Id success',videoId);
+                // resolve(videoId);
+                
+                    console.log('videoId',videoId);
+                    
+
+                    
+
+                    resolve(videoId);
+                
                 
               },
             });
@@ -191,7 +202,7 @@ export default function VideoUpload() {
            console.log(videoId);    
          
             // setFormData({...formData, videoId});
-        })
+        });
         
 
 
@@ -202,7 +213,39 @@ export default function VideoUpload() {
    
 
         
-    }
+    };
+    
+    const getDuration = async (videoId, maxRetries = 15, interval = 5000) => {
+        for (let i = 0; i < maxRetries; i++) {
+          try {
+            const response = await axios.get(`https://api.vimeo.com/videos/${videoId}`, {
+              headers: headerPost,
+            });
+      
+            const videoData = response.data;
+            console.log(`Attempt ${i + 1} - Video data:`, videoData);
+      
+            if (videoData.transcode.status === 'complete') {
+              console.log('Video transcode complete. Duration:', videoData.duration);
+              return videoData.duration;
+            } else {
+              console.log(
+                `Video still processing... Status: ${videoData.status}, Transcode: ${videoData.transcode.status}, Duration: ${videoData.duration}`
+              );
+            }
+          } catch (error) {
+            console.error(`Attempt ${i + 1} - Error fetching video duration:`, error.response?.data || error.message);
+          }
+      
+          // Wait before retrying
+          await new Promise((resolve) => setTimeout(resolve, interval));
+        }
+      
+        console.error('Video duration could not be fetched after retries.');
+        return null;
+      };
+      
+
 
 
 
@@ -216,8 +259,15 @@ export default function VideoUpload() {
                 console.log("Thumbnail URL:",thumbnailUrl);
                 //video upload here
                 const videoId = await handleVideoUpload(videoFile);
-                console.log("Video ID:",videoId);
+                
+
+                // console.log("Video ID:",videoId);
+                // console.log("Video Duration:",videoDuration);
                 //const videoUrl = `https://vimeo.com/${videoId}`;
+
+
+               
+
                 setFormData({ ...formData, thumbnailUrl, videoId });
 
                 const videoData = {
@@ -227,6 +277,14 @@ export default function VideoUpload() {
                     videoId
                 };
 
+                const videoDuration = await getDuration(videoId);
+                console.log("Video Duration:",videoDuration);
+
+                if (!videoId || !videoDuration) {
+                    setError('Video upload failed: Invalid video data');
+                    return;
+                }
+
                 await axios.post(`${API_BASE_URL}/api/videoUpload`, videoData,{
                     headers: {
                         'Content-Type': 'application/json'
@@ -234,7 +292,9 @@ export default function VideoUpload() {
                 });
 
                 //const courseId = courseId; // Replace with the actual course ID from the course you're updating
-                await axios.post(`${API_BASE_URL}/api/course/${courseId}/playlist`, { videoId });
+                await axios.post(`${API_BASE_URL}/api/course/${courseId}/playlist`, { videoId, title:formData.title, videoDuration }
+                    
+                );
 
 
                 setUploading(false);

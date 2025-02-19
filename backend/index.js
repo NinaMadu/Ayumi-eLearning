@@ -45,6 +45,7 @@ app.use('/api/instructor', instructorRoutes);
 app.use("/api/reviews",reviewRoutes );
 app.use('/api/payment',paymentRoutes);
 
+
  // Use user routes
 
 const PORT = process.env.PORT || 5000;

@@ -15,10 +15,19 @@ import {
 } from "react-icons/fa";
 
 import axios from "axios";
+import { useSelector } from "react-redux";
+
+// import {ProgressBarComponent} from '@syncfusion/ej2-react-progressbar';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const CourseContent = () => {
+
+  const currentUser = useSelector((state) => state.user.currentUser);
+
+
+  const userId = currentUser._id;
+
   const { courseId } = useParams();
   const navigate = useNavigate();
   const [videos, setVideos] = useState([]);
@@ -28,21 +37,34 @@ const CourseContent = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const[progress, setProgress] = useState(null);
+
+
+
   useEffect(() => {
     if (!courseId) {
       setError("Course ID is missing in the URL");
       setLoading(false);
+      
       return;
     }
 
+    console.log(userId);
+
     const fetchCourseData = async () => {
       try {
-        const [courseRes, videosRes] = await Promise.all([
+        const [courseRes, videosRes, progressRes] = await Promise.all([
           axios.get(`${API_BASE_URL}/api/course/${courseId}`),
           axios.get(`${API_BASE_URL}/api/courses/${courseId}/videos`),
+          axios.get(`${API_BASE_URL}/api/users/user/${userId}/course/${courseId}/progress`),
+          
+        
         ]);
         setCourse(courseRes.data.course);
         setVideos(videosRes.data.videos);
+        // console.log("Response:",progressRes);
+        setProgress(progressRes.data.progress);
+        // console.log("Progress:",progress);
       } catch (err) {
         setError("Error fetching course details or videos");
       } finally {
@@ -50,8 +72,10 @@ const CourseContent = () => {
       }
     };
 
+   
+
     fetchCourseData();
-  }, [courseId]);
+  }, [courseId,userId]);
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -81,6 +105,22 @@ const CourseContent = () => {
               )
             )}
           </ul>
+          {/* Progress Bar Section */}
+          {progress !== null && (
+  <div className="p-4 my-6 border-l-4 border-blue-400 rounded-lg bg-blue-50">
+    <h3 className="mb-2 text-lg font-semibold text-gray-700">
+      Your Progress
+    </h3>
+    <div className="relative w-full h-4 overflow-hidden bg-gray-200 rounded-full">
+      <div
+        className="h-full transition-all duration-700 bg-blue-500"
+        style={{ width: `${progress}%` }}
+      ></div>
+    </div>
+    <p className="mt-2 text-gray-600">{progress.toFixed(2)}% Completed</p>
+  </div>
+)}
+
         </div>
 
         {/* Main Content */}
@@ -140,7 +180,7 @@ const CourseContent = () => {
                           className="mt-2 mr-2 transition-transform duration-200 transform rotate-180 cursor-pointer hover:text-blue-600"
                           onClick={() =>
                             navigate(
-                              `/user/video/${video.videoId}`
+                              `/user/course/${courseId}/video/${video.videoId}`
                             )
                           }
                         />
@@ -148,7 +188,7 @@ const CourseContent = () => {
                           className="text-lg font-semibold text-gray-800 cursor-pointer hover:bg-slate-50"
                           onClick={() =>
                             navigate(
-                              `/user/video/${video.videoId}`
+                              `/user/course/${courseId}/video/${video.videoId}`
                             )
                           }
                         >
