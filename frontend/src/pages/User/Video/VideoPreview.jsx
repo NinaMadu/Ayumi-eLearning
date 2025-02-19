@@ -25,6 +25,7 @@ export default function UserVideoPreview() {
   // const intervalRef = useRef(null);
   const playerRef = useRef(null);
   const vimeoPlayerRef = useRef(null);
+  const intervalRef = useRef(null);
 
 
 
@@ -41,10 +42,22 @@ export default function UserVideoPreview() {
   useEffect(() => {
     fetchVideoData();
     // setUpVimeoPlayer();
+    
 
     return () => {
+
+      if(intervalRef.current)
+      {
+        clearInterval(intervalRef.current);
+
+      }
+     
+      
+
       if(vimeoPlayerRef.current)
       {
+
+       
         vimeoPlayerRef.current.destroy();
 
       }
@@ -58,6 +71,9 @@ export default function UserVideoPreview() {
   //     setUpVimeoPlayer();
   //   }
   // },[watchedTime]);
+
+  
+
 
   const fetchVideoData = async () => {
     try {
@@ -139,11 +155,13 @@ export default function UserVideoPreview() {
 
   player.on('play', () => {
     console.log('video is playing');
+    startInterval();
     // setIsPlaying(true);
   });
 
   player.on('pause', async() => {
     console.log('video is paused');
+    stopInterval();
     // setIsPlaying(false);
     // const currentTime = await player.getCurrentTime();
     // const duration = await player.getDuration();
@@ -175,6 +193,8 @@ export default function UserVideoPreview() {
 
   player.on('ended', async () => {
     console.log('video is ended');
+    stopInterval();
+
     // setIsPlaying(false);
     const currentTime = await player.getCurrentTime();
     updateWatchedTime(Math.floor(currentTime));
@@ -183,6 +203,25 @@ export default function UserVideoPreview() {
   
 
 };
+
+const startInterval = () => {
+  if (intervalRef.current) clearInterval(intervalRef.current);
+
+  intervalRef.current = setInterval(async () => {
+    if (vimeoPlayerRef.current) {
+      const currentTime = Math.floor(await vimeoPlayerRef.current.getCurrentTime());
+      updateWatchedTime(currentTime);
+    }
+  }, 10000); // Every 10 seconds
+};
+
+const stopInterval = () => {
+  if (intervalRef.current) {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }
+};
+
 
 
   const updateWatchedTime=async(time)=>{
