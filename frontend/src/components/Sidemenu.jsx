@@ -39,7 +39,7 @@ const Sidemenu = () => {
   ];
 
   const settingsMenu = [
-    { title: 'Settings', icon: <FaCog /> },
+    { title: 'Settings', icon: <FaCog />,path:'/user/settings' },
     { title: 'Logout', icon: <FaSignOutAlt /> },
   ];
 

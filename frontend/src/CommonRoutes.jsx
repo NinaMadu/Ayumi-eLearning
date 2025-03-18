@@ -11,6 +11,7 @@ import Discussion from './pages/User/Discussion';
 import ForgetPassword from './components/ForgetPassword';
 import ResetPassword from './components/ResetPassword';
 
+
 const CommonRoutes = () => {
   return (
     <Routes>
@@ -24,6 +25,7 @@ const CommonRoutes = () => {
       <Route path="/discussion" element={<Discussion />} />
       <Route path="/forget-password" element={<ForgetPassword />}/>
       <Route path="/reset-password/:token" element={<ResetPassword />} />
+      
     </Routes>
   );
 };

@@ -36,6 +36,7 @@ import QuizSecondEditPage from './pages/Instructor/quizEdit/QuizSecondEditPage';
 import QuizThirdEditPage from './pages/Instructor/quizEdit/QuizThirdEditPage';
 import Statistics from './pages/Instructor/Statistics';
 import UserChat from './pages/Instructor/Message/UserChat';
+import AdminSettings from './pages/Instructor/AdminSettings';
 
 
 const InstructorRoutes = () => {
@@ -74,6 +75,7 @@ const InstructorRoutes = () => {
         <Route path="/instructor/edit-quiz-third/:quizId" element={<QuizThirdEditPage/>} />
         <Route path="/instructor/statistics" element={<Statistics/>} />        
         <Route path="/instructor/chat" element={<UserChat/>} />
+        <Route path="/instructor/settings" element={<AdminSettings/>} />
 
 
       </Route>
