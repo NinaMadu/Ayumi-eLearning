@@ -3,124 +3,208 @@ import Instructor from "../models/instructor.model.js";
 import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 
 export const signup = async (req, res, next) => {
-    const { firstName, lastName, email, password, bDay, gender, phone} = req.body;    
-    const hashedPassword = bcryptjs.hashSync(password, 10);
-    const newUser = new User({ firstName, lastName, email, password: hashedPassword, bDay, gender, phone});
-    try {
-        await newUser.save();
-        res.status(201).json("User created successfully")
-    } catch (error) {
-        if (error.name === 'ValidationError') {
-            next(errorHandler(400, "Invalid input data. Please check your entries."));
-        } else if (error.code === 11000) { 
-            next(errorHandler(409, "Your email already used. Please use a different email."));
-        } else {
-            next(errorHandler(500, "Something went wrong. Please try again later."));
-        }
+  const { firstName, lastName, email, password, bDay, gender, phone } =
+    req.body;
+  const hashedPassword = bcryptjs.hashSync(password, 10);
+  const newUser = new User({
+    firstName,
+    lastName,
+    email,
+    password: hashedPassword,
+    bDay,
+    gender,
+    phone,
+  });
+  try {
+    await newUser.save();
+    res.status(201).json("User created successfully");
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      next(errorHandler(400, "Invalid input data. Please check your entries."));
+    } else if (error.code === 11000) {
+      next(
+        errorHandler(
+          409,
+          "Your email already used. Please use a different email."
+        )
+      );
+    } else {
+      next(errorHandler(500, "Something went wrong. Please try again later."));
     }
+  }
 };
 
 export const adminSignup = async (req, res, next) => {
-    const { name, email, password } = req.body;
-    
-    const hashedPassword = bcryptjs.hashSync(password, 10);
-    
-    const newAdmin = new Instructor({
-        name,
-        email,
-        password: hashedPassword,
-        bio: "Admin account",        
-    });
+  const { name, email, password } = req.body;
 
-    try {
-        await newAdmin.save();
-        res.status(201).json("Admin account created successfully");
-    } catch (error) {
-        if (error.name === 'ValidationError') {
-            next(errorHandler(400, "Invalid input data. Please check your entries."));
-        } else if (error.code === 11000) { 
-            next(errorHandler(409, "Email is already in use. Please use a different email."));
-        } else {
-            next(errorHandler(500, "Something went wrong. Please try again later."));
-        }
+  const hashedPassword = bcryptjs.hashSync(password, 10);
+
+  const newAdmin = new Instructor({
+    name,
+    email,
+    password: hashedPassword,
+    bio: "Admin account",
+  });
+
+  try {
+    await newAdmin.save();
+    res.status(201).json("Admin account created successfully");
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      next(errorHandler(400, "Invalid input data. Please check your entries."));
+    } else if (error.code === 11000) {
+      next(
+        errorHandler(
+          409,
+          "Email is already in use. Please use a different email."
+        )
+      );
+    } else {
+      next(errorHandler(500, "Something went wrong. Please try again later."));
     }
+  }
 };
 
 export const signin = async (req, res, next) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    try {
-        let validUser;
-        let isInstructor = false;
-        
-        validUser = await Instructor.findOne({ email });
-        if (validUser) {
-            isInstructor = true;
-        } else {
-            validUser = await User.findOne({ email });
-        }
+  try {
+    let validUser;
+    let isInstructor = false;
 
-        if (!validUser) return next(errorHandler(404, "User not found"));
-
-        if (!isInstructor && !validUser.isActive) {
-            return res.status(403).json({ message: "Account is deactivated. Please contact support." });
-        }
-
-        const validPassword = bcryptjs.compareSync(password, validUser.password);
-        if (!validPassword) return next(errorHandler(401, "Invalid password"));
-
-        if (validUser) {
-            validUser.isActive = true; // Update instance property
-            validUser.isLoggedIn=true;
-            await validUser.save(); // Save the specific user instance
-        }
-
-        const token = jwt.sign({ id: validUser._id, isInstructor }, process.env.JWT_SECRET);
-        
-        const { password: pass, ...rest } = validUser._doc;
-
-        res.cookie('access_token', token, { httpOnly: true }).status(200).json({ ...rest, isInstructor });
-
-        // if (!validUser|| !validUser.isActive) {
-        //     return res.status(403).json({ message: "Account is deactivated or user not found" });
-        //   }
-
-    } catch (error) {
-        return next(errorHandler(500, "An unexpected error occurred. Please try again later."));
+    validUser = await Instructor.findOne({ email });
+    if (validUser) {
+      isInstructor = true;
+    } else {
+      validUser = await User.findOne({ email });
     }
+
+    if (!validUser) return next(errorHandler(404, "User not found"));
+
+    if (!isInstructor && !validUser.isActive) {
+      return res
+        .status(403)
+        .json({ message: "Account is deactivated. Please contact support." });
+    }
+
+    const validPassword = bcryptjs.compareSync(password, validUser.password);
+    if (!validPassword) return next(errorHandler(401, "Invalid password"));
+
+    if (validUser) {
+      validUser.isActive = true; // Update instance property
+      validUser.isLoggedIn = true;
+      await validUser.save(); // Save the specific user instance
+    }
+
+    const token = jwt.sign(
+      { id: validUser._id, isInstructor },
+      process.env.JWT_SECRET
+    );
+
+    const { password: pass, ...rest } = validUser._doc;
+
+    res
+      .cookie("access_token", token, { httpOnly: true })
+      .status(200)
+      .json({ ...rest, isInstructor });
+
+    // if (!validUser|| !validUser.isActive) {
+    //     return res.status(403).json({ message: "Account is deactivated or user not found" });
+    //   }
+  } catch (error) {
+    return next(
+      errorHandler(500, "An unexpected error occurred. Please try again later.")
+    );
+  }
 };
-
-
 
 export const signOut = async (req, res, next) => {
-    try {
-        const { userId } = req.body;
+  try {
+    const { userId } = req.body;
 
-        if (!userId) {
-            return res.status(400).json({ message: "User ID is required" });
-        }
-
-        const validUser = await User.findById(userId) || await Instructor.findById(userId);
-
-        if (!validUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        // Update user status to logged out
-        validUser.isLoggedIn = false;
-        await validUser.save();
-
-        // Clear the access token cookie
-        res.clearCookie('access_token');
-
-        // Send success response
-        res.status(200).json({ message: "User has been logged out!" });
-    } catch (error) {
-        console.error("Signout error:", error.message);
-        return next(errorHandler(500, "An unexpected error occurred while logging out."));
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
     }
+
+    const validUser =
+      (await User.findById(userId)) || (await Instructor.findById(userId));
+
+    if (!validUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user status to logged out
+    validUser.isLoggedIn = false;
+    await validUser.save();
+
+    // Clear the access token cookie
+    res.clearCookie("access_token");
+
+    // Send success response
+    res.status(200).json({ message: "User has been logged out!" });
+  } catch (error) {
+    console.error("Signout error:", error.message);
+    return next(
+      errorHandler(500, "An unexpected error occurred while logging out.")
+    );
+  }
 };
 
+export const forgetPassword = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
+    // Generate Reset Token (expires in 1 hour)
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    // Configure Nodemailer
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    // Reset Link
+    const resetURL = `http://localhost:5173/reset-password/${token}`;
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: "Password Reset Request",
+      html: `<p>Click <a href="${resetURL}">here</a> to reset your password. This link expires in 1 hour.</p>`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.json({ message: "Password reset email sent!" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+export const resetPassword = async (req, res, next) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const salt = await bcryptjs.genSalt(10);
+    user.password = await bcryptjs.hash(newPassword, salt);
+    await user.save();
+
+    res.json({ message: "Password reset successful" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};

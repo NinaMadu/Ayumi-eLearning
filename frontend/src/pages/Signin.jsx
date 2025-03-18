@@ -94,7 +94,7 @@ export default function Signin() {
                 />
                 <span className="text-sm text-blue-900">Remember me</span>
               </label>
-              <span className="text-sm text-blue-900 hover:text-blue-500">Forgot Password?</span>
+              <Link to={"/forget-password"} className="text-sm text-blue-900 hover:text-blue-500">Forgot Password?</Link>
             </div>
             <div className="flex justify-center">
               <button className="w-64 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-blue-900 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-lg" disabled={loading}>
