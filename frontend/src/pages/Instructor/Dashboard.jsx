@@ -108,6 +108,11 @@ function Dashboard() {
               Manage Quizzes
             </button>
           </Link>
+          <Link to={"/instructor/assignment-management"} className="flex">
+            <button className="w-full h-full bg-gradient-to-r bg-cyan-800 text-white  font-semibold  p-3 sm:p-4 rounded-lg shadow-md hover:bg-cyan-600 transition min-h-[80px]">
+              Manage Assignments
+            </button>
+          </Link>
           <Link to={"/instructor/notice-management"} className="flex">
             <button className="w-full h-full bg-gradient-to-r bg-cyan-800 font-semibold text-white p-3 sm:p-4 rounded-lg shadow-md hover:bg-cyan-600 transition min-h-[80px]">
               Manage Notices

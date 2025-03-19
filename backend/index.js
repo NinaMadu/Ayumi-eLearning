@@ -15,6 +15,7 @@ import paymentRoutes from "./routes/payment.routes.js";
 import reviewRoutes from "./routes/review.route.js";
 import discussion from "./routes/discussion.route.js";
 import message from "./routes/message.route.js";
+import assignmentRoutes from "./routes/admin.routes/assignment.routes.js";
 
 
 dotenv.config();
@@ -47,6 +48,8 @@ app.use("/api/reviews",reviewRoutes );
 app.use('/api/payment',paymentRoutes);
 app.use("/api/discussion",discussion);
 app.use('/api/message', message);
+app.use('/api/assignments', assignmentRoutes);
+
 
  // Use user routes
 

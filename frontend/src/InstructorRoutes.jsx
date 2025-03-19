@@ -36,6 +36,9 @@ import QuizSecondEditPage from './pages/Instructor/quizEdit/QuizSecondEditPage';
 import QuizThirdEditPage from './pages/Instructor/quizEdit/QuizThirdEditPage';
 import Statistics from './pages/Instructor/Statistics';
 import UserChat from './pages/Instructor/Message/UserChat';
+import ManageAssignments from './pages/Instructor/Assignments/ManageAssignments';
+import AddAssignment from './pages/Instructor/Assignments/CreateAssignment';
+import EditAssignment from './pages/Instructor/Assignments/EditAssignment';
 
 
 const InstructorRoutes = () => {
@@ -74,6 +77,9 @@ const InstructorRoutes = () => {
         <Route path="/instructor/edit-quiz-third/:quizId" element={<QuizThirdEditPage/>} />
         <Route path="/instructor/statistics" element={<Statistics/>} />        
         <Route path="/instructor/chat" element={<UserChat/>} />
+        <Route path="/instructor/assignment-management" element={<ManageAssignments/>} />
+        <Route path="/instructor/add-assignment" element={<AddAssignment/>} />
+        <Route path="/instructor/edit-assignment/:id" element={<EditAssignment/>} />
 
 
       </Route>
