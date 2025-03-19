@@ -1,11 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { motion } from "framer-motion";
+// import Pic3 from '../assets/Pic3.jpeg';
+import {MessageCircle } from "lucide-react";
 
-import Pic3 from '../assets/Pic3.jpeg';
+import { FaInstagram, FaYoutube, FaFacebook } from 'react-icons/fa';
+
 
 export default function About() {
 
   const heroRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isTapped, setIsTapped] = useState(false);
 
 
   useEffect(() => {
@@ -43,6 +49,19 @@ export default function About() {
     return () => clearInterval(interval); // Cleanup on unmount
   }, []);
 
+   const buttonStyle = {
+    padding: "12px 32px",
+    fontSize: "1.125rem",
+    fontWeight: "bold",
+    color: "#b91c1c", // Red-700
+    backgroundColor: "#ffffff", // White
+    borderRadius: "8px",
+    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+    cursor: "pointer", // Manually set cursor to pointer
+    transition: "all 0.3s ease",
+    transform: isHovered ? "scale(1.1)" : isTapped ? "scale(0.95)" : "scale(1)",
+  };
+
 
   return (
     <div style={{
@@ -60,7 +79,7 @@ export default function About() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundImage: `url(https://img.freepik.com/free-photo/man-practicing-japanese-handwriting_23-2149124248.jpg?t=st=1742328191~exp=1742331791~hmac=8be9a78035d62100b7a8a0d51458807ab11932747ecd77d30ce9aa38d17bd9fa&w=1380)`,
+        backgroundImage: `url(https://img.freepik.com/free-photo/red-brush-ink-splatter-background_1409-1460.jpg?t=st=1742352274~exp=1742355874~hmac=007e9caea19fbfee19a69787e01be7c4f91f2ae7a9c88ee556c304400fb27681&w=996)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         overflow: 'hidden',
@@ -87,39 +106,41 @@ export default function About() {
         }}
       >
         {/* Heading with Fade-In Animation */}
-        <h1
+        <motion.h1
             style={{
             
             marginBottom: '1.5rem',
-            fontSize: '3rem',
-              fontWeight: 'bold',
-              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-              letterSpacing: '0.05em',
+            
+            fontSize: '4rem',
+            fontWeight: 'bold',
+              
+              
            
             animation: isVisible ? 'fadeIn 1.5s ease-out' : 'none',
           }}
         >
           Unlock the Beauty of Japanese with Ayumi
-        </h1>
+        </motion.h1>
 
         {/* Subheading with Slide-Up Animation */}
-        <p
+        <motion.p
           style={{
             marginBottom: '2rem',
+            marginTop: '2rem',
             fontSize: '1.25rem',
             animation: isVisible ? 'slideUp 1s ease-out 0.5s' : 'none',
             animationFillMode: 'both',
           }}
         >
           Your gateway to mastering Japanese with expert instructors and interactive learning!
-        </p>
+        </motion.p>
 
         {/* Button with Hover Effect */}
         <button
           style={{
             padding: '0.75rem 2rem',
             color: 'white',
-            backgroundColor: '#f97316',
+            backgroundColor: '#BF3131',
             borderRadius: '0.5rem',
             border: 'none',
             cursor: 'pointer',
@@ -252,14 +273,104 @@ export default function About() {
       </section>
 
       {/* Call to Action */}
-      <section className="px-4 py-16 text-center bg-orange-500">
-        <h2 className="mb-4 text-3xl font-bold text-white">Start Your Japanese Learning Journey Today!</h2>
-        <p className="mb-8 text-white">Join Ayumi and master Japanese with ease.</p>
-        <button className="px-8 py-3 text-orange-500 transition duration-300 bg-white rounded-lg hover:bg-gray-100">
-          Sign Up Now
-        </button>
-      </section>
+               
+      {/* Call to Action Section */}
+        <section className="relative py-20 bg-gradient-to-r from-[#BF3131] to-[#7D0A0A] overflow-hidden">
+          {/* Background Animation */}
+          <motion.div
+            className="absolute inset-0 opacity-20"
+            whileInView={{ scale: 1.2 }}
+            transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
+            style={{
+              backgroundImage: "url('/path-to-your-pattern-or-effect.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
 
+          {/* Content */}
+          <div className="container px-6 mx-auto text-center">
+            {/* Heading */}
+            <motion.h2
+              className="mb-6 text-4xl font-extrabold text-white md:text-5xl"
+              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: -20 }}
+              transition={{ duration: 1 }}
+            >
+              Start Your Japanese Learning Journey Today!
+            </motion.h2>
+
+            {/* Subheading */}
+            <motion.p
+              className="mb-8 text-lg text-white md:text-xl"
+              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              transition={{ duration: 1, delay: 0.3 }}
+            >
+              Join Ayumi and master Japanese with ease. Sign up now and get access to exclusive content!
+            </motion.p>
+
+            {/* Sign-Up Button */}
+             {/* Button with Hover & Tap Animation */}
+            <button
+            style={buttonStyle}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onMouseDown={() => setIsTapped(true)}
+            onMouseUp={() => setIsTapped(false)}
+          >
+            Sign Up Now
+              </button>
+          </div>
+        </section>
+      
+
+      {/* Social Media Section */}
+        <section className="py-20 bg-[#2d3748]">
+          <div className="container px-6 mx-auto text-center">
+            {/* Heading */}
+            <motion.h2
+              className="mb-6 text-4xl font-extrabold text-white md:text-5xl"
+              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: -20 }}
+              transition={{ duration: 1 }}
+            >
+              Connect with Us on Social Media!
+            </motion.h2>
+
+            {/* Subheading */}
+            <motion.p
+              className="mb-12 text-lg text-gray-300 md:text-xl"
+              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              transition={{ duration: 1, delay: 0.3 }}
+            >
+              Follow Ayumi for updates, learning tips, and more.
+            </motion.p>
+
+            {/* Social Media Icons Grid */}
+            <div className="grid w-2/3 grid-cols-2 gap-6 mx-auto md:grid-cols-4 place-items-center">
+              {[
+                { icon: <FaFacebook size={32} />, color: "bg-blue-600 hover:bg-blue-700", link: "https://www.facebook.com/yourpage" },
+                { icon: <FaInstagram size={32} />, color: "bg-pink-500 hover:bg-pink-600", link: "https://www.instagram.com/yourpage" },
+                { icon: <MessageCircle size={32} />, color: "bg-green-500 hover:bg-green-600", link: "https://wa.me/yourwhatsappnumber" },
+                { icon: <FaYoutube size={32} />, color: "bg-red-600 hover:bg-red-700", link: "https://www.youtube.com/yourchannel" },
+              ].map((item, index) => (
+                <motion.a
+                  key={index}
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`p-6 text-white rounded-lg shadow-lg transition-all duration-300 ${item.color}`}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  {item.icon}
+                </motion.a>
+              ))}
+            </div>
+          </div>
+        </section>
 
 
 
