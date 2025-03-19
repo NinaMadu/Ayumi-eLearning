@@ -43,9 +43,9 @@ const UserHome = () => {
   return (
     <UserLayout>
       <div className="flex pt-4">
-      <div className="container mx-auto flex-1">
+      <div className="container flex-1 mx-auto">
           {/* Text and Image */}
-          <div className="flex justify-between items-center px-24 sm:px-8 sm:justify-center flex-wrap">
+          <div className="flex flex-wrap items-center justify-between px-24 sm:px-8 sm:justify-center">
             <div className="flex flex-col items-center">
               {/* Text */}
               <p className="text-[#F61627] text-6xl font-semibold mb-8 text-center">
@@ -64,18 +64,22 @@ const UserHome = () => {
               </p>
 
               {/* Buttons */}
-              <div className="flex gap-16 mt-8 justify-center">
+              <div className="flex justify-center gap-16 mt-8">
+                <Link to={"/user/course-cards"}>
                 <button
-                  className="py-2 px-8 rounded-xl text-white font-medium"
+                  className="px-8 py-2 font-medium text-white rounded-xl"
                   style={{
                     background: "linear-gradient(to right, #DC7676, #C53B3B )",
                   }}
                 >
                   Our Courses
-                </button>
-                <Link to={"/roadmap"}>
+                  </button>
+                </Link>
+                
+
+                <Link to={"/user/roadmap"}>
                 <button
-                  className="py-2 px-8 rounded-xl text-white font-medium"
+                  className="px-8 py-2 font-medium text-white rounded-xl"
                   style={{
                     background: "linear-gradient(to right, #2B3090, #8487BE )",
                   }}
@@ -102,14 +106,14 @@ const UserHome = () => {
           </div>
 
           {/* Image Slider */}
-          <div className="px-4 py-8 max-w-4xl mx-auto bg-slate-200 rounded-2xl">
+          <div className="max-w-4xl px-4 py-8 mx-auto bg-slate-200 rounded-2xl">
             <Slider {...settings}>
               {images.map((src, index) => (
                 <div key={index} className="px-2">
                   <img
                     src={src}
                     alt={`Gallery item ${index}`}
-                    className="w-full h-96 object-cover rounded-lg shadow-lg"
+                    className="object-cover w-full rounded-lg shadow-lg h-96"
                   />
                 </div>
               ))}

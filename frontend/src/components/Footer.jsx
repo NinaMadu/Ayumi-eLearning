@@ -1,40 +1,40 @@
 import React from 'react';
-import { FaPhone, FaEnvelope, FaFacebookF, FaLinkedinIn, FaTwitter, FaYoutube, FaQuestionCircle, FaInfoCircle, FaShieldAlt } from 'react-icons/fa';
+import { FaPhone, FaEnvelope, FaFacebookF, FaTiktok, FaInstagram, FaYoutube, FaQuestionCircle, FaInfoCircle, FaShieldAlt } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer className="bg-blue-950 text-gray-300 py-8 mt-4">
-      <div className="container mx-auto px-4 ">
+    <footer className="py-8 mt-4 text-gray-300 bg-blue-950">
+      <div className="container px-4 mx-auto ">
         
         {/* Centered content */}
-        <div className="text-center  grid grid-cols justify-center md:grid-cols-3 gap-8 md:gap-12 px-12 ">
+        <div className="grid justify-center gap-8 px-12 text-center grid-cols md:grid-cols-3 md:gap-12 ">
           
           {/* Quick Links */}
           <div>
-            <h4 className="text-xl font-semibold mb-3 flex-col text-justify ">Quick Links</h4>
-            <ul className="space-y-2flex-col text-justify">
-              <li><a href="#teachers" className="hover:text-white transition">Teachers</a></li>
-              <li><a href="#courses" className="hover:text-white transition">Courses</a></li>
-              <li><a href="#blogs" className="hover:text-white transition">Blogs</a></li>
+            <h4 className="flex-col mb-3 text-xl font-semibold text-justify ">Quick Links</h4>
+            <ul className="text-justify space-y-2flex-col">
+              <li><a href="#teachers" className="transition hover:text-white">Teachers</a></li>
+              <li><a href="#courses" className="transition hover:text-white">Courses</a></li>
+              <li><a href="#blogs" className="transition hover:text-white">Blogs</a></li>
             </ul>
           </div>
           
           {/* Support & Services */}
           <div >
-            <h4 className="text-xl font-semibold mb-3 flex-col text-justify">Support & Services</h4>
-            <ul className="space-y-2 flex-col text-justify">
+            <h4 className="flex-col mb-3 text-xl font-semibold text-justify">Support & Services</h4>
+            <ul className="flex-col space-y-2 text-justify">
               <li >
-                <a href="#faq" className="hover:text-white transition">
+                <a href="#faq" className="transition hover:text-white">
                   <FaQuestionCircle className="inline-block mr-2" /> FAQ
                 </a>
               </li>
               <li>
-                <a href="#help-center" className="hover:text-white transition">
+                <a href="#help-center" className="transition hover:text-white">
                   <FaInfoCircle className="inline-block mr-2" /> Help Centre
                 </a>
               </li>
               <li>
-                <a href="#privacy-policy" className="hover:text-white transition">
+                <a href="#privacy-policy" className="transition hover:text-white">
                   <FaShieldAlt className="inline-block mr-2" /> Privacy Policy & Terms
                 </a>
               </li>
@@ -43,27 +43,27 @@ const Footer = () => {
           
           {/* Contact Us */}
           <div className='flex-col text-justify'>
-            <h4 className="text-xl font-semibold mb-3 ">Contact Us</h4>
+            <h4 className="mb-3 text-xl font-semibold ">Contact Us</h4>
             <p className="mb-2">
-              <FaPhone className="inline-block mr-2" /> <a href="tel:+94771342563" className="hover:text-white transition">0771342563</a>
+              <FaPhone className="inline-block mr-2" /> <a href="https://api.whatsapp.com/send?phone=819092862645&text&app=facebook" className="transition hover:text-white">81 90-9286-2645</a>
             </p>
             <p className="mb-2">
-              <FaEnvelope className="inline-block mr-2" /> <a href="mailto:ayumiinstitute@gmail.com" className="hover:text-white transition">ayumiinstitute@gmail.com</a>
+              <FaEnvelope className="inline-block mr-2" /> <a href="mailto:ayumisljp@gmail.com" className="transition hover:text-white">ayumisljp@gmail.com</a>
             </p>
           </div>
           
         </div>
 
         {/* Social Media Icons */}
-        <div className="flex justify-center space-x-6 mt-8 text-2xl">
-          <a href="#facebook" className="hover:text-gray-400 transition"><FaFacebookF /></a>
-          <a href="#linkedin" className="hover:text-gray-400 transition"><FaLinkedinIn /></a>
-          <a href="#twitter" className="hover:text-gray-400 transition"><FaTwitter /></a>
-          <a href="#youtube" className="hover:text-gray-400 transition"><FaYoutube /></a>
+        <div className="flex justify-center mt-8 space-x-6 text-2xl">
+          <a href="https://www.facebook.com/Ayumi.JLI" className="transition hover:text-gray-400"><FaFacebookF /></a>
+          <a href="https://www.tiktok.com/@ayumisensei1?fbclid=IwY2xjawJH0SZleHRuA2FlbQIxMAABHWdJ1OV_wIr38voEIRr_TZQWze34AlY8ZkX6eYBSzdgRPWhvaaU7uhSplw_aem_KcYWq5-RO1Lyzl3Ch_V-Rw" className="transition hover:text-gray-400"><FaTiktok /></a>
+          <a href="https://www.instagram.com/ayumisljp/?fbclid=IwY2xjawJH0atleHRuA2FlbQIxMAABHd115NvbD_fqEO0yP4ocJ9f_HdY3TvWrwJoKg1JFjph0duTj99ec87KX8g_aem_YLoGt6P8wUIMnUypeC0njw#" className="transition hover:text-gray-400"><FaInstagram /></a>
+          <a href="https://www.youtube.com/@ayumisenseisljp" className="transition hover:text-gray-400"><FaYoutube /></a>
         </div>
 
         {/* Footer Bottom */}
-        <div className="text-center mt-8 text-sm text-gray-400">
+        <div className="mt-8 text-sm text-center text-gray-400">
           <p>© 2024 Ayumi Japanese Language Institute. All rights reserved.</p>
         </div>
         

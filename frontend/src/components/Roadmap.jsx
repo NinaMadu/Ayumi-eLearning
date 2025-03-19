@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import UserLayout from "./UserLayout";
 import {
   FaLanguage,
   FaGraduationCap,
@@ -7,6 +6,8 @@ import {
   FaPlane,
   FaHome,
 } from "react-icons/fa";
+import Header from "./Header";
+import Footer from "./Footer";
 
 const steps = [
   {
@@ -84,45 +85,45 @@ const Roadmap = () => {
   const [hoveredStep, setHoveredStep] = useState(null);
 
   return (
-    <UserLayout>
-      <div className="max-w-4xl mx-auto py-4 px-6">
-        <h2 className="text-3xl font-bold text-center mb-4">
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <div className="container px-12 py-24 mx-auto">
+        <h2 className="mb-12 text-4xl font-bold text-center text-gray-800">
           Your Journey to Japan
         </h2>
-        <div className="relative border-l-4 border-gray-300 pl-6 space-y-12">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {steps.map((step, index) => (
             <div
               key={index}
               onMouseEnter={() => setHoveredStep(index)}
               onMouseLeave={() => setHoveredStep(null)}
-              className="relative flex items-start space-x-4 group"
+              className="relative p-6 transition-all duration-300 bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105"
             >
-              <div className="absolute -left-7 flex items-center justify-center w-12 h-12 bg-white border-4 border-gray-300 rounded-full shadow-md">
+              <div className="absolute flex items-center justify-center w-12 h-12 bg-white border-4 border-gray-200 rounded-full shadow-md -top-6 -left-6">
                 {step.icon}
               </div>
-              <div className="bg-white p-4 shadow-lg rounded-lg w-full transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-                <h3 className="text-lg font-semibold">
-                  {step.year}: {step.title}
-                </h3>
-                <img
-                  src={step.image}
-                  alt={step.title}
-                  className="w-full h-36 object-cover mt-2 rounded-lg"
-                />
-                <p className="text-gray-700">{step.description}</p>
-                {hoveredStep === index && (
-                  <ul className="list-disc pl-5 text-gray-600 mt-2">
-                    {step.details.map((detail, i) => (
-                      <li key={i}>{detail}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+              <img
+                src={step.image}
+                alt={step.title}
+                className="object-cover w-full h-40 mb-4 rounded-lg"
+              />
+              <h3 className="text-xl font-semibold text-gray-800">
+                {step.year}: {step.title}
+              </h3>
+              <p className="mt-2 text-gray-600">{step.description}</p>
+              {hoveredStep === index && (
+                <ul className="pl-5 mt-4 space-y-2 text-gray-600 list-disc">
+                  {step.details.map((detail, i) => (
+                    <li key={i}>{detail}</li>
+                  ))}
+                </ul>
+              )}
             </div>
           ))}
         </div>
       </div>
-    </UserLayout>
+      <Footer />
+    </div>
   );
 };
 

@@ -5,6 +5,7 @@ import UserLayout from '../../../components/UserLayout';
 import { useSelector } from 'react-redux';
 // import { set } from 'mongoose';
 import Player from '@vimeo/player';
+// import { Collection } from 'mongoose';
 
 
 export default function UserVideoPreview() {
@@ -18,7 +19,12 @@ export default function UserVideoPreview() {
   const [description, setDescription] = useState('');
 
   const [watchedTime, setWatchedTime] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  // const [isPlaying, setIsPlaying] = useState(false);
+  const [videoRatio, setVideoRatio] = useState('16/9');
+  const [isPortrait, setIsPortrait] = useState(false);
+  const [playerHeight, setPlayerHeight] = useState('56.25%');
+
+
   const userId = currentUser._id;
 
 
@@ -26,7 +32,7 @@ export default function UserVideoPreview() {
   const playerRef = useRef(null);
   const vimeoPlayerRef = useRef(null);
   const intervalRef = useRef(null);
-
+  const containerRef = useRef(null); 
 
 
 
@@ -123,6 +129,39 @@ export default function UserVideoPreview() {
     // width: '100%',
     // height: '100%',
     autoplay: false,
+    controls: true,
+    title: false,
+    byline: false,
+    portrait: false,
+    speed:true,
+    playsinline: true,
+    dnt: true,
+    quality:'auto',
+
+    embed:{
+      buttons:{
+        share: false,
+        embed: false,
+        like: false,
+        watchLater:false,
+        collection:false
+      },
+      logos:{
+        vimeo:false,
+        custom:{
+          active:false
+        }
+      },
+      title:false,
+      speed:true,
+      transparent: false,
+      playbar:true,
+      volume:true,
+      fullscreen:true
+    }
+
+
+
   });
 
   vimeoPlayerRef.current = player;
@@ -133,20 +172,46 @@ export default function UserVideoPreview() {
     console.log('Player is ready');
     console.log(initialTime);
 
+
+    try{
+      const videoData = await player.getVideoHeight();
+      const videoWidth = await player.getVideoWidth();
+      const aspectRatio =  videoWidth / videoData;
+      setVideoRatio(aspectRatio);
+
+      if (aspectRatio < 1)
+      {
+
+        setIsPortrait(true);
+        setPlayerHeight(`${100 / aspectRatio}%`);
+      } else {
+        setIsPortrait(false);
+
+      }
+
+      if(initialTime>0)
+        {
+          
+            await player.setCurrentTime(initialTime);
+            console.log('set current time',initialTime);
+        }
+
+
+
+
+    }
+
+
     // setIsPlaying(true);
 
-    if(initialTime>0)
-    {
-      try{
-        await player.setCurrentTime(initialTime);
-        console.log('set current time',initialTime);
-      }
+   
+      
       catch(error){
         console.error('Error setting current time:', error);
 
       }      
     }
-  });
+  );
 
 
 
@@ -258,12 +323,19 @@ const stopInterval = () => {
       </h1>
 
       {/* Responsive Video Player Container */}
-      <div className="relative w-full h-0 pb-[56.25%] rounded-lg overflow-hidden shadow-lg mb-6">
-        <div
-          ref={playerRef}
-          className="absolute top-0 left-0 w-full h-full "
-        />
-      </div>
+      <div 
+          ref={containerRef}
+          className={`relative w-full mx-auto overflow-hidden shadow-lg mb-6 rounded-lg ${isPortrait ? 'max-w-md' : 'max-w-full'}`}
+          style={{ 
+            paddingBottom: isPortrait ? '0' : '56.25%', // Only use aspect ratio padding for landscape
+            height: isPortrait ? playerHeight : 'auto'  // Set fixed height for portrait
+          }}
+        >
+          <div
+            ref={playerRef}
+            className={`${isPortrait ? 'h-full' : 'absolute top-0 left-0 w-full h-full'}`}
+          />
+        </div>
 
       <div className="p-5 bg-white rounded-lg shadow">
         <h2 className="mb-3 text-xl font-bold text-gray-700">
