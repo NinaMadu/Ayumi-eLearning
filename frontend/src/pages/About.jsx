@@ -4,6 +4,10 @@ import { motion } from "framer-motion";
 import {MessageCircle } from "lucide-react";
 
 import { FaInstagram, FaYoutube, FaFacebook } from 'react-icons/fa';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function About() {
@@ -13,8 +17,13 @@ export default function About() {
   const [isHovered, setIsHovered] = useState(false);
   const [isTapped, setIsTapped] = useState(false);
 
+  const { currentUser } = useSelector((state) => state.user);
+
+  const navigate = useNavigate();
+
 
   useEffect(() => {
+    console.log("Current user:", currentUser);
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -37,6 +46,7 @@ export default function About() {
         observer.unobserve(heroRef.current);
       }
     };
+   
 
   }, []);
 
@@ -70,6 +80,7 @@ export default function About() {
       backgroundColor: '#f9fafb'
     }}>
 
+    <Header/>
       
      <section
       ref={heroRef}
@@ -83,6 +94,7 @@ export default function About() {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         overflow: 'hidden',
+        marginTop: '50px',
       }}
     >
       {/* Gradient Overlay */}
@@ -157,7 +169,11 @@ export default function About() {
           onMouseLeave={(e) => {
             e.target.style.transform = 'translateY(0)';
             e.target.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-          }}
+            }}
+            onClick={() => {
+              currentUser ? navigate('/user/course-cards'): navigate('/courses');
+            
+          } }  
         >
           Start Learning Today
         </button>
@@ -216,7 +232,7 @@ export default function About() {
           style={{
             display: 'grid',
             gap: '2rem',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 2fr))',
             maxWidth: '960px',
             margin: 'auto',
           }}
@@ -256,26 +272,52 @@ export default function About() {
 
        {/* Who We Serve */}
       <section className="max-w-6xl px-4 py-16 mx-auto">
-        <h2 className="mb-12 text-3xl font-bold text-center">Who We Serve</h2>
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {[
-            { image: 'https://img.freepik.com/free-photo/young-thoughtful-man-black-shirt-with-optical-glasses-holds-notebook-puts-pen-head-isolated-white-wall_141793-35551.jpg?t=st=1742324670~exp=1742328270~hmac=1a9697c8810ed68612362a61e2bf386260d4e7507a6d7f17fa919d653612b714&w=1380', title: 'Beginners', description: 'Start your journey with our beginner-friendly courses.' },
-            { image: 'https://img.freepik.com/free-photo/front-view-male-student-green-checkered-shirt-wearing-black-backpack-holding-files-blue-wall_140725-42404.jpg?t=st=1742324927~exp=1742328527~hmac=42ad538032cb451c5c265519d06d07fedbe9577e931591daec8e48e7520052b0&w=1380', title: 'Students', description: 'Excel in your studies with our JLPT preparation courses.' },
-            
-          ].map((item, index) => (
-            <div key={index} className="text-center">
-              <img src={item.image} alt={item.title} className="object-cover w-full h-48 mb-4 rounded-lg" />
-              <h3 className="mb-2 text-xl font-semibold">{item.title}</h3>
-              <p className="text-gray-600">{item.description}</p>
-            </div>
-          ))}
+  <h2 className="mb-12 text-3xl font-bold text-center text-gray-800">Who We Serve</h2>
+  <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+    {[
+      {
+        image:
+          "https://img.freepik.com/free-photo/young-thoughtful-man-black-shirt-with-optical-glasses-holds-notebook-puts-pen-head-isolated-white-wall_141793-35551.jpg?t=st=1742324670~exp=1742328270~hmac=1a9697c8810ed68612362a61e2bf386260d4e7507a6d7f17fa919d653612b714&w=1380",
+        title: "Beginners",
+        description: "Start your journey with our beginner-friendly courses.",
+      },
+      {
+        image:
+          "https://img.freepik.com/free-photo/front-view-male-student-green-checkered-shirt-wearing-black-backpack-holding-files-blue-wall_140725-42404.jpg?t=st=1742324927~exp=1742328527~hmac=42ad538032cb451c5c265519d06d07fedbe9577e931591daec8e48e7520052b0&w=1380",
+        title: "Students",
+        description: "Excel in your studies with our JLPT preparation courses.",
+      },
+      {
+        image:
+          "https://img.freepik.com/free-photo/female-male-workers-wearing-work-clothes_273609-11131.jpg?t=st=1742402995~exp=1742406595~hmac=281e47d3113903b3d74d1c88dfec67b500b0e3013a11e0313f28fd7b92a390dc&w=1380",
+        title: "Workers",
+        description: "Enhance your life and career with Japanese language skills.",
+      },
+    ].map((item, index) => (
+      <div
+        key={index}
+        className="overflow-hidden transition-all duration-300 bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105"
+      >
+        <img
+          src={item.image}
+          alt={item.title}
+          className="object-cover w-full h-56"
+        />
+        <div className="p-6 text-center">
+          <h3 className="mb-2 text-xl font-semibold text-gray-800">
+            {item.title}
+          </h3>
+          <p className="text-gray-600">{item.description}</p>
         </div>
-      </section>
+      </div>
+    ))}
+  </div>
+</section>
 
       {/* Call to Action */}
                
       {/* Call to Action Section */}
-        <section className="relative py-20 bg-gradient-to-r from-[#BF3131] to-[#7D0A0A] overflow-hidden">
+        <section className="relative py-20 bg-gradient-to-r from-[#BF3131] to-[#7D0A0A] overflow-hidden ml-5 mr-5">
           {/* Background Animation */}
           <motion.div
             className="absolute inset-0 opacity-20"
@@ -311,66 +353,39 @@ export default function About() {
             </motion.p>
 
             {/* Sign-Up Button */}
-             {/* Button with Hover & Tap Animation */}
-            <button
-            style={buttonStyle}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onMouseDown={() => setIsTapped(true)}
-            onMouseUp={() => setIsTapped(false)}
-          >
-            Sign Up Now
+          {/* Button with Hover & Tap Animation */}
+          
+          { currentUser ? (
+           
+            null
+          ) : (
+              <button
+                 style={buttonStyle}
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
+                  onMouseDown={() => setIsTapped(true)}
+                onMouseUp={() => setIsTapped(false)}
+                onClick={()=>navigate('/sign-up')
+                  
+                }
+              >
+                Sign Up Now
               </button>
-          </div>
+          )}
+           
+        </div>
+        
         </section>
       
+        <Footer/>
+      
 
-      {/* Social Media Section */}
-        <section className="py-20 bg-[#2d3748]">
-          <div className="container px-6 mx-auto text-center">
-            {/* Heading */}
-            <motion.h2
-              className="mb-6 text-4xl font-extrabold text-white md:text-5xl"
-              whileInView={{ opacity: 1, y: 0 }}
-              initial={{ opacity: 0, y: -20 }}
-              transition={{ duration: 1 }}
-            >
-              Connect with Us on Social Media!
-            </motion.h2>
+          
 
-            {/* Subheading */}
-            <motion.p
-              className="mb-12 text-lg text-gray-300 md:text-xl"
-              whileInView={{ opacity: 1, y: 0 }}
-              initial={{ opacity: 0, y: 20 }}
-              transition={{ duration: 1, delay: 0.3 }}
-            >
-              Follow Ayumi for updates, learning tips, and more.
-            </motion.p>
-
-            {/* Social Media Icons Grid */}
-            <div className="grid w-2/3 grid-cols-2 gap-6 mx-auto md:grid-cols-4 place-items-center">
-              {[
-                { icon: <FaFacebook size={32} />, color: "bg-blue-600 hover:bg-blue-700", link: "https://www.facebook.com/yourpage" },
-                { icon: <FaInstagram size={32} />, color: "bg-pink-500 hover:bg-pink-600", link: "https://www.instagram.com/yourpage" },
-                { icon: <MessageCircle size={32} />, color: "bg-green-500 hover:bg-green-600", link: "https://wa.me/yourwhatsappnumber" },
-                { icon: <FaYoutube size={32} />, color: "bg-red-600 hover:bg-red-700", link: "https://www.youtube.com/yourchannel" },
-              ].map((item, index) => (
-                <motion.a
-                  key={index}
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`p-6 text-white rounded-lg shadow-lg transition-all duration-300 ${item.color}`}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  {item.icon}
-                </motion.a>
-              ))}
-            </div>
-          </div>
-        </section>
+            
+         
+         
+       
 
 
 

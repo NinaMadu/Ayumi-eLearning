@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import LogoutConfirmation from './LogoutConfirmation';
 import axios from 'axios';
 
+
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -19,10 +20,18 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+
+
   let Links = [
-    { name: "Home", link: "/user/user-home" },
-    { name: "About", link: "/about" },
+    {
+      name: "Home", link: currentUser ? '/user/user-home' :'/'
+    },
+    {
+      name: "About", link: '/about'
+      
+    }
   ];
+  
 
   // Fetch user details
   const fetchUserDetails = async () => {
@@ -79,21 +88,21 @@ const Header = () => {
   };
 
   return (
-    <div className='shadow-md w-full fixed top-0 left-0 z-20 bg-red-50'>
-      <div className='flex items-center justify-between bg-red-50 py-2 px-5 md:px-10'>
+    <div className='fixed top-0 left-0 z-20 w-full shadow-md bg-red-50'>
+      <div className='flex items-center justify-between px-5 py-2 bg-red-50 md:px-10'>
         {/* Logo Section */}
         <div className='flex items-center gap-1'>
-          <Link to={'/user/user-home'}>
+          <Link to={ currentUser ? "/user/user-home" : "/"}>
             <img src={logo} alt="Logo" className="h-8 sm:h-16" />
           </Link>
         </div>
 
         {/* Search Bar */}
-        <form className='flex-1 mx-4 flex items-center bg-white p-2 rounded-lg'>
+        <form className='flex items-center flex-1 p-2 mx-4 bg-white rounded-lg'>
           <input
             type='text'
             placeholder='Search...'
-            className='bg-transparent focus:outline-none w-full sm:w-auto sm:flex-grow px-2'
+            className='w-full px-2 bg-transparent focus:outline-none sm:w-auto sm:flex-grow'
           />
           <button>
             <FaSearch className='text-slate-600' />
@@ -108,13 +117,13 @@ const Header = () => {
         {/* Links */}
         <ul className={`md:flex gap-0 md:items-center md:pb-0 pb-12 absolute md:static bg-red-50 md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all duration-500 ease-in ${open ? 'top-12' : 'top-[-490px]'}`}>
           {Links.map((link) => (
-            <li key={link.name} className='md:ml-8 md:my-0 my-7 font-semibold flex justify-center items-center'>
-              <a href={link.link} className='text-gray-800 hover:text-custom-red transform hover:scale-110 transition-transform duration-300'>{link.name}</a>
+            <li key={link.name} className='flex items-center justify-center font-semibold md:ml-8 md:my-0 my-7'>
+              <Link to={link.link} className='text-gray-800 transition-transform duration-300 transform hover:text-custom-red hover:scale-110'>{link.name}</Link>
             </li>
           ))}
 
           {currentUser ? (
-            <li className='md:ml-8 md:my-0 my-7 font-semibold flex justify-center items-center relative'>
+            <li className='relative flex items-center justify-center font-semibold md:ml-8 md:my-0 my-7'>
               <div
                 className='flex items-center cursor-pointer'
                 onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -122,7 +131,7 @@ const Header = () => {
                 <img
                   src={userDetails?.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}
                   alt="User Avatar"
-                  className="w-8 h-8 rounded-full border-2 border-slate-100"
+                  className="w-8 h-8 border-2 rounded-full border-slate-100"
                 />
                 {dropdownOpen ? (
                   <FaChevronUp className='ml-2 text-slate-600' />
@@ -132,17 +141,17 @@ const Header = () => {
               </div>
 
               {dropdownOpen && (
-                <ul className='absolute left-1/2 transform -translate-x-1/2 mt-32 w-32 bg-white rounded-xl shadow-lg z-10 right-2'>
-                  <li className='hover:bg-custom-gradient hover:rounded-lg hover:text-white flex flex-col justify-center items-center'>
+                <ul className='absolute z-10 w-32 mt-32 transform -translate-x-1/2 bg-white shadow-lg left-1/2 rounded-xl right-2'>
+                  <li className='flex flex-col items-center justify-center hover:bg-custom-gradient hover:rounded-lg hover:text-white'>
                     <Link to="/profile" className='block px-4 py-2 text-gray-700 hover:bg-custom-gradient hover:text-white'>
                       Profile
                     </Link>
                   </li>
                   <li
-                    className='hover:bg-custom-gradient hover:rounded-lg hover:text-white flex flex-col justify-center items-center'
+                    className='flex flex-col items-center justify-center hover:bg-custom-gradient hover:rounded-lg hover:text-white'
                     onClick={() => setShowLogoutModal(true)}
                   >
-                    <span className='block px-4 py-2 text-gray-700 hover:bg-custom-gradient hover:text-white cursor-pointer'>
+                    <span className='block px-4 py-2 text-gray-700 cursor-pointer hover:bg-custom-gradient hover:text-white'>
                       Logout
                     </span>
                   </li>
@@ -151,16 +160,16 @@ const Header = () => {
             </li>
           ) : (
             <>
-              <li className='md:ml-8 md:my-0 my-9 font-semibold flex justify-center items-center'>
+              <li className='flex items-center justify-center font-semibold md:ml-8 md:my-0 my-9'>
                 <Link to='/sign-in'>
-                  <span className='text-custom-red font-medium border px-9 py-1 rounded-lg border-rose-600 hover:bg-rose-100 transition-all duration-300'>
+                  <span className='py-1 font-medium transition-all duration-300 border rounded-lg text-custom-red px-9 border-rose-600 hover:bg-rose-100'>
                     Login
                   </span>
                 </Link>
               </li>
-              <li className='flex justify-center items-center md:ml-8 md:my-0 my-7 font-semibold'>
+              <li className='flex items-center justify-center font-semibold md:ml-8 md:my-0 my-7'>
                 <Link to="/sign-up">
-                  <span className="text-white font-semibold px-4 py-2 duration-500 rounded-xl hover:opacity-90" style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}>
+                  <span className="px-4 py-2 font-semibold text-white duration-500 rounded-xl hover:opacity-90" style={{ background: 'linear-gradient(to right, #D16262, #C53B3B)' }}>
                     Get Started
                   </span>
                 </Link>

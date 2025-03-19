@@ -179,6 +179,16 @@ export default function UserVideoPreview() {
       const aspectRatio =  videoWidth / videoData;
       setVideoRatio(aspectRatio);
 
+      if (aspectRatio < 1)
+      {
+
+        setIsPortrait(true);
+        setPlayerHeight(`${100 / aspectRatio}%`);
+      } else {
+        setIsPortrait(false);
+
+      }
+
       if(initialTime>0)
         {
           

@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from './Header';
 import Sidemenu from './Sidemenu';
+import Footer from './Footer';
 
 const UserLayout = ({ children }) => {
     return (
@@ -14,6 +15,8 @@ const UserLayout = ({ children }) => {
                     {children}
                 </div>
             </div>
+
+            <Footer/>
         </>
     );
 };

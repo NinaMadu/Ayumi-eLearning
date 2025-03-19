@@ -8,6 +8,7 @@ import LandingPage from './pages/LandingPage';
 import Profile from './components/Profile';
 import Roadmap from './components/Roadmap';
 import Discussion from './pages/User/Discussion';
+import Courses from './pages/Courses';
 
 const CommonRoutes = () => {
   return (
@@ -20,6 +21,7 @@ const CommonRoutes = () => {
       <Route path="/profile" element={<Profile />} />
       <Route path="/roadmap" element={<Roadmap />} />
       <Route path="/discussion" element={<Discussion />} />
+      <Route path="/courses" element={<Courses/>} />
     </Routes>
   );
 };
