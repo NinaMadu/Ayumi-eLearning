@@ -8,6 +8,9 @@ import LandingPage from './pages/LandingPage';
 import Profile from './components/Profile';
 import Roadmap from './components/Roadmap';
 import Discussion from './pages/User/Discussion';
+import ForgetPassword from './components/ForgetPassword';
+import ResetPassword from './components/ResetPassword';
+
 
 const CommonRoutes = () => {
   return (
@@ -20,6 +23,9 @@ const CommonRoutes = () => {
       <Route path="/profile" element={<Profile />} />
       <Route path="/roadmap" element={<Roadmap />} />
       <Route path="/discussion" element={<Discussion />} />
+      <Route path="/forget-password" element={<ForgetPassword />}/>
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      
     </Routes>
   );
 };
