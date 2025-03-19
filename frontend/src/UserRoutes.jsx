@@ -14,6 +14,7 @@ import Reviews from './pages/User/Reviews';
 import Payment from './components/Payment';
 import Help from './pages/User/Help';
 import UserSettings from './pages/User/UserSettings';
+import AssignmentDetails from './pages/User/AssignmentDetails';
 
 
 const UserRoutes = () => {
@@ -33,7 +34,7 @@ const UserRoutes = () => {
         <Route path='/user/courseIntro/:id/payment' element={<Payment />} />
         <Route path='/user/help' element={<Help/>} />
         <Route path='/user/settings' element={<UserSettings/>} />
-        
+        <Route path='/user/assignments/:courseId/:assignmentId' element={<AssignmentDetails />} />
 
 
       

@@ -19,7 +19,7 @@ import { signOutUserStart, signOutUserSuccess, signInFailure } from '../redux/us
 import { useDispatch } from 'react-redux';
 
 const Sidemenu = () => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();

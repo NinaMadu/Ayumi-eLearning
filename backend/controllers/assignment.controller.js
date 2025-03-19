@@ -92,4 +92,16 @@ export const deleteAssignment = async (req, res) => {
   }
 };
 
-
+export const getAssignmentsByCourseId = async (req, res) => {
+  const { courseId } = req.params;
+  try {
+    const assignments = await Assignment.find({ courseId})
+      // If no assignments are found, return a 404 response
+    if (!assignments || assignments.length === 0) {
+      return res.status(404).json({ message: 'No assignments found for this course' });
+    }
+    res.status(200).json({ assignments });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching assignments" });
+  }
+}
