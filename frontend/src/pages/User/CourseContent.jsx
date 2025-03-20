@@ -354,9 +354,8 @@ const CourseContent = () => {
                               <FaClock className="text-blue-500" />
                               <span>
                                 Due:{" "}
-                                {new Date(
-                                  assignment.dueDate
-                                ).toLocaleDateString()}
+                                {new Date(assignment.deadline).toISOString().split("T")[0]}
+           
                               </span>
                             </div>
                             <span className="px-2 py-1 bg-gray-100 rounded">
