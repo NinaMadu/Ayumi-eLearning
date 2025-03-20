@@ -7,24 +7,25 @@ const submissionSchema = new mongoose.Schema(
       ref: "Assignment",
       required: true,
     },
-    UserId: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    CourseId: {
+    courseId: { 
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
       required: true,
     },
     fileUrl: { type: String, required: true },
-    grade: { type: Number, required: false },
-    feedback: { type: String, required: false },
+    grade: { type: Number },
+    feedback: { type: String },
     status: { type: String, required: true },
     submittedAt: { type: Date, required: true },
-    reviewedAt: { type: Date, required: false },
+    reviewedAt: { type: Date },
   },
   { timestamps: true }
 );
 
 const Submission = mongoose.model("Submission", submissionSchema);
+export default Submission;

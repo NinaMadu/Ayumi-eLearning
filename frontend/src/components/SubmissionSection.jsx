@@ -132,34 +132,28 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
       </div>
 
       {submission ? (
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <span className="font-medium">Submitted File:</span>
-            <a
-              href={submission.fileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 underline"
-            >
-              {submission.fileUrl.split('/').pop()}
-            </a>
-          </div>
-          <div className="flex gap-4 mt-6">
-            <button
-              onClick={() => setModalOpen(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center gap-2"
-            >
-              <FaEdit /> Update
-            </button>
-            <button
-              onClick={handleRemove}
-              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 flex items-center gap-2"
-            >
-              <FaTrash /> Remove
-            </button>
-          </div>
-        </div>
-      ) : (
+  <div className="space-y-4">
+    <div className="flex items-center gap-3">
+      <span className="font-medium">Submitted File:</span>
+      <a
+        href={submission.fileUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 hover:text-blue-800 underline"
+      >
+        {submission.fileUrl.split('/').pop()}
+      </a>
+    </div>
+    <div className="flex gap-4 mt-6">
+      <button
+        onClick={handleRemove}
+        className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 flex items-center gap-2"
+      >
+        <FaTrash /> Remove
+      </button>
+    </div>
+  </div>
+) : (
         <div className="space-y-4">
           <button
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
@@ -238,115 +232,3 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
     </div>
   );
 };
-
-const AssignmentDetails = () => {
-  const { assignmentId, courseId } = useParams();
-  const currentUser = useSelector((state) => state.user.currentUser);
-  const navigate = useNavigate();
-  const [assignment, setAssignment] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchAssignment = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:5000/api/assignments/${assignmentId}`
-        );
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
-        setAssignment(data.assignment);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-    fetchAssignment();
-  }, [assignmentId]);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!assignment) return <div>Assignment not found</div>;
-
-  return (
-    <UserLayout>
-      < div className="min-h-screen bg-gray-50 p-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-3xl font-bold text-gray-800">{assignment.title}</h1>
-            <button
-              onClick={() => navigate(`/user/course-content/${courseId}`)}
-              className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
-            >
-              Back to Course
-            </button>
-          </div>
-
-           {/* Assignment Details Card */}
-           <div className="bg-white mb-8 rounded-xl shadow-lg p-6">
-            <div className="flex items-center gap-4 mb-6">
-              <FaFileAlt className="text-blue-600 text-xl" />
-              <h2 className="text-xl font-semibold">Assignment Details</h2>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <FaCalendarAlt className="text-gray-500" />
-                <span className="font-medium">Due Date:</span>
-                <span className="text-gray-600">
-                  {new Date(assignment.deadline).toLocaleDateString()}
-                </span>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <FaFileAlt className="text-gray-500 mt-1" />
-                <div>
-                  <p className="font-medium mb-2">Description:</p>
-                  <p className="text-gray-600">{assignment.description}</p>
-                </div>
-              </div>
-
-              <div className="border-t pt-4 mt-4">
-                <a
-                  href={assignment.pdfUrl}
-                  download
-                  className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
-                >
-                  <FaFilePdf className="text-xl" />
-                  <span>Download Assignment PDF</span>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <SubmissionSection 
-            assignmentId={assignmentId}
-            courseId={courseId}
-            currentUser={currentUser}
-          />
-
-          {/* Timeline Card */}
-          <div className="mt-8 bg-white p-6 rounded-xl shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Assignment Timeline</h3>
-            <div className="flex items-center justify-between text-gray-600">
-              <div className="text-center">
-                <p className="font-medium">Assigned</p>
-                <p>{new Date(assignment.createdAt).toLocaleDateString()}</p>
-              </div>
-              <div className="h-1 bg-gray-200 flex-1 mx-4" />
-              <div className="text-center">
-                <p className="font-medium">Due Date</p>
-                <p>{new Date(assignment.deadline).toLocaleDateString()}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      
-        
-      </div>
-    </UserLayout>
-  );
-};
-
-export default AssignmentDetails;
