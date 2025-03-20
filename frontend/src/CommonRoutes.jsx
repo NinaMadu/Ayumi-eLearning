@@ -25,9 +25,9 @@ const CommonRoutes = () => {
       <Route path="/roadmap" element={<Roadmap />} />
       <Route path="/discussion" element={<Discussion />} />
       <Route path="/forget-password" element={<ForgetPassword />}/>
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />      
+      <Route path="/courses" element={<Courses />} />
       
-      <Route path="/courses" element={<Courses/>} />
     </Routes>
   );
 };

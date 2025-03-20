@@ -5,7 +5,8 @@ import {MessageCircle } from "lucide-react";
 
 import { FaInstagram, FaYoutube, FaFacebook } from 'react-icons/fa';
 import Footer from '../components/Footer';
-import Header from '../components/Header';
+import HeaderOne from '../components/Header';
+import HeaderTwo from '../pages/Instructor/InstructorHeader';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,14 +17,18 @@ export default function About() {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isTapped, setIsTapped] = useState(false);
+  const [isInstructor, setIsInstructor] = useState(false);
 
   const { currentUser } = useSelector((state) => state.user);
+ 
 
   const navigate = useNavigate();
 
 
   useEffect(() => {
     console.log("Current user:", currentUser);
+    setIsInstructor(currentUser?.isInstructor || false);
+    // console.log("isInstructor:", isInstructor);
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -80,7 +85,14 @@ export default function About() {
       backgroundColor: '#f9fafb'
     }}>
 
-    <Header/>
+      {
+        isInstructor ? (
+       <HeaderTwo/>
+        ) : (
+        <HeaderOne/>
+        )
+      }
+    
       
      <section
       ref={heroRef}
@@ -145,10 +157,12 @@ export default function About() {
           }}
         >
           Your gateway to mastering Japanese with expert instructors and interactive learning!
-        </motion.p>
-
-        {/* Button with Hover Effect */}
-        <button
+          </motion.p>
+          {
+            isInstructor ? (
+           null
+            ) : (
+                 <button
           style={{
             padding: '0.75rem 2rem',
             color: 'white',
@@ -177,6 +191,11 @@ export default function About() {
         >
           Start Learning Today
         </button>
+            )
+          }
+
+        {/* Button with Hover Effect */}
+        
       </div>
 
       {/* CSS Keyframes */}
