@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { storage } from '../../firebase.js';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { useParams, useNavigate } from "react-router-dom";
-import { FaFilePdf, FaCalendarAlt, FaFileAlt, FaTimes, FaTrash, FaEdit } from "react-icons/fa";
+import { FaFilePdf, FaCalendarAlt, FaFileAlt, FaTimes, FaTrash } from "react-icons/fa";
 import UserLayout from "../../components/UserLayout";
 import { useDropzone } from "react-dropzone";
 import { useSelector } from "react-redux";
@@ -20,7 +20,7 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
     const fetchSubmission = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/submissions/${assignmentId}/${currentUser._id}`
+          `http://localhost:5000/api/submissions/${currentUser._id}/${courseId}/${assignmentId}`
         );
         if (res.ok) {
           const data = await res.json();
@@ -44,69 +44,74 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
       setFile(file);
     },
     multiple: false,
-    accept: "image/jpeg, image/png, application/pdf",
+    accept: {
+      'image/jpeg': ['.jpeg', '.jpg'],
+      'image/png': ['.png'],
+      'application/pdf': ['.pdf']
+    },
   });
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-
-    if (!file) {
-      setError('Please upload a file.');
-      return;
-    }
-
-    const fileRef = ref(storage, `submissions/${file.name}`);
-    const uploadTask = uploadBytesResumable(fileRef, file);
-    setFileUploading(0);
-
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setFileUploading(progress);
-      },
-      (err) => {
-        setError('Error uploading file: ' + err.message);
-        setFileUploading(0);
-      },
-      async () => {
-        try {
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          const method = submission ? "PUT" : "POST";
-          const url = submission 
-            ? `http://localhost:5000/api/submissions/update/${submission._id}`
-            : "http://localhost:5000/api/submissions/add";
-
-          const response = await fetch(url, {
-            method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              assignmentId,
-              userId: currentUser._id,
-              courseId,
-              fileUrl: downloadURL,
-              status: "submitted",
-              submittedAt: new Date().toISOString(),
-            }),
-          });
-
-          const data = await response.json();
-          if (!response.ok) throw new Error(data.message);
-
-          setSubmission(data.submission);
-          setSuccessMessage(submission ? "Updated successfully!" : "Submitted successfully!");
-          setFileUploading(0);
-          setModalOpen(false);
-          setFile(null);
-        } catch (err) {
-          setError(err.message);
-          setFileUploading(0);
-        }
+      e.preventDefault();
+      setError(null);
+  
+      if (!file) {
+        setError("Please upload a file.");
+        return;
       }
-    );
-  };
-
+  
+      const fileRef = ref(storage, `submissions/${file.name}`);
+      const uploadTask = uploadBytesResumable(fileRef, file);
+      setFileUploading(0);
+  
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setFileUploading(progress);
+        },
+        (err) => {
+          setError("Error uploading file: " + err.message);
+          setFileUploading(0);
+        },
+        async () => {
+          try {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+  
+            // Always use POST since we don't have update functionality
+            const response = await fetch(
+              "http://localhost:5000/api/submissions/add",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  assignmentId,
+                  userId: currentUser._id,
+                  courseId,
+                  fileUrl: downloadURL,
+                  status: "submitted",
+                  submittedAt: new Date().toISOString(),
+                }),
+              }
+            );
+  
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message);
+  
+            setSubmission(data.submission);
+            setSuccessMessage("Submitted successfully!");
+            setFileUploading(0);
+            setModalOpen(false);
+            setFile(null);
+          } catch (err) {
+            setError(err.message);
+            setFileUploading(0);
+          }
+        }
+      );
+    };
+    
   const handleRemove = async () => {
     if (!window.confirm("Are you sure you want to remove this submission?")) return;
     
@@ -145,17 +150,12 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
             </a>
           </div>
           <div className="flex gap-4 mt-6">
-            <button
-              onClick={() => setModalOpen(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center gap-2"
-            >
-              <FaEdit /> Update
-            </button>
+            
             <button
               onClick={handleRemove}
-              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 flex items-center gap-2"
+              className="bg-red-600 text-white text-sm px-3 py-2 rounded-md hover:bg-red-700 flex items-center gap-2"
             >
-              <FaTrash /> Remove
+              <FaTrash className="text-sm" /> Remove
             </button>
           </div>
         </div>

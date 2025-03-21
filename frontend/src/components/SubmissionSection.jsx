@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { storage } from '../../firebase.js';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { storage } from "../../firebase.js";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useParams, useNavigate } from "react-router-dom";
-import { FaFilePdf, FaCalendarAlt, FaFileAlt, FaTimes, FaTrash, FaEdit } from "react-icons/fa";
+import {
+  FaFilePdf,
+  FaCalendarAlt,
+  FaFileAlt,
+  FaTimes,
+  FaTrash,
+  FaEdit,
+  FaFileImage,
+  FaDownload
+} from "react-icons/fa";
 import UserLayout from "../../components/UserLayout";
 import { useDropzone } from "react-dropzone";
 import { useSelector } from "react-redux";
+
 
 const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
   const [submission, setSubmission] = useState(null);
@@ -20,39 +30,30 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
     const fetchSubmission = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/submissions/${assignmentId}/${currentUser._id}`
+          `http://localhost:5000/api/submissions/${currentUser._id}/${courseId}/${assignmentId}`
+          
         );
         if (res.ok) {
           const data = await res.json();
           setSubmission(data.submission);
         }
+        
       } catch (err) {
         setError(err.message);
+       
       }
     };
     fetchSubmission();
   }, [assignmentId, currentUser._id]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: acceptedFiles => {
-      const file = acceptedFiles[0];
-      if (file && !["application/pdf", "image/jpeg", "image/png"].includes(file.type)) {
-        setError("Please upload a PDF, JPEG, or PNG file.");
-        return;
-      }
-      setError(null);
-      setFile(file);
-    },
-    multiple: false,
-    accept: "image/jpeg, image/png, application/pdf",
-  });
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
     if (!file) {
-      setError('Please upload a file.');
+      setError("Please upload a file.");
       return;
     }
 
@@ -61,41 +62,42 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
     setFileUploading(0);
 
     uploadTask.on(
-      'state_changed',
+      "state_changed",
       (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setFileUploading(progress);
       },
       (err) => {
-        setError('Error uploading file: ' + err.message);
+        setError("Error uploading file: " + err.message);
         setFileUploading(0);
       },
       async () => {
         try {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          const method = submission ? "PUT" : "POST";
-          const url = submission 
-            ? `http://localhost:5000/api/submissions/update/${submission._id}`
-            : "http://localhost:5000/api/submissions/add";
 
-          const response = await fetch(url, {
-            method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              assignmentId,
-              userId: currentUser._id,
-              courseId,
-              fileUrl: downloadURL,
-              status: "submitted",
-              submittedAt: new Date().toISOString(),
-            }),
-          });
+          // Always use POST since we don't have update functionality
+          const response = await fetch(
+            "http://localhost:5000/api/submissions/add",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                assignmentId,
+                userId: currentUser._id,
+                courseId,
+                fileUrl: downloadURL,
+                status: "submitted",
+                submittedAt: new Date().toISOString(),
+              }),
+            }
+          );
 
           const data = await response.json();
           if (!response.ok) throw new Error(data.message);
 
           setSubmission(data.submission);
-          setSuccessMessage(submission ? "Updated successfully!" : "Submitted successfully!");
+          setSuccessMessage("Submitted successfully!");
           setFileUploading(0);
           setModalOpen(false);
           setFile(null);
@@ -108,14 +110,17 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
   };
 
   const handleRemove = async () => {
-    if (!window.confirm("Are you sure you want to remove this submission?")) return;
-    
+    if (!window.confirm("Are you sure you want to remove this submission?"))
+      return;
+
     try {
       const res = await fetch(
         `http://localhost:5000/api/submissions/${submission._id}`,
-        { method: "DELETE" }
+        {
+          method: "DELETE",
+        }
       );
-      
+
       if (!res.ok) throw new Error("Failed to remove submission");
       setSubmission(null);
       setSuccessMessage("Submission removed successfully!");
@@ -132,28 +137,28 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
       </div>
 
       {submission ? (
-  <div className="space-y-4">
-    <div className="flex items-center gap-3">
-      <span className="font-medium">Submitted File:</span>
-      <a
-        href={submission.fileUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-600 hover:text-blue-800 underline"
-      >
-        {submission.fileUrl.split('/').pop()}
-      </a>
-    </div>
-    <div className="flex gap-4 mt-6">
-      <button
-        onClick={handleRemove}
-        className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 flex items-center gap-2"
-      >
-        <FaTrash /> Remove
-      </button>
-    </div>
-  </div>
-) : (
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <span className="font-medium">Submitted File:</span>
+            <a
+              href={submission.fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 underline"
+            >
+              {submission.fileUrl.split("/").pop()}
+            </a>
+          </div>
+          <div className="flex gap-4 mt-6">
+            <button
+              onClick={handleRemove}
+              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 flex items-center gap-2"
+            >
+              <FaTrash /> Remove
+            </button>
+          </div>
+        </div>
+      ) : (
         <div className="space-y-4">
           <button
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
@@ -191,7 +196,8 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
               <input {...getInputProps()} />
               <p className="text-gray-600 text-center">
                 Drag & drop a file here, or click to select a file
-                <br />(PDF, JPEG, PNG only)
+                <br />
+                (PDF, JPEG, PNG only)
               </p>
             </div>
 
@@ -209,8 +215,8 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                 disabled={!file || fileUploading > 0}
               >
-                {fileUploading > 0 
-                  ? `Uploading (${Math.round(fileUploading)}%)` 
+                {fileUploading > 0
+                  ? `Uploading (${Math.round(fileUploading)}%)`
                   : "Upload"}
               </button>
               <button
