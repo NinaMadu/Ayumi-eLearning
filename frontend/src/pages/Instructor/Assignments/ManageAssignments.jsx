@@ -120,11 +120,11 @@ const ManageAssignments = () => {
             <div
               key={assignment._id}
               className="flex flex-col sm:flex-row items-center justify-between bg-white shadow-md rounded-lg p-4 border border-gray-200 hover:shadow-lg transition-transform hover:scale-105"
-              onClick={() => navigate(`/instructor/submitted-assignments/${assignment.courseId._id}/${assignment._id}`)} // Redirect to submitted assignments page
-          
+            
             >
               {/* Assignment Info */}
-              <div className="flex-1">
+              <div className="flex-1"   onClick={() => navigate(`/instructor/submitted-assignments/${assignment.courseId._id}/${assignment._id}`)} // Redirect to submitted assignments page
+          >
                 <h3 className="text-lg font-semibold text-gray-800 truncate">
                   {assignment.title}
                 </h3>
