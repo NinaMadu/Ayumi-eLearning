@@ -7,6 +7,7 @@ const SubmittedAssignments = () => {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const { courseId, assignmentId } = useParams();
 
@@ -37,6 +38,28 @@ const SubmittedAssignments = () => {
     }
   }, [courseId, assignmentId]);
 
+  const handleRemove = async (submissionId) => {
+    if (!window.confirm("Are you sure you want to remove this submission?"))
+      return;
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/submissions/${submissionId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to remove submission");
+
+      setSubmissions((prev) => prev.filter((s) => s._id !== submissionId));
+      setSuccessMessage("Submission removed successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000); // Clear message after 3 seconds
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="min-h-screen bg-gray-50 p-8">
@@ -56,6 +79,12 @@ const SubmittedAssignments = () => {
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
               {error}
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4">
+              {successMessage}
             </div>
           )}
 
@@ -120,7 +149,10 @@ const SubmittedAssignments = () => {
                                 </div>
                               </div>
 
-                              <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                              <button
+                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                onClick={() => handleRemove(submission._id)}
+                              >
                                 <FiTrash2 className="text-lg" />
                               </button>
                             </div>
