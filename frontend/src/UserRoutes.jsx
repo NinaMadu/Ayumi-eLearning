@@ -15,6 +15,7 @@ import Payment from './components/Payment';
 import Help from './pages/User/Help';
 import UserSettings from './pages/User/UserSettings';
 import Roadmap from './pages/User/Roadmap';
+import AssignmentDetails from './pages/User/AssignmentDetails';
 
 
 const UserRoutes = () => {
@@ -32,13 +33,10 @@ const UserRoutes = () => {
         <Route path='/user/quiz-content/:quizId' element={<QuizContent />} />
         <Route path='/user/add-review/:courseId' element={<Reviews />} />
         <Route path='/user/courseIntro/:id/payment' element={<Payment />} />
-
         <Route path='/user/settings' element={<UserSettings/>} />
-
         <Route path='/user/help' element={<Help />} />
-        <Route path='/user/roadmap' element={<Roadmap/>} />
-
-        
+        <Route path='/user/roadmap' element={<Roadmap/>} />        
+        <Route path='/user/assignments/:courseId/:assignmentId' element={<AssignmentDetails />} />
 
 
       

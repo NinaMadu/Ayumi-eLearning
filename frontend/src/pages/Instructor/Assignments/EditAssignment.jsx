@@ -239,24 +239,37 @@ const EditAssignment = () => {
             />
           </div>
 
-          {/* PDF File Preview and Remove */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Documents</label>
-            {selectedPdf ? (
-              <div>
-                <iframe src={selectedPdf} width="100%" height="200px" title="PDF Preview"></iframe>
-                <button type="button" onClick={handleRemovePdf} className="mt-2 text-red-500">Remove PDF</button>
-              </div>
-            ) : (
-              <input
-                type="file"
-                name="pdfFile"
-                accept=".pdf"
-                onChange={handleFileChange}
-                className="w-full p-3 border border-gray-300 rounded-lg mb-4"
-              />
-            )}
-          </div>
+          {/* PDF File Preview and Download */}
+<div className="mb-4">
+  <label className="block text-sm font-medium text-gray-700">Documents</label>
+  {selectedPdf ? (
+    <div>
+      <a 
+        href={selectedPdf} 
+        download="document.pdf" 
+        className="text-blue-500 underline"
+      >
+        Download PDF
+      </a>
+      <button 
+        type="button" 
+        onClick={handleRemovePdf} 
+        className="ml-4 text-red-500"
+      >
+        Remove PDF
+      </button>
+    </div>
+  ) : (
+    <input
+      type="file"
+      name="pdfFile"
+      accept=".pdf"
+      onChange={handleFileChange}
+      className="w-full p-3 border border-gray-300 rounded-lg mb-4"
+    />
+  )}
+</div>
+
 
           {/* Image File Preview and Remove */}
           <div className="mb-4">

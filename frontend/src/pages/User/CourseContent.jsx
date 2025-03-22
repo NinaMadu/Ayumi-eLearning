@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import Header from "../../components/Header";
 import Discussion from "../../components/Discussion.jsx";
 import Messaging from "./Message.jsx";
@@ -24,9 +24,7 @@ import { useSelector } from "react-redux";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const CourseContent = () => {
-
   const currentUser = useSelector((state) => state.user.currentUser);
-
 
   const userId = currentUser._id;
 
@@ -34,20 +32,19 @@ const CourseContent = () => {
   const navigate = useNavigate();
   const [videos, setVideos] = useState([]);
   const [course, setCourse] = useState(null);
+  const [assignments, setAssignments] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("courseMaterials");
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const[progress, setProgress] = useState(null);
-
-
+  const [progress, setProgress] = useState(null);
 
   useEffect(() => {
     if (!courseId) {
       setError("Course ID is missing in the URL");
       setLoading(false);
-      
+
       return;
     }
 
@@ -55,17 +52,20 @@ const CourseContent = () => {
 
     const fetchCourseData = async () => {
       try {
-        const [courseRes, videosRes, progressRes] = await Promise.all([
-          axios.get(`${API_BASE_URL}/api/course/${courseId}`),
-          axios.get(`${API_BASE_URL}/api/courses/${courseId}/videos`),
-          axios.get(`${API_BASE_URL}/api/users/user/${userId}/course/${courseId}/progress`),
-          
-        
-        ]);
+        const [courseRes, videosRes, progressRes, assignmentRes] =
+          await Promise.all([
+            axios.get(`${API_BASE_URL}/api/course/${courseId}`),
+            axios.get(`${API_BASE_URL}/api/courses/${courseId}/videos`),
+            axios.get(
+              `${API_BASE_URL}/api/users/user/${userId}/course/${courseId}/progress`
+            ),
+            axios.get(`${API_BASE_URL}/api/assignments/course/${courseId}`),
+          ]);
         setCourse(courseRes.data.course);
         setVideos(videosRes.data.videos);
         // console.log("Response:",progressRes);
         setProgress(progressRes.data.progress);
+        setAssignments(assignmentRes.data.assignments);
         // console.log("Progress:",progress);
       } catch (err) {
         setError("Error fetching course details or videos");
@@ -74,10 +74,8 @@ const CourseContent = () => {
       }
     };
 
-   
-
     fetchCourseData();
-  }, [courseId,userId]);
+  }, [courseId, userId]);
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -93,36 +91,42 @@ const CourseContent = () => {
             Course Content
           </h2>
           <ul className="space-y-8">
-            {["courseMaterials", "notes", "courseInfo","messages","contact Instructor"].map(
-              (category) => (
-                <li
-                  key={category}
-                  onClick={() => handleCategoryClick(category)}
-                  className={`cursor-pointer hover:text-blue-800 transition-all duration-200 shadow-md p-2 rounded-lg ${
-                    selectedCategory === category ? "text-blue-800" : ""
-                  }`}
-                >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </li>
-              )
-            )}
+            {[
+              "courseMaterials",
+              "notes",
+              "courseInfo",
+              "messages",
+              "assignments",
+              "contact Instructor",
+            ].map((category) => (
+              <li
+                key={category}
+                onClick={() => handleCategoryClick(category)}
+                className={`cursor-pointer hover:text-blue-800 transition-all duration-200 shadow-md p-2 rounded-lg ${
+                  selectedCategory === category ? "text-blue-800" : ""
+                }`}
+              >
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </li>
+            ))}
           </ul>
           {/* Progress Bar Section */}
           {progress !== null && (
-  <div className="p-4 my-6 border-l-4 border-blue-400 rounded-lg bg-blue-50">
-    <h3 className="mb-2 text-lg font-semibold text-gray-700">
-      Your Progress
-    </h3>
-    <div className="relative w-full h-4 overflow-hidden bg-gray-200 rounded-full">
-      <div
-        className="h-full transition-all duration-700 bg-blue-500"
-        style={{ width: `${progress}%` }}
-      ></div>
-    </div>
-    <p className="mt-2 text-gray-600">{progress.toFixed(2)}% Completed</p>
-  </div>
-)}
-
+            <div className="p-4 my-6 border-l-4 border-blue-400 rounded-lg bg-blue-50">
+              <h3 className="mb-2 text-lg font-semibold text-gray-700">
+                Your Progress
+              </h3>
+              <div className="relative w-full h-4 overflow-hidden bg-gray-200 rounded-full">
+                <div
+                  className="h-full transition-all duration-700 bg-blue-500"
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
+              <p className="mt-2 text-gray-600">
+                {progress.toFixed(2)}% Completed
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Main Content */}
@@ -323,14 +327,65 @@ const CourseContent = () => {
 
           {selectedCategory === "messages" && (
             <Discussion courseId={courseId} />
-          )          
-          }
+          )}
+
+          {selectedCategory === "assignments" && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                Course Assignments
+              </h2>
+              {assignments.length > 0 ? (
+                <div className="grid grid-cols-1 gap-4">
+                  {assignments.map((assignment) => (
+                    <div
+                      key={assignment._id}
+                      className="bg-white p-6 rounded-lg shadow-sm border border-gray-200"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-800">
+                            {assignment.title}
+                          </h3>
+                          <p className="text-gray-600 mt-2">
+                            {assignment.description}
+                          </p>
+                          <div className="mt-3 flex items-center gap-4 text-sm text-gray-500">
+                            <div className="flex items-center gap-1">
+                              <FaClock className="text-blue-500" />
+                              <span>
+                                Due:{" "}
+                                {new Date(assignment.deadline).toISOString().split("T")[0]}
+           
+                              </span>
+                            </div>
+                            <span className="px-2 py-1 bg-gray-100 rounded">
+                              {assignment.status || "Not Started"}
+                            </span>
+                          </div>
+                        </div>
+                        <Link
+                          to={`/user/assignments/${courseId}/${assignment._id}`}
+                          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                        >
+                          View Assignment
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 bg-gray-50 rounded-lg">
+                  <p className="text-gray-500">
+                    No assignments available for this course
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
           {selectedCategory === "contact Instructor" && (
             <Messaging instructor={course.instructor} />
-          )          
-          }
-
+          )}
 
           <div className="overflow-x-auto"></div>
         </div>

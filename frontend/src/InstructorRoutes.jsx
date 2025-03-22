@@ -40,6 +40,7 @@ import ManageAssignments from './pages/Instructor/Assignments/ManageAssignments'
 import AddAssignment from './pages/Instructor/Assignments/CreateAssignment';
 import EditAssignment from './pages/Instructor/Assignments/EditAssignment';
 import AdminSettings from './pages/Instructor/AdminSettings';
+import SubmittedAssignments from './pages/Instructor/Assignments/SubmittedAssignments';
 
 
 const InstructorRoutes = () => {
@@ -82,7 +83,7 @@ const InstructorRoutes = () => {
         <Route path="/instructor/add-assignment" element={<AddAssignment/>} />
         <Route path="/instructor/edit-assignment/:id" element={<EditAssignment/>} />
         <Route path="/instructor/settings" element={<AdminSettings/>} />
-
+        <Route path="/instructor/submitted-assignments/:courseId/:assignmentId" element={<SubmittedAssignments />} />
 
       </Route>
     </Routes>

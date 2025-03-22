@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import AdminLayout from "../../../components/AdminLayout";
 import DeleteConfirmation from "../../../components/confirmations/DeleteConfirmation";
@@ -13,7 +13,6 @@ const ManageAssignments = () => {
   const [deleteAssignmentId, setDeleteAssignmentId] = useState(null);
   const [showSuccessBox, setShowSuccessBox] = useState(false);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const fetchAssignments = async () => {
@@ -121,6 +120,8 @@ const ManageAssignments = () => {
             <div
               key={assignment._id}
               className="flex flex-col sm:flex-row items-center justify-between bg-white shadow-md rounded-lg p-4 border border-gray-200 hover:shadow-lg transition-transform hover:scale-105"
+              onClick={() => navigate(`/instructor/submitted-assignments/${assignment.courseId._id}/${assignment._id}`)} // Redirect to submitted assignments page
+          
             >
               {/* Assignment Info */}
               <div className="flex-1">
