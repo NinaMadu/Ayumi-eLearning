@@ -16,6 +16,7 @@ import Help from './pages/User/Help';
 import UserSettings from './pages/User/UserSettings';
 import Roadmap from './pages/User/Roadmap';
 import AssignmentDetails from './pages/User/AssignmentDetails';
+import Leaderboard from './pages/User/Leaderboard';
 
 
 const UserRoutes = () => {
@@ -37,7 +38,7 @@ const UserRoutes = () => {
         <Route path='/user/help' element={<Help />} />
         <Route path='/user/roadmap' element={<Roadmap/>} />        
         <Route path='/user/assignments/:courseId/:assignmentId' element={<AssignmentDetails />} />
-
+        <Route path='/user/leaderboard' element={<Leaderboard />}/>
 
       
       </Route>

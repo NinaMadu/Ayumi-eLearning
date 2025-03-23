@@ -29,6 +29,9 @@ const Header = () => {
     {
       name: "About", link: '/about'
       
+    },
+    {
+      name:"Leaderboard", link: '/user/leaderboard'
     }
   ];
   
