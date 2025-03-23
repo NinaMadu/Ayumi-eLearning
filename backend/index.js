@@ -17,6 +17,7 @@ import discussion from "./routes/discussion.route.js";
 import message from "./routes/message.route.js";
 import assignmentRoutes from "./routes/admin.routes/assignment.routes.js";
 import submissionRoutes from "./routes/submission.route.js";
+import quizAttemptRoutes from "./routes/quizAttempt.route.js";
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ app.use("/api/discussion",discussion);
 app.use('/api/message', message);
 app.use('/api/assignments', assignmentRoutes);
 app.use('/api/submissions', submissionRoutes);
+app.use("/api/quiz-attempts",quizAttemptRoutes);
 
 
  // Use user routes

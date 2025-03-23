@@ -9,6 +9,7 @@ import {
   FaListAlt,
 } from "react-icons/fa";
 import Timer from "../../components/Timer";
+import { useSelector } from "react-redux";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -27,7 +28,12 @@ const QuizContent = () => {
   const [timerFinished, setTimerFinished] = useState(false);
   const [quizDuration, setQuizDuration] = useState(0);
   const [timeUpMessage, setTimeUpMessage] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const currentUser = useSelector((state) => state.user.currentUser);
+
+  const userId = currentUser._id;
+  
   useEffect(() => {
     if (!quizId) {
       setError("Quiz ID is missing in the URL");
@@ -73,20 +79,46 @@ const QuizContent = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    let score = 0;
-
-    quiz.questions.forEach((question, index) => {
-      if (userAnswers[index] === question.correctAnswer) {
-        score += question.marks;
-      }
-    });
-
-    setTotalMarks(score);
+  const handleSubmit = async () => {
+    // Calculate score FIRST
+    const calculatedScore = quiz.questions.reduce((acc, question, index) => {
+      return userAnswers[index] === question.correctAnswer 
+        ? acc + question.marks 
+        : acc;
+    }, 0);
+  
+    // Update state AFTER calculation
+    setTotalMarks(calculatedScore);
     setQuizSubmitted(true);
     setQuizFinished(true);
+    setIsSubmitting(true);
+  
+    // Use calculatedScore directly in submission
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/quiz-attempts/submit`, { // Add API_BASE_URL
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${currentUser.token}` // Add auth header
+        },
+        body: JSON.stringify({
+          quizId: quiz._id,
+          userId: userId, 
+          score: calculatedScore // Use freshly calculated value
+        }),
+      });
+  
+      // Handle response
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Submission failed");
+      console.log("Quiz submitted successfully:", data);
+    } catch (error) {
+      console.error("Failed to submit quiz:", error);
+      // Consider adding error state to show to user
+    }finally{
+      setIsSubmitting(false);
+    }
   };
-
   const handleViewResults = () => {
     setViewResults(true);
   };
@@ -214,7 +246,9 @@ const QuizContent = () => {
                                 name={`question-${currentQuestionIndex}`}
                                 id={`question-${currentQuestionIndex}-answer-${idx}`}
                                 onChange={() => handleAnswerChange(answer)}
-                                checked={userAnswers[currentQuestionIndex] === answer}
+                                checked={
+                                  userAnswers[currentQuestionIndex] === answer
+                                }
                                 className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
                               />
                               <label
@@ -239,7 +273,9 @@ const QuizContent = () => {
                             name={`question-${currentQuestionIndex}`}
                             id={`question-${currentQuestionIndex}-true`}
                             onChange={() => handleAnswerChange("True")}
-                            checked={userAnswers[currentQuestionIndex] === "True"}
+                            checked={
+                              userAnswers[currentQuestionIndex] === "True"
+                            }
                             className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
                           />
                           <label
@@ -255,7 +291,9 @@ const QuizContent = () => {
                             name={`question-${currentQuestionIndex}`}
                             id={`question-${currentQuestionIndex}-false`}
                             onChange={() => handleAnswerChange("False")}
-                            checked={userAnswers[currentQuestionIndex] === "False"}
+                            checked={
+                              userAnswers[currentQuestionIndex] === "False"
+                            }
                             className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
                           />
                           <label
@@ -275,7 +313,7 @@ const QuizContent = () => {
                         type="text"
                         placeholder="Your answer"
                         onChange={(e) => handleAnswerChange(e.target.value)}
-                        value={userAnswers[currentQuestionIndex] || ""} 
+                        value={userAnswers[currentQuestionIndex] || ""}
                         className="w-full p-4 border border-gray-300 rounded-md mt-4"
                       />
                     )}
@@ -292,10 +330,10 @@ const QuizContent = () => {
                     </button>
                     {currentQuestionIndex === quiz.questions.length - 1 ? (
                       <button
-                        onClick={handleSubmit}
+                        onClick={handleSubmit} disabled={isSubmitting}
                         className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md"
                       >
-                        Submit Quiz
+                        {isSubmitting ? "Submitting..." : "Submit Quiz"} 
                       </button>
                     ) : (
                       <button
