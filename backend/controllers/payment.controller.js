@@ -43,7 +43,7 @@
 // };
 
 
-
+import Payment from '../models/payment.model.js';
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
 
@@ -72,3 +72,13 @@ export const createPaymentIntent = async (req, res) => {
   }
 };
 
+
+export const getPayments = async (req, res) => {
+  try {
+    const payments = await Payment.find();
+    res.status(200).json(payments);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching payments', error: error.message });
+  }
+};
