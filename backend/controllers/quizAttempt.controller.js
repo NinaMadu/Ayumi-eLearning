@@ -59,9 +59,9 @@ export const getLeaderboard = async (req, res) => {
           weight: {
             $switch: {
               branches: [
-                { case: { $eq: ["$quiz.difficultyLevel", "easy"] }, then: 1 },
-                { case: { $eq: ["$quiz.difficultyLevel", "medium"] }, then: 1.5 },
-                { case: { $eq: ["$quiz.difficultyLevel", "hard"] }, then: 2 }
+                { case: { $eq: ["$quiz.difficulty", "Beginner"] }, then: 1 },
+                { case: { $eq: ["$quiz.difficulty", "Intermediate"] }, then: 1.5 },
+                { case: { $eq: ["$quiz.difficulty", "Advanced"] }, then: 2 }
               ],
               default: 1
             }
