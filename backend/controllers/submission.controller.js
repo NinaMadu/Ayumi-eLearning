@@ -100,3 +100,32 @@ export const getSubmissionOfUserByCourseAndAssignmentId = async (req, res) => {
       .json({ message: "Error fetching submission", error: error.message });
   }
 };
+
+export const gradeSubmission = async (req, res) => {
+  try {
+    const { id } = req.params; // Ensure it matches the route
+    const { grade, feedback } = req.body;
+
+    const gradeNum = Number(grade); // Convert to number for validation
+    if (isNaN(gradeNum) || gradeNum < 0 || gradeNum > 100) {
+      return res.status(400).json({ message: "Grade must be a valid number between 0 and 100" });
+    }
+
+    const updatedSubmission = await Submission.findByIdAndUpdate(
+      id,
+      { grade: gradeNum, feedback, status: "graded", reviewedAt: new Date() },
+      { new: true }
+    );
+
+    if (!updatedSubmission) {
+      return res.status(404).json({ message: "Submission not found" });
+    }
+
+    res.status(200).json({ message: "Submission graded successfully", submission: updatedSubmission });
+  } catch (error) {
+    console.error("Error grading submission:", error);
+    res.status(500).json({ message: "Error grading submission", error: error.message });
+  }
+};
+
+
