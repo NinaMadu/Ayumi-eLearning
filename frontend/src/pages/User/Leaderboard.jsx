@@ -43,7 +43,7 @@ const Leaderboard = () => {
             <div className="divide-y divide-gray-200">
               {leaderboard.map((entry, index) => (
                 <div
-                  key={entry._id}
+                  key={entry._id || `${entry.userId}-${index}`}
                   className="p-4 hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center">
