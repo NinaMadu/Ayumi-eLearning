@@ -103,7 +103,7 @@ const UserChat = () => {
                   >
                     <div className="flex items-center space-x-3">
                       <img
-                        src={user?.avatar}
+                        src={user?.avatar ||"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgzlAIaq9_fY1FwvEaetGEades903CrQ0syQ&s"}
                         alt="User Avatar"
                         className="w-12 h-12 rounded-full object-cover"
                       />
@@ -126,7 +126,13 @@ const UserChat = () => {
         {/* Right Side - Selected Conversation */}
         <div className="w-3/4 p-5">
           {selectedConversation ? (
-            <Messaging user={selectedConversation.instructor} messages={selectedConversation.messages} />
+            users[selectedConversation.instructor] ? (
+              <Messaging user={users[selectedConversation.instructor]} messages={selectedConversation.messages} />
+            ) : (
+              <div className="flex items-center justify-center h-full text-xl text-gray-500">
+                Loading user details...
+              </div>
+            )
           ) : (
             <div className="flex items-center justify-center h-full text-xl text-gray-500">
               Select a conversation to view messages
