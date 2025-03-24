@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCourseData, resetCourseData } from '../../../redux/courseSlice';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
@@ -16,11 +16,6 @@ const CourseEditFirst = () => {
 
   const [loading, setLoading] = useState(true);
 
-//   useEffect(() => {
-//     dispatch(resetCourseData()); // Reset formData before fetching
-//   }, [dispatch]);
-
-  // Reverse mapping to match fetched course data with form fields
   const mapCourseDataToForm = (data) => ({
     title: data.title,
     description: data.description,
@@ -41,36 +36,33 @@ const CourseEditFirst = () => {
     reference: data.reference,
   });
 
+ 
+
   useEffect(() => {
-    // Only fetch data if formData is not already populated
-    if (!formData.title) { // You can add more checks for other required fields if needed
+    
+    if (!formData._id || formData._id !== courseId) {
       dispatch(resetCourseData());
+
       const fetchCourseData = async () => {
         try {
-          console.log('Initial form data: ', formData);
           const response = await axios.get(`http://localhost:5000/api/course/${courseId}`);
-          console.log('Fetched Course Data:', response.data);
-          const mappedData = mapCourseDataToForm(response.data.course); // Map data to form structure
-          console.log('Mapped Course Data:', mappedData);
-          dispatch(setCourseData(mappedData));
-          setLoading(false); // Populate Redux state
+          const mappedData = mapCourseDataToForm(response.data.course);
+          dispatch(setCourseData({ ...mappedData, _id: courseId })); 
         } catch (error) {
-          console.error('Error fetching course data:', error);
+          console.error("Error fetching course data:", error);
+        } finally {
           setLoading(false);
         }
       };
+
       fetchCourseData();
     } else {
-      setLoading(false); // Skip the fetch if formData is already populated
+      setLoading(false);
     }
-  }, [courseId, dispatch, formData]);
-
-  useEffect(() => {
-    console.log('Redux Course Slice:', formData); // Log Redux slice
-  }, [formData]);
+  }, [courseId, dispatch]);
 
   const handleNext = () => {
-    console.log(formData); // Debugging log
+    
     navigate(`/instructor/edit-course-second/${courseId}`, { state: formData });
   };
 
