@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import UserLayout from "../../components/UserLayout";
 import { FaStar, FaTags, FaClock } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import Header from "../components/Header";
+
 
 const CourseIntro = () => {
-  const currentUser = useSelector((state) => state.user.currentUser);
-  const userId = currentUser._id;
+  
+  
   const { id } = useParams(); // Course ID
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  // const [userId, setUserId] = useState(null);
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [isEnrolled, setIsEnrolled] = useState(false);
-  const [message, setMessage] = useState("");
+  const [error, setError] = useState(null); 
   const [reviews, setReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(0);
   const [introVideo, setIntroVideo] = useState(null);
@@ -24,7 +20,7 @@ const CourseIntro = () => {
   useEffect(() => {
  
     
-    // console.log(currentUser._id);
+    
     const fetchCourse = async () => {
       try {
         const res = await fetch(
@@ -34,7 +30,7 @@ const CourseIntro = () => {
 
         if (res.ok) {
           setCourse(data.course);
-          // console.log(data.course.introVideo);
+          
           setIntroVideo(data.course.introVideo);
           setLoading(false);
         } else {
@@ -47,49 +43,9 @@ const CourseIntro = () => {
       }
     };
 
-    const checkEnrollmentStatus = async () => {
-      try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/users/user/${
-            currentUser._id
-          }/enrolled-courses`
-        );
-        const data = await res.json();
-  
-        if (res.ok) {
-          const enrolledCourses = data.enrolledCourses || [];
-          const isEnrolledInCourse = enrolledCourses.some(
-            (course) => course._id === id
-          );
-          setIsEnrolled(isEnrolledInCourse);
-        } else {
-          console.error("Error checking enrollment status");
-        }
-      } catch (error) {
-        console.error("Error checking enrollment status");
-      }
-    };
+   
 
-    const checkFavStatus = async () => {
-      try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/users/user/${
-            currentUser._id
-          }/favorites`
-        );
-        const data = await res.json();
-
-        if (res.ok) {
-          const favCourses = data.favorities || [];
-          const isFav = favCourses.some((course) => course._id == id);
-          setIsFavorite(isFav);
-        } else {
-          console.error("Error fetching favorite status");
-        }
-      } catch (error) {
-        console.error("Error checking favorite status");
-      }
-    };
+    
 
     const fetchReviews = async () => {
       try {
@@ -120,86 +76,16 @@ const CourseIntro = () => {
 
     if (id) {
       fetchCourse();
-      checkFavStatus();
-      checkEnrollmentStatus();
       fetchReviews();
     } else {
       setError("Course ID is missing");
       setLoading(false);
     }
-  }, [id, currentUser._id]);
+  }, [id]);
 
-  const handleEnroll = async () => {
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/users/user/${
-          currentUser._id
-        }/enroll/${id}`,
-        {
-          method: "POST",
-        }
-      );
+ 
+
   
-      if (res.ok) {
-        setIsEnrolled(true); // Set enrolled to true
-        setMessage("Enrolled Successfully");
-        console.log("Enrolled Successfully");
-        navigate(`/user/course-content/${id}`); // Navigate to the course content page
-      } else {
-        const data = await res.json();
-        setError(data.message || "Error Enrolling");
-      }
-    } catch (error) {
-      setError("Error Enrolling");
-    }
-  };
-  
-
-  const handleAddToFav = async () => {
-    try {
-      const res = await fetch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/api/users/user/${userId}/favorites/${id}`,
-        {
-          method: "POST",
-        }
-      );
-
-      if (res.ok) {
-        setIsFavorite(true);
-        setMessage("Successfully Added to Favorites");
-      } else {
-        const data = await res.json();
-        setError(data.message || "Error Adding to Favorites");
-      }
-    } catch (error) {
-      setError("Error Adding to Favorites");
-    }
-  };
-
-  const handleRemoveFromFav = async () => {
-    try {
-      const res = await fetch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/api/users/user/${userId}/favorites/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (res.ok) {
-        setIsFavorite(false);
-        setMessage("Successfully Removed from Favorites");
-      } else {
-        const data = await res.json();
-        setError(data.message || "Error Removing from Favorites");
-      }
-    } catch (error) {
-      setError("Error Removing from Favorites");
-    }
-  };
 
   if (loading) {
     return (
@@ -252,9 +138,11 @@ const CourseIntro = () => {
 
 
 
-  return (
-    <UserLayout>
-      <div className="w-full mb-4">
+    return (
+     
+        <div>
+             <Header/>
+      <div className="w-full p-10 mt-16 mb-4">
         <h2 className="mb-4 text-4xl font-bold text-center text-gray-900">
           {course.title}
         </h2>
@@ -437,7 +325,7 @@ const CourseIntro = () => {
   ) : (
     <span 
       className="font-bold text-blue-600 cursor-pointer " 
-      onClick={() => navigate(`/user/courseIntro/${id}/payment`)}
+      onClick={() => navigate(`/sign-in`)}
     >
       Paid Course
     </span>
@@ -451,39 +339,22 @@ const CourseIntro = () => {
               </div>
 
               <button
-                    className="w-full px-4 py-2 mt-8 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700"
-                    onClick={() => {
-                      if (isEnrolled) {
-                        // If the user is already enrolled, go directly to the course page
-                        navigate(`/user/course-content/${id}`);
-                      } else if (course.enrollmentOptions === "paid") {
-                        // If the course is paid, navigate to the payment page
-                        navigate(`/user/courseIntro/${id}/payment`);
-                      } else {
-                        // If the course is free, enroll the user and navigate to the course page
-                        handleEnroll();
-                      }
-                    }}
-                  >
-                    {isEnrolled ? "Go to Course" : "Enroll Now"}
-                  </button>
+  className="w-full px-4 py-2 mt-8 text-white transition bg-blue-600 rounded-lg hover:bg-blue-700"
+  onClick={() => {
+     if (course.enrollmentOptions === "paid") {
+      // If the course is paid, navigate to the payment page
+      navigate(`/sign-in`);
+    } else {
+      navigate(`/sign-in`);
+    }
+  }}
+>
+  Enroll Now
+</button>
 
   
 
-              <button
-                className={`w-full px-4 py-2 mt-8 font-bold text-white transition rounded-lg ${
-                  isFavorite
-                    ? "bg-red-600 hover:bg-red-700"
-                    : "bg-blue-600 hover:bg-blue-700"
-                }`}
-                onClick={isFavorite ? handleRemoveFromFav : handleAddToFav}
-              >
-                {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
-              </button>
-
-              {message && (
-                <p className="mt-4 text-center text-green-600">{message}</p>
-              )}
+             
             </div>
 
            
@@ -593,8 +464,9 @@ const CourseIntro = () => {
         </div>
           </div>
         </div>
-      </div>
-    </UserLayout>
+          </div>
+          </div>
+    
   );
 };
 

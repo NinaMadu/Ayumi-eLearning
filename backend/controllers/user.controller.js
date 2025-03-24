@@ -44,54 +44,54 @@ export const deleteUser = async (req, res) => {
     }
 };
 
-export const totalUsers =  async(req,res)=>{
-    try{
+export const totalUsers = async (req, res) => {
+    try {
         const userCount = await User.countDocuments();
-        res.status(200).json({userCount});
-    }catch(error){
-        res.status(500).json({message:"Error fetching user count"});
+        res.status(200).json({ userCount });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching user count" });
     }
 };
 
-export const deactivateUser = async(req,res)=>{
+export const deactivateUser = async (req, res) => {
     const { id } = req.params;
-    try{
+    try {
         const user = await User.findById(id);
-        if(!user){
-            return res.status(404).json({message:"User not found"});
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
         }
-        user.isActive=false;
+        user.isActive = false;
         await user.save();
-        res.status(200).json({message:"User account has been deactivated"});
+        res.status(200).json({ message: "User account has been deactivated" });
 
-    }catch(error){
-        res.status(500).json({message:"Failed to deactivate user"});
+    } catch (error) {
+        res.status(500).json({ message: "Failed to deactivate user" });
     }
 }
 
-export const activateUser = async(req,res)=>{
+export const activateUser = async (req, res) => {
     const { id } = req.params; // Get the user ID from the request parameters
 
-  try {
+    try {
 
-    const user = await User.findById(id);
-    
-    if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        // Update user's isActive status
+        user.isActive = true; // Set isActive to true (activate user)
+
+        // Save the updated user
+        await user.save();
+
+        // Send response
+        return res.status(200).json({ message: 'User activated successfully.', user });
+    } catch (error) {
+        console.error("Error activating user:", error);
+        return res.status(500).json({ message: 'Server error, could not activate user.' });
     }
-
-    // Update user's isActive status
-    user.isActive = true; // Set isActive to true (activate user)
-
-    // Save the updated user
-    await user.save();
-
-    // Send response
-    return res.status(200).json({ message: 'User activated successfully.', user });
-  } catch (error) {
-    console.error("Error activating user:", error);
-    return res.status(500).json({ message: 'Server error, could not activate user.' });
-  }
 }
 
 export const getOnlineUsers = async (req, res) => {
@@ -108,21 +108,21 @@ export const getOnlineUsers = async (req, res) => {
 
 
 
-export const addFavourite = async(req,res)=>{
-    const {userId,courseId} = req.params;
-    try{
-        const course= await Course.findById(courseId);
-        if(!course){
-            return res.status(401).json({message:"Course not found"});
+export const addFavourite = async (req, res) => {
+    const { userId, courseId } = req.params;
+    try {
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(401).json({ message: "Course not found" });
         }
 
         const user = await User.findById(userId);
 
-        if(!user){
-            return res.status(401).json({message:"User not found"});
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
         }
 
-        if(!user.favorities.includes(courseId)){
+        if (!user.favorities.includes(courseId)) {
             user.favorities.push(courseId);
             await user.save();
 
@@ -131,188 +131,183 @@ export const addFavourite = async(req,res)=>{
         res.status(200).json(user);
 
     }
-    catch(error){
+    catch (error) {
 
-        res.status(500).json({message:"Failed to add favourite"});
+        res.status(500).json({ message: "Failed to add favourite" });
     }
 }
 
 
-export const removeFavourite = async(req,res)=>{
-    const {userId,courseId} = req.params;
-    try{
+export const removeFavourite = async (req, res) => {
+    const { userId, courseId } = req.params;
+    try {
         const user = await User.findById(userId);
-        if(!user)
-        {
-            return res.status(401).json({message:"User not found"});
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
         }
 
-        user.favorities = user.favorities.filter(id=> id.toString() !== courseId);
+        user.favorities = user.favorities.filter(id => id.toString() !== courseId);
         await user.save();
 
-        res.status(200).json({message:"Favourite removed successfully"});
+        res.status(200).json({ message: "Favourite removed successfully" });
 
     }
-    catch(error){
+    catch (error) {
 
-        res.status(500).json({message:"Failed to remove favourite"});
+        res.status(500).json({ message: "Failed to remove favourite" });
 
     }
 }
 
 
-export const getUserFavo = async(req,res) =>{
-    const {userId} = req.params;
-    try{
-       const user = await User.findById(userId).populate('favorities');
-       if(!user)
-       {
-           return res.status(401).json({message:"User not found"});
-       }
+export const getUserFavo = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await User.findById(userId).populate('favorities');
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
+        }
 
-       res.status(200).json({favorities:user.favorities});
+        res.status(200).json({ favorities: user.favorities });
     }
-    catch(error){
+    catch (error) {
         console.error(error);
-        res.status(500).json({message:"Failed to get favourite"});
+        res.status(500).json({ message: "Failed to get favourite" });
     }
 }
 
 
-export const enrollCourse = async(req,res)=>{
-    const {userId,courseId} = req.params;
-    try{
-        const course= await Course.findById(courseId);
-        if(!course){
-            return res.status(401).json({message:"Course not found"});
+export const enrollCourse = async (req, res) => {
+    const { userId, courseId } = req.params;
+    try {
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(401).json({ message: "Course not found" });
         }
 
         const user = await User.findById(userId);
 
-        if(!user){
-            return res.status(401).json({message:"User not found"});
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
         }
 
-        if(!user.enrolledCourses.includes(courseId)){
-            user.enrolledCourses.push(courseId);
-            await user.save();
-            course.students.push(userId);
-            await course.save();
 
+        if (!user.enrolledCourses.includes(courseId)) {
+            await User.findByIdAndUpdate(userId, { $push: { enrolledCourses: courseId } });
         }
 
-        res.status(200).json(user);
+        if (!course.students.includes(userId)) {
+            await Course.findByIdAndUpdate(courseId, { $push: { students: userId } });
+        }
+
+        res.status(200).json({ message: "enroll successfully" });
 
     }
-    catch(error){
+    catch (error) {
 
-        res.status(500).json({message:"Failed to add favourite"});
+        res.status(500).json({ message: "Failed to Enroll", error });
     }
 
 }
 
-export const removeEnroll = async(req,res)=>{
-    const {userId,courseId} = req.params;
-    try{
+export const removeEnroll = async (req, res) => {
+    const { userId, courseId } = req.params;
+    try {
         const user = await User.findById(userId);
-        if(!user)
-        {
-            return res.status(401).json({message:"User not found"});
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
         }
 
-        user.enrolledCourses = user.enrolledCourses.filter(id=> id.toString() !== courseId);
+        user.enrolledCourses = user.enrolledCourses.filter(id => id.toString() !== courseId);
         await user.save();
 
-        res.status(200).json({message:"unenroll successfully"});
+        res.status(200).json({ message: "unenroll successfully" });
 
     }
-    catch(error){
+    catch (error) {
 
-        res.status(500).json({message:"Failed to unenroll"});
+        res.status(500).json({ message: "Failed to unenroll" });
 
     }
 }
 
 
-export const getUserEnroll = async (req,res)=>{
-    const {userId} = req.params;
-     try{
-       const user = await User.findById(userId).populate('enrolledCourses');
-       if(!user)
-       {
-           return res.status(401).json({message:"User not found"});
-       }
-       //console.log("Enrolled courses:", user.enrolledCourses);
-       res.status(200).json({enrolledCourses: user.enrolledCourses});
+export const getUserEnroll = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await User.findById(userId).populate('enrolledCourses');
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
+        }
+        //console.log("Enrolled courses:", user.enrolledCourses);
+        res.status(200).json({ enrolledCourses: user.enrolledCourses });
     }
-    catch(error){
+    catch (error) {
         console.error(error);
-        res.status(500).json({message:"Error fetching enrolled courses"});
+        res.status(500).json({ message: "Error fetching enrolled courses" });
     }
 }
 
 export const getMonthlyUserSignups = async (req, res) => {
     try {
-      // Aggregate users by month and year based on createdAt
-      const result = await User.aggregate([
-        {
-          $project: {
-            month: { $month: "$createdAt" }, // Extract month from createdAt
-            year: { $year: "$createdAt" },   // Extract year from createdAt
-          },
-        },
-        {
-          $group: {
-            _id: { year: "$year", month: "$month" }, // Group by year and month
-            userCount: { $sum: 1 }, // Count users in each group
-          },
-        },
-        {
-          $sort: { "_id.year": 1, "_id.month": 1 }, // Sort by year and month
-        },
-      ]);
-  
-      // If no data is found, return an empty array
-      if (!result || result.length === 0) {
-        return res.status(200).json({ message: "No user signup data found", data: [] });
-      }
-  
-      // Format the result for better readability (optional)
-      const formattedResult = result.map((entry) => ({
-        year: entry._id.year,
-        month: entry._id.month,
-        userCount: entry.userCount,
-      }));
-  
-      // Return the result
-      res.status(200).json({ message: "User signup data retrieved successfully", data: formattedResult });
+        // Aggregate users by month and year based on createdAt
+        const result = await User.aggregate([
+            {
+                $project: {
+                    month: { $month: "$createdAt" }, // Extract month from createdAt
+                    year: { $year: "$createdAt" },   // Extract year from createdAt
+                },
+            },
+            {
+                $group: {
+                    _id: { year: "$year", month: "$month" }, // Group by year and month
+                    userCount: { $sum: 1 }, // Count users in each group
+                },
+            },
+            {
+                $sort: { "_id.year": 1, "_id.month": 1 }, // Sort by year and month
+            },
+        ]);
+
+        // If no data is found, return an empty array
+        if (!result || result.length === 0) {
+            return res.status(200).json({ message: "No user signup data found", data: [] });
+        }
+
+        // Format the result for better readability (optional)
+        const formattedResult = result.map((entry) => ({
+            year: entry._id.year,
+            month: entry._id.month,
+            userCount: entry.userCount,
+        }));
+
+        // Return the result
+        res.status(200).json({ message: "User signup data retrieved successfully", data: formattedResult });
     } catch (error) {
-      console.error("Error retrieving user signups:", error);
-      res.status(500).json({ message: "Error retrieving user signups", error: error.message });
+        console.error("Error retrieving user signups:", error);
+        res.status(500).json({ message: "Error retrieving user signups", error: error.message });
     }
-  };
+};
 
-export const calculateCourseProgress = async (req,res)=>{
+export const calculateCourseProgress = async (req, res) => {
 
-    const {userId,courseId} = req.params;
-    try{
+    const { userId, courseId } = req.params;
+    try {
 
         const course = await Course.findById(courseId);
-        if(!course) 
-        {
-            return res.status(401).json({message:"Course not found"});
+        if (!course) {
+            return res.status(401).json({ message: "Course not found" });
         }
 
         //calculate total duration
 
-        const totalDuration = course.playlist.reduce((sum,video)=> {
-            if(typeof video === 'object' && video.videoDuration)
-            {
-                return sum+video.videoDuration;
+        const totalDuration = course.playlist.reduce((sum, video) => {
+            if (typeof video === 'object' && video.videoDuration) {
+                return sum + video.videoDuration;
             }
 
             return sum;
-        },0);
+        }, 0);
 
         if (totalDuration === 0) {
             return res.status(200).json({
@@ -325,115 +320,115 @@ export const calculateCourseProgress = async (req,res)=>{
 
 
         //userProgress
-        const userProgress = await UserProgress.findOne({userId,courseId});
-        if(!userProgress)//no progress yet
+        const userProgress = await UserProgress.findOne({ userId, courseId });
+        if (!userProgress)//no progress yet
         {
             const progress = 0;
-            return res.status(200).json({message:"No progress found",progress});
+            return res.status(200).json({ message: "No progress found", progress });
         }
 
 
         //calculate watched duration
-        const watchedDuration = userProgress.watchedVideos.reduce((sum, video)=>sum+video.watchedTime,0);
+        const watchedDuration = userProgress.watchedVideos.reduce((sum, video) => sum + video.watchedTime, 0);
 
         //calculate progress percentage
-        const progress = (watchedDuration/totalDuration)*100;
+        const progress = (watchedDuration / totalDuration) * 100;
 
-        res.status(200).json({watchedDuration,totalDuration,progress});
+        res.status(200).json({ watchedDuration, totalDuration, progress });
 
 
     }
-    catch(error){
+    catch (error) {
         // console.error("Error calculating progress: ",error.message);
-        res.status(500).json({message:"Failed to calculate progress"});
+        res.status(500).json({ message: "Failed to calculate progress" });
 
     }
 }
 
 
-export const getUserProgress = async (req,res)=>{
+export const getUserProgress = async (req, res) => {
     // serProgress/:userId/:courseId/:videoId
-    const {userId,courseId,videoId} = req.params;
-    try{
+    const { userId, courseId, videoId } = req.params;
+    try {
         const userProgress = await UserProgress.findOne({
             userId,
             courseId
         });
 
-        if(!userProgress){
+        if (!userProgress) {
             return res.status(200).json({
-                message:"No progress found",
-                watchedTime:0,
+                message: "No progress found",
+                watchedTime: 0,
             });
         };
 
-        const videoProgress = userProgress.watchedVideos.find(video=>video.videoId === videoId);
-        if(!videoProgress){
+        const videoProgress = userProgress.watchedVideos.find(video => video.videoId === videoId);
+        if (!videoProgress) {
             return res.status(200).json({
-                message:"No progress found",
-                watchedTime:0,
+                message: "No progress found",
+                watchedTime: 0,
             });
         };
 
-        return res.status(200).json({  
-            message:"Progress fetched successfully",
-            watchedTime:videoProgress.watchedTime
-         })
+        return res.status(200).json({
+            message: "Progress fetched successfully",
+            watchedTime: videoProgress.watchedTime
+        })
 
 
     }
-    catch(error){
-        console.error("Error fetching progress: ",error.message);
-        res.status(500).json({message:"Failed to fetch progress"});
+    catch (error) {
+        console.error("Error fetching progress: ", error.message);
+        res.status(500).json({ message: "Failed to fetch progress" });
 
     }
 
 
 };
-    
+
 
 
 export const updateUserProgress = async (req, res) => {
     const { userId, courseId, videoId, watchedTime } = req.body;
 
     try {
-      const progress = await UserProgress.findOne({ userId, courseId });
-  
-      if (progress) {
-        // Check if the video progress already exists in watchedVideos
-        const videoProgress = progress.watchedVideos.find(v => v.videoId === videoId);
-  
-        if (videoProgress) {
-          // Update watchedTime if it's greater than the existing time
-          if (watchedTime > videoProgress.watchedTime) {
-            videoProgress.watchedTime = watchedTime;
-          }
+        const progress = await UserProgress.findOne({ userId, courseId });
+
+        if (progress) {
+            // Check if the video progress already exists in watchedVideos
+            const videoProgress = progress.watchedVideos.find(v => v.videoId === videoId);
+
+            if (videoProgress) {
+                // Update watchedTime if it's greater than the existing time
+                if (watchedTime > videoProgress.watchedTime) {
+                    videoProgress.watchedTime = watchedTime;
+                }
+            } else {
+                // Push new video progress entry if not found
+                progress.watchedVideos.push({ videoId, watchedTime });
+            }
+
+            progress.updatedAt = new Date();
+            await progress.save();
         } else {
-          // Push new video progress entry if not found
-          progress.watchedVideos.push({ videoId, watchedTime });
+            // If progress doesn't exist, create a new one
+            const newProgress = new UserProgress({
+                userId,
+                courseId,
+                watchedVideos: [{ videoId, watchedTime }],
+            });
+
+            await newProgress.save();
         }
-  
-        progress.updatedAt = new Date();
-        await progress.save();
-      } else {
-        // If progress doesn't exist, create a new one
-        const newProgress = new UserProgress({
-          userId,
-          courseId,
-          watchedVideos: [{ videoId, watchedTime }],
-        });
-  
-        await newProgress.save();
-      }
-  
-      res.status(200).json({ message: 'Progress updated successfully' });
+
+        res.status(200).json({ message: 'Progress updated successfully' });
     } catch (error) {
-      console.error('Error updating user progress:', error);
-      res.status(500).json({ message: 'Internal server error' });
+        console.error('Error updating user progress:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
-  };
-  
-  
+};
+
+
 
 
 // export const updateUserProgress = async (req, res) => {
@@ -470,9 +465,9 @@ export const updateUserProgress = async (req, res) => {
 //                         }
 //                     }
 //                 },
-//                 { 
+//                 {
 //                     upsert: true,
-//                     new: true 
+//                     new: true
 //                 }
 //             );
 //         }

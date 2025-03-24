@@ -2,6 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Filters from '../components/Coursefilter'; // Import Filters component
+import { useSelector } from 'react-redux';
+
+
+
+
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -15,6 +20,8 @@ const Courses = () => {
     duration: [],
   });
   const navigate = useNavigate();
+  const currentUser = useSelector((state) => state.user.currentUser);
+
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -80,15 +87,15 @@ const Courses = () => {
   return (
     <div>
       <div className="relative max-w-4xl mx-auto mb-8">
-        <div className="flex items-center border border-gray-300 rounded-full shadow-lg w-full">
+        <div className="flex items-center w-full border border-gray-300 rounded-full shadow-lg">
           <input
             type="text"
             placeholder="What do you want to learn?"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-6 py-2 text-gray-700 placeholder-gray-500 rounded-full focus:outline-none"
+            className="w-full py-2 pl-6 text-gray-700 placeholder-gray-500 rounded-full focus:outline-none"
           />
-          <div className="absolute right-3 text-black p-2 rounded-full cursor-pointer">
+          <div className="absolute p-2 text-black rounded-full cursor-pointer right-3">
             <FaSearch className="text-xl" />
           </div>
         </div>
@@ -101,21 +108,28 @@ const Courses = () => {
         {/* Courses Column */}
         <div className="w-4/5">
           {filteredCourses.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+            <div className="grid grid-cols-1 gap-8 mt-8 sm:grid-cols-2 lg:grid-cols-3">
               {filteredCourses.map((course) => (
                 <div
                   key={course._id}
-                  className="bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-lg transition-transform hover:scale-105 overflow-hidden"
-                  onClick={() => navigate(`/user/courseIntro/${course._id}`)}
+                  className="overflow-hidden transition-transform bg-white border border-gray-200 shadow-md rounded-xl hover:shadow-lg hover:scale-105"
+                  onClick={() => {
+                    if (currentUser) {
+                      navigate(`/user/courseIntro/${course._id}`);
+                    } else { 
+                       navigate(`/course/intro/${course._id}`);
+                    }
+                    
+                  }}
                 >
                   {course.introImage ? (
                     <img
                       src={course.introImage}
                       alt={course.title}
-                      className="w-full h-48 object-cover"
+                      className="object-cover w-full h-48"
                     />
                   ) : (
-                    <div className="w-full h-48 bg-gray-300 flex items-center justify-center">
+                    <div className="flex items-center justify-center w-full h-48 bg-gray-300">
                       <svg
                         className="w-16 h-16 text-gray-500"
                         xmlns="http://www.w3.org/2000/svg"
@@ -141,10 +155,10 @@ const Courses = () => {
 
                   <div className="p-6">
                     <h3 className="text-lg font-semibold text-gray-800 truncate">{course.title}</h3>
-                    <p className="text-sm text-gray-500 mt-2">
+                    <p className="mt-2 text-sm text-gray-500">
                       By {course.instructor?.name || 'Unknown Instructor'}
                     </p>
-                    <div className="flex justify-between items-center mt-4">
+                    <div className="flex items-center justify-between mt-4">
                       <div className="text-sm text-gray-600">
                         <strong>Category:</strong> {course.category}
                       </div>
@@ -152,7 +166,7 @@ const Courses = () => {
                         <strong>Difficulty:</strong> {course.difficulty}
                       </div>
                     </div>
-                    <div className="text-sm text-gray-600 mt-2">
+                    <div className="mt-2 text-sm text-gray-600">
                       <strong>Duration:</strong> {course.customDuration} {course.durationUnit}
                     </div>
                   </div>
@@ -160,7 +174,7 @@ const Courses = () => {
               ))}
             </div>
           ) : (
-            <p className="text-center text-black-500 mt-8 text-3xl font-bold">Course not found!</p>
+            <p className="mt-8 text-3xl font-bold text-center text-black-500">Course not found!</p>
           )}
         </div>
       </div>
