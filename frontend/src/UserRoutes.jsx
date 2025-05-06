@@ -12,6 +12,8 @@ import FavoriteCourses from './pages/User/Favorites';
 import QuizContent from './pages/User/QuizContent';
 import Reviews from './pages/User/Reviews';
 import Payment from './components/Payment';
+import VerifyEmail from './pages/VerifyEmail';
+import ResendVerification from './pages/ResendVerification';
 
 
 const UserRoutes = () => {
@@ -29,6 +31,8 @@ const UserRoutes = () => {
         <Route path='/user/quiz-content/:quizId' element={<QuizContent />} />
         <Route path='/user/add-review/:courseId' element={<Reviews />} />
         <Route path='/user/courseIntro/:id/payment' element={<Payment />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/resend-verification" element={<ResendVerification />} />
       </Route>
     </Routes>
   );
