@@ -91,6 +91,7 @@ export const verifyEmail = async (req, res, next) => {
   
       // ✅ Mark user as active/verified
       user.isActive = true;
+      await user.save();
   
       // ✅ Clear token and expiry
       user.verificationToken = undefined;
