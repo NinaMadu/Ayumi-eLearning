@@ -57,28 +57,48 @@ const CheckoutForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!stripe || !elements) return;
-
+  
     setLoading(true);
     setMessage("");
-
+  
+    const cardElement = elements.getElement(CardNumberElement);
+  
     const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
-        card: elements.getElement(CardNumberElement),
+        card: cardElement,
         billing_details: { name: cardholderName },
       },
     });
-
+  
     if (error) {
       setMessage(error.message);
-    } else if (paymentIntent.status === "succeeded") {
+      setLoading(false);
+      return;
+    }
+  
+    if (paymentIntent.status === "succeeded") {
       setMessage("✅ Payment Successful!");
+  
+      // Now save payment to DB
+      await fetch("http://localhost:5000/api/payment/save-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: cardholderName,
+          cardNumber: "**** **** **** 4242", // Masked or sample data; never send real numbers
+          expiry: "12/34",
+          cvv: "***"
+        }),
+      });
+  
       setTimeout(() => {
         navigate(`/user/course-content/${id}`);
       }, 2000);
     }
-
+  
     setLoading(false);
   };
+  
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-2xl mx-auto">

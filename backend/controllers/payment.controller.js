@@ -43,12 +43,13 @@
 // };
 
 
+// controllers/payment.controller.js
 
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
+import Payment from '../models/payment.model.js';
 
 dotenv.config();
-
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createPaymentIntent = async (req, res) => {
@@ -60,7 +61,7 @@ export const createPaymentIntent = async (req, res) => {
     }
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount * 100, // Convert to cents
+      amount: amount * 100,
       currency,
       payment_method_types: ['card'],
     });
@@ -68,7 +69,24 @@ export const createPaymentIntent = async (req, res) => {
     res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error processing payment', error: error.message });
+    res.status(500).json({ message: 'Error creating payment intent', error: error.message });
   }
 };
 
+export const savePayment = async (req, res) => {
+  try {
+    const { name, cardNumber, expiry, cvv } = req.body;
+
+    if (!name || !cardNumber || !expiry || !cvv) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const newPayment = new Payment({ name, cardNumber, expiry, cvv });
+    await newPayment.save();
+
+    res.status(201).json({ message: "Payment saved to database", payment: newPayment });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error saving payment', error: error.message });
+  }
+};
