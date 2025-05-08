@@ -73,7 +73,7 @@ const Header = () => {
         if (response.ok) {
             dispatch(signOutUserSuccess());
             console.log('Logged out successfully');
-            navigate('/');
+            
         } else {
             const errorData = await response.json();
             dispatch(signInFailure(errorData.message || 'Failed to log out. Please try again.'));

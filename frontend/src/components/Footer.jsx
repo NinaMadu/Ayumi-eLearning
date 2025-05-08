@@ -1,7 +1,13 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { FaPhone, FaEnvelope, FaFacebookF, FaTiktok, FaInstagram, FaYoutube, FaQuestionCircle, FaInfoCircle, FaShieldAlt } from 'react-icons/fa';
 
 const Footer = () => {
+
+  const { currentUser } = useSelector((state) => state.user);
+  // console.log("footer " + currentUser.isInstructor);
+
+  
   return (
     <footer className="py-8 mt-4 text-gray-300 bg-blue-950">
       <div className="container px-4 mx-auto ">
@@ -13,8 +19,24 @@ const Footer = () => {
           <div>
             <h4 className="flex-col mb-3 text-xl font-semibold text-justify ">Quick Links</h4>
             <ul className="text-justify space-y-2flex-col">
-              <li><a href="#teachers" className="transition hover:text-white">Teachers</a></li>
-              <li><a href="#courses" className="transition hover:text-white">Courses</a></li>
+              {
+                currentUser?.isInstructor == "true" ? (
+                 null
+                ) : (
+                 <li><a href="/teachers" className="transition hover:text-white">Teachers</a></li> 
+                )
+
+              }
+               {
+                currentUser?.isInstructor == "true" ? (
+                  
+                   <li><a href="/instructor/create-course" className="transition hover:text-white">Courses</a></li> 
+                ) : (
+                 <li><a href="/courses" className="transition hover:text-white">Courses</a></li>
+                )
+
+              }
+              
               <li><a href="#blogs" className="transition hover:text-white">Blogs</a></li>
             </ul>
           </div>
