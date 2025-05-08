@@ -26,11 +26,12 @@
 
 // routes/payment.route.js
 import express from 'express';
-import { createPaymentIntent, savePayment } from '../controllers/payment.controller.js';
+import { createPaymentIntent, savePayment, getUserPayments } from '../controllers/payment.controller.js';
 
 const router = express.Router();
 
 router.post('/create-payment-intent', createPaymentIntent);
-router.post('/save-payment', savePayment); // <-- New route
+router.post('/save-payment', savePayment);
+router.get('/user/:userId', getUserPayments);
 
 export default router;
