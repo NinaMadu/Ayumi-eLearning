@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserLayout from '../../components/UserLayout';
+import { useSelector } from 'react-redux';
 
 const Discussion = () => {
+  const currentUser = useSelector((state) => state.user.currentUser);
   const [searchText, setSearchText] = useState('');
   const [messages, setMessages] = useState([
     {
@@ -18,17 +20,17 @@ const Discussion = () => {
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
-      setMessages([
-        ...messages,
+      setMessages(prevMessages => [
+        ...prevMessages,
         {
-          id: messages.length + 1,
+          id: prevMessages.length + 1,
           text: newMessage,
           reactions: { like: 0, dislike: 0 },
-          sender: 'You',
-          senderImg: 'https://source.unsplash.com/random/600x600', // User avatar or placeholder
+          sender: currentUser._id,
+          senderImg: currentUser.avatar, // User avatar or placeholder
         },
       ]);
-      setNewMessage(''); // Clear the input after sending
+      setNewMessage('');
     }
   };
 
