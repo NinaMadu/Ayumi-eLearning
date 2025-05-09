@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { FaPhone, FaEnvelope, FaFacebookF, FaTiktok, FaInstagram, FaYoutube, FaQuestionCircle, FaInfoCircle, FaShieldAlt } from 'react-icons/fa';
 
@@ -23,16 +24,34 @@ const Footer = () => {
                 currentUser?.isInstructor == "true" ? (
                  null
                 ) : (
-                 <li><a href="/teachers" className="transition hover:text-white">Teachers</a></li> 
+                    // <li><a href="/teachers" className="transition hover:text-white">Teachers</a></li> 
+                    <li>
+                    <Link to="/teachers" className="transition hover:text-white">
+                      Teachers
+                    </Link>
+                  </li>
+                    
                 )
 
               }
                {
                 currentUser?.isInstructor == "true" ? (
                   
-                   <li><a href="/instructor/create-course" className="transition hover:text-white">Courses</a></li> 
+                  // <li><a href="/instructor/create-course" className="transition hover:text-white">Courses</a></li> 
+                  <li>
+                      <Link to="/instructor/create-course" className="transition hover:text-white">
+                        Courses
+                      </Link>
+                    </li>
+
                 ) : (
-                 <li><a href="/courses" className="transition hover:text-white">Courses</a></li>
+                    // <li><a href="/courses" className="transition hover:text-white">Courses</a></li>
+                  <li>
+                    <Link to="/courses" className="transition hover:text-white">
+                      Courses
+                    </Link>
+                  </li>
+
                 )
 
               }
