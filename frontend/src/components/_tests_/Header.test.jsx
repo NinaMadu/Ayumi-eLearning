@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import Header from '../Header';
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from '../../redux/userSlice';
+import React from 'react';
+
 
 function renderWithProviders(ui, { preloadedState = {}, store = configureStore({ reducer: { user: userReducer }, preloadedState }) } = {}) {
   return render(
