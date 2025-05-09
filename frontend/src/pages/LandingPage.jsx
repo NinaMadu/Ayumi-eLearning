@@ -166,6 +166,7 @@ const Home = () => {
             </div>
             
             {/* Logo */}
+            
             <motion.div 
               className="flex items-center justify-center flex-1"
               initial={{ opacity: 0, x: 50 }}
@@ -230,7 +231,7 @@ const Home = () => {
             <p className="max-w-2xl mx-auto mb-6 text-lg text-gray-700">
               Join our community of language enthusiasts and embark on an exciting journey to master Japanese language and culture.
             </p>
-            <Link to="/user/contact">
+            <Link to="/user/help">
               <motion.button
                 className="px-8 py-3 font-semibold text-white shadow-lg rounded-xl"
                 style={{

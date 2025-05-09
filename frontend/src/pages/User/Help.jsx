@@ -1,6 +1,7 @@
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import { FaPaperPlane } from "react-icons/fa";
+import UserLayout from "../../components/UserLayout";
 
 const GetInTouch = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
@@ -39,6 +40,7 @@ const GetInTouch = () => {
   };
 
   return (
+    <UserLayout>
     <div className="min-h-screen flex">
       {/* Left Side - Background Image */}
       <div 
@@ -114,6 +116,7 @@ const GetInTouch = () => {
         </div>
       </div>
     </div>
+    </UserLayout>
   );
 };
 
