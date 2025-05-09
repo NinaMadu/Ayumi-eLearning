@@ -22,7 +22,7 @@ export default function Signup() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [message, setMessage] = useState('');
-  
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -48,42 +48,44 @@ export default function Signup() {
         body: JSON.stringify(formData),
       });
 
-        if(data.success == false){
-          setLoading(false);
-          setError(data.message);
-          setMessage(data.message);
-          setShowError(true);
-          return;
-        }
-
+      if (data.success == false) {
         setLoading(false);
-        setError(null);
-        // setError(error.message);
-        navigate("/sign-in", { state: { successMessage: "Signup successful!" } });
-
-
-      } catch (error) {
-        setLoading(false);
-        setError(error.message);
-        setMessage(error.message);
+        setError(data.message);
+        setMessage(data.message);
         setShowError(true);
+        return;
       }
 
       setLoading(false);
-      setError("Registration successful! Please check your email to verify your account.");
+      setError(null);
+      // setError(error.message);
+      navigate("/sign-in", { state: { successMessage: "Signup successful!" } });
 
-      // Optional: clear form
-      setFormData({
-        firstName: "",
-        lastName: "",
-        bDay: "",
-        gender: "",
-        email: "",
-        phone: "",
-        password: "",
-        confirmPassword: "",
-      });
-    
+
+    } catch (error) {
+      setLoading(false);
+      setError(error.message);
+      setMessage(error.message);
+      setShowError(true);
+    }
+    setError(null);
+    setLoading(false);
+    setMessage("Registration successful! Please check your email to verify your account.");
+    setShowSuccess(true);
+
+
+    // Optional: clear form
+    setFormData({
+      firstName: "",
+      lastName: "",
+      bDay: "",
+      gender: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+    });
+
   };
 
   return (
@@ -91,18 +93,25 @@ export default function Signup() {
       <Header />
       <div className="flex items-center justify-front min-h-screen bg-cover bg-center bg-no-repeat bg-opacity-90" style={{ backgroundImage: "url('/src/assets/bg1.jpg')", opacity: 0.9 }}>
         <div className="bg-white bg-opacity-50 p-10 rounded-lg shadow-lg max-w-3xl w-full h-full ml-20 mt-20">
-         
-    
-    
-        {showError && (
+
+
+
+          {showError && (
             <Notification
               type="fail"
               message={message}
               onClose={() => setShowError(false)}
             />
           )}
-        
-         <form onSubmit={handleSubmit} className="bg-white bg-opacity-100 p-8 rounded-lg shadow-lg max-w-3xl w-full h-50">
+          {showSuccess && (
+            <Notification
+              type="success"
+              message={message}
+              onClose={() => setShowSuccess(false)}
+            />
+          )}
+
+          <form onSubmit={handleSubmit} className="bg-white bg-opacity-100 p-8 rounded-lg shadow-lg max-w-3xl w-full h-50">
             <h1 className="text-4xl font-bold text-center mb-6 text-blue-900">Create an account</h1>
 
             {error && (

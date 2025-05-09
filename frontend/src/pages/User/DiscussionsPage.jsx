@@ -32,7 +32,7 @@ const DiscussionsPage = () => {
   return (
     <UserLayout>
       <div className="p-4">
-        <h2 className="text-2xl font-semibold mb-4">Your Enrolled Courses (Discussions)</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-center">Course Discussions</h2>
 
         <div className="grid grid-cols-1 gap-4">
           {enrolledCourses.map((course) => (
