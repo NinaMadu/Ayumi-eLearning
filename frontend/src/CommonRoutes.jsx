@@ -13,6 +13,7 @@ import ResetPassword from './components/ResetPassword';
 
 import Courses from './pages/Courses';
 import CourseIntro from './pages/CourseIntro';
+import Teachers from './pages/Teachers';
 
 const CommonRoutes = () => {
   return (
@@ -29,6 +30,7 @@ const CommonRoutes = () => {
       <Route path="/reset-password/:token" element={<ResetPassword />} />      
       <Route path="/courses" element={<Courses />} />
       <Route path="/course/intro/:id" element={<CourseIntro />} />
+      <Route path="/teachers" element={<Teachers/>}/>
       
     </Routes>
   );

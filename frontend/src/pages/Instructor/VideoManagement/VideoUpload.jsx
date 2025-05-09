@@ -225,23 +225,34 @@ export default function VideoUpload() {
             const videoData = response.data;
             console.log(`Attempt ${i + 1} - Video data:`, videoData);
       
-            if (videoData.transcode.status === 'complete') {
-              console.log('Video transcode complete. Duration:', videoData.duration);
+            const transcodeStatus = videoData?.transcode?.status;
+      
+            if (transcodeStatus === 'complete') {
+              console.log('✅ Transcode complete. Duration:', videoData.duration);
               return videoData.duration;
+            } else if (transcodeStatus === 'error') {
+              console.error('❌ Transcode failed.');
+              return null;
             } else {
               console.log(
-                `Video still processing... Status: ${videoData.status}, Transcode: ${videoData.transcode.status}, Duration: ${videoData.duration}`
+                `⏳ Still processing... Status: ${videoData.status}, Transcode: ${transcodeStatus || 'N/A'}, Duration: ${videoData.duration}`
               );
             }
           } catch (error) {
-            console.error(`Attempt ${i + 1} - Error fetching video duration:`, error.response?.data || error.message);
+            const errMsg = error.response?.data?.error || error.message;
+            console.error(`❗ Attempt ${i + 1} - Error fetching video:`, errMsg);
+      
+            // If the video is not found or access is denied, exit early
+            if (error.response && [400, 401, 403, 404].includes(error.response.status)) {
+              break;
+            }
           }
       
           // Wait before retrying
           await new Promise((resolve) => setTimeout(resolve, interval));
         }
       
-        console.error('Video duration could not be fetched after retries.');
+        console.error('❌ Failed to fetch video duration after maximum retries.');
         return null;
       };
       

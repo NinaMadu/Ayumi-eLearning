@@ -20,6 +20,10 @@ import Pic5 from "../assets/Pic7.jpeg";
 import Pic6 from "../assets/Pic8.jpeg";
 
 
+
+
+
+
 // Section component with scroll-triggered animation
 const AnimatedSection = ({ children, className, delay = 0 }) => {
   const controls = useAnimation();
@@ -29,6 +33,10 @@ const AnimatedSection = ({ children, className, delay = 0 }) => {
   });
 
   useEffect(() => {
+
+    
+
+
     if (inView) {
       controls.start({
         opacity: 1,
@@ -104,6 +112,7 @@ const Home = () => {
       <Header />
 
       <div className="min-h-screen pt-20 bg-gradient-to-b from-white to-gray-50">
+       
         <div className="container px-4 pt-6 mx-auto">
           {/* Hero Section */}
           <AnimatedSection className="flex flex-col items-center justify-between gap-10 px-4 mb-16 lg:flex-row md:px-10 lg:px-16">

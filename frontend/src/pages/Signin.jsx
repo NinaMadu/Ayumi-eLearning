@@ -5,16 +5,32 @@ import { signInStart, signInSuccess, signInFailure } from '../redux/userSlice.js
 import Header from '../components/Header.jsx';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import Notification from '../components/Notification.jsx';
+import { useLocation } from 'react-router-dom';
+
 
 export default function Signin() {
   
+
+  const [showErrornotification, setShowErrorNotification] = useState(false);
+  const [errormessage, setErrorMessage] = useState('');
   const [formData, setFormData] = useState({});
   const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [message, setMessage] = useState('');
   
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
+
+    if (location.state && location.state.successMessage) {
+      setMessage(location.state.successMessage);
+      setShowSuccess(true);
+    }
+
     dispatch(signInFailure(null)); 
   }, [dispatch]);
 
@@ -43,23 +59,45 @@ export default function Signin() {
       localStorage.setItem('userId', data._id);
       dispatch(signInSuccess(data));
 
+      
+
       if (data.isInstructor) {
-        navigate('/instructor/dashboard');
+        navigate('/instructor/dashboard', { state: { successMessage: 'Login successful!' } });
       } else {
-        navigate('/user/dashboard');
+        navigate('/user/dashboard', { state: { successMessage: 'Login successful!' } });
       }
       
     } catch (err) {
       dispatch(signInFailure(err.message));
+      setErrorMessage(err.message);
+      setShowErrorNotification(true);
+
     }
   }
 
 
   return (
     <>
-    <Header/>
-      <div className="flex items-center justify-end min-h-screen bg-cover bg-center bg-no-repeat " style={{ background: `url('../src/assets/bg2.jpg')`, opacity: 0.9 }}>
-        <div className="bg-white bg-opacity-50 p-10 rounded-lg shadow-lg max-w-lg w-full h-full mr-40 " >
+      <Header />
+      
+
+      <div className="flex items-center justify-end min-h-screen bg-center bg-no-repeat bg-cover " style={{ background: `url('../src/assets/bg2.jpg')`, opacity: 0.9 }}>
+       {showErrornotification && (
+                <Notification
+                  type="fail"
+                  message={errormessage}
+                  onClose={() => setShowErrorNotification(false)}
+                />
+        )}
+              {showSuccess && (
+        <Notification
+          type="success"
+          message={message}
+          onClose={() => setShowSuccess(false)}
+        />
+      )}
+       
+        <div className="w-full h-full max-w-lg p-10 mr-40 bg-white bg-opacity-50 rounded-lg shadow-lg " >
 
           <form onSubmit={handleSubmit} className="bg-white bg-opacity-100 p-8 rounded-lg shadow-lg max-w-lg w-full h-50">
             <div>
