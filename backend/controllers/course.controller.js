@@ -1,7 +1,5 @@
 import Course from "../models/course.model.js";
 import asyncHandler from "express-async-handler";
-import Notification from "../models/notification.model.js";
-import User from "../models/user.model.js";
 
 // Create a new course
 export const createCourse = async (req, res) => {
@@ -23,16 +21,6 @@ export const createCourse = async (req, res) => {
     console.log(req.body);
     // Save the course to the database
     const savedCourse = await newCourse.save();
-
-    const users = await User.find();
-
-      const notifications = users.map((user) => ({
-      user: user._id,
-      course: savedCourse._id,
-      description: `A new course "${title}" has been added!`,
-    }));
-
-    await Notification.insertMany(notifications);
 
     res.status(201).json({ message: "Course created successfully!", course: savedCourse });
   } catch (error) {

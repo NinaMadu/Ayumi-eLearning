@@ -29,7 +29,7 @@ const Sidemenu = () => {
 
     { title: 'Home', icon: <FaHome />, path: '/user/user-home' },
     { title: 'Dashboard', icon: <AiFillDashboard />, path: '/user/dashboard' },
-    { title: 'Notifications', icon: <FaBell />,path:'/notifications' },
+    { title: 'Notifications', icon: <FaBell /> },
     { title: 'Discussion', icon: <FaBookOpen /> },
     { title: "Favourites", icon: <FaHeart />, path: "/user/favourites" },
     { title: 'Help', icon: <FaQuestionCircle />,path:'/user/help' },
