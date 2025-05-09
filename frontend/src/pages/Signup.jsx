@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Header from '../components/Header';
+import Notification from '../components/Notification';
+
 
 
 export default function Signup() {
@@ -10,6 +12,10 @@ export default function Signup() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({});
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [message, setMessage] = useState('');
+  
 
   const handleChange = (e) => {
     setFormData({...formData, [e.target.id]: e.target.value});
@@ -21,6 +27,8 @@ export default function Signup() {
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match!");
+      setMessage("Passwords do not match!");
+      setShowError(true);
       return;
     }
 
@@ -39,18 +47,22 @@ export default function Signup() {
         if(data.success == false){
           setLoading(false);
           setError(data.message);
+          setMessage(data.message);
+          setShowError(true);
           return;
         }
 
         setLoading(false);
         setError(null);
         // setError(error.message);
-        navigate("/sign-in");
+        navigate("/sign-in", { state: { successMessage: "Signup successful!" } });
 
 
       } catch (error) {
         setLoading(false);
         setError(error.message);
+        setMessage(error.message);
+        setShowError(true);
       }
 
     
@@ -59,8 +71,16 @@ export default function Signup() {
   return (
     <>
     <Header/>
-    <div className="flex items-center justify-front min-h-screen bg-cover bg-center bg-no-repeat bg-opacity-90" style={{ backgroundImage: "url('/src/assets/bg1.jpg')",opacity:0.9 }} >
-      <div  class="bg-white bg-opacity-50 p-10 rounded-lg shadow-lg max-w-3xl w-full h-full ml-20 mt-20" >
+    <div className="flex items-center min-h-screen bg-center bg-no-repeat bg-cover justify-front bg-opacity-90" style={{ backgroundImage: "url('/src/assets/bg1.jpg')",opacity:0.9 }} >
+        {showError && (
+            <Notification
+              type="fail"
+              message={message}
+              onClose={() => setShowError(false)}
+            />
+          )}
+        
+        <div class="bg-white bg-opacity-50 p-10 rounded-lg shadow-lg max-w-3xl w-full h-full ml-20 mt-20" >
 
       <form onSubmit={handleSubmit} class="bg-white bg-opacity-100 p-8 rounded-lg shadow-lg max-w-3xl w-full h-50">
       <div>

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { signInStart, signInSuccess, signInFailure } from '../redux/userSlice.js'
 import Header from '../components/Header.jsx';
 import Notification from '../components/Notification.jsx';
+import { useLocation } from 'react-router-dom';
 
 
 export default function Signin() {
@@ -15,9 +16,19 @@ export default function Signin() {
   const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [message, setMessage] = useState('');
+  
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
+
+    if (location.state && location.state.successMessage) {
+      setMessage(location.state.successMessage);
+      setShowSuccess(true);
+    }
+
     dispatch(signInFailure(null)); 
   }, [dispatch]);
 
@@ -73,7 +84,14 @@ export default function Signin() {
                   message={errormessage}
                   onClose={() => setShowErrorNotification(false)}
                 />
-              )}
+        )}
+              {showSuccess && (
+        <Notification
+          type="success"
+          message={message}
+          onClose={() => setShowSuccess(false)}
+        />
+      )}
        
         <div className="w-full h-full max-w-lg p-10 mr-40 bg-white bg-opacity-50 rounded-lg shadow-lg " >
 
