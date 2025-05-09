@@ -8,6 +8,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import Notification from '../components/Notification.jsx';
 import { useLocation } from 'react-router-dom';
 
+import bg2 from '../assets/bg2.jpg';
 
 export default function Signin() {
   
@@ -78,10 +79,9 @@ export default function Signin() {
 
   return (
     <>
-      <Header />
-      
 
-      <div className="flex items-center justify-end min-h-screen bg-center bg-no-repeat bg-cover " style={{ background: `url('../src/assets/bg2.jpg')`, opacity: 0.9 }}>
+     <Header/>
+      <div className="flex items-center justify-end min-h-screen bg-center bg-no-repeat bg-cover " style={{ backgroundImage: `url(${bg2})`, opacity: 0.9 }}>
        {showErrornotification && (
                 <Notification
                   type="fail"
@@ -97,6 +97,9 @@ export default function Signin() {
         />
       )}
        
+
+    
+
         <div className="w-full h-full max-w-lg p-10 mr-40 bg-white bg-opacity-50 rounded-lg shadow-lg " >
 
           <form onSubmit={handleSubmit} className="bg-white bg-opacity-100 p-8 rounded-lg shadow-lg max-w-lg w-full h-50">

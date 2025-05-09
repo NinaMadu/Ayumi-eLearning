@@ -2,6 +2,7 @@ import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import { FaPaperPlane } from "react-icons/fa";
 import UserLayout from "../../components/UserLayout";
+import help from '../../assets/help2.jfif';
 
 const GetInTouch = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
@@ -45,7 +46,7 @@ const GetInTouch = () => {
       {/* Left Side - Background Image */}
       <div 
         className="w-1/2 bg-cover bg-center relative" 
-        style={{ backgroundImage: "url('/src/assets/help2.jfif')" }} 
+        style={{ backgroundImage: `url(${help})`,}} 
       >
         <div className="absolute inset-0 bg-black/40"></div> {/* Dark Overlay */}
       </div>

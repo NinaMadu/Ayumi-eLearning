@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Notification from '../components/Notification';
 
+import bg1 from '../assets/bg1.jpg';
 
 export default function Signup() {
   const [error, setError] = useState(null);
@@ -90,9 +91,9 @@ export default function Signup() {
 
   return (
     <div>
-      <Header />
-      <div className="flex items-center justify-front min-h-screen bg-cover bg-center bg-no-repeat bg-opacity-90" style={{ backgroundImage: "url('/src/assets/bg1.jpg')", opacity: 0.9 }}>
-        <div className="bg-white bg-opacity-50 p-10 rounded-lg shadow-lg max-w-3xl w-full h-full ml-20 mt-20">
+    <Header/>
+    <div className="flex items-center justify-front min-h-screen bg-cover bg-center bg-no-repeat bg-opacity-90" style={{ backgroundImage: `url(${bg1})`,opacity:0.9 }} >
+      <div  class="bg-white bg-opacity-50 p-10 rounded-lg shadow-lg max-w-3xl w-full h-full ml-20 mt-20" >
 
 
 
