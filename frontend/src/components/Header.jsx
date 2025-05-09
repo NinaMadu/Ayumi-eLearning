@@ -11,6 +11,9 @@ import LogoutConfirmation from './LogoutConfirmation';
 import axios from 'axios';
 
 
+
+
+
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -19,7 +22,8 @@ const Header = () => {
   const { currentUser } = useSelector(state => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [message, setMessage] = useState('');
 
 
   let Links = [
@@ -71,9 +75,11 @@ const Header = () => {
         });
 
         if (response.ok) {
-            dispatch(signOutUserSuccess());
-            console.log('Logged out successfully');
-            navigate('/');
+          dispatch(signOutUserSuccess());
+          // setShowSuccessNotification(true);
+          // setMessage('Logged out successfully');
+          // console.log('Logged out successfully');
+            
         } else {
             const errorData = await response.json();
             dispatch(signInFailure(errorData.message || 'Failed to log out. Please try again.'));
@@ -92,6 +98,14 @@ const Header = () => {
 
   return (
     <div className='fixed top-0 left-0 z-20 w-full shadow-md bg-red-50'>
+      {/* {showSuccessNotification && (
+            <Notification
+              type="success"
+              message={message}
+              onClose={() => setShowSuccessNotification(false)}
+            />
+          )} */}
+      
       <div className='flex items-center justify-between px-5 py-2 bg-red-50 md:px-10'>
         {/* Logo Section */}
         <div className='flex items-center gap-1'>
