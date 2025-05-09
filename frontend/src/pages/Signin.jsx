@@ -38,6 +38,8 @@ export default function Signin() {
         throw new Error(data.message || 'Failed to sign in');
       }
 
+    
+
       localStorage.setItem('userId', data._id);
       dispatch(signInSuccess(data));
 
@@ -56,30 +58,30 @@ export default function Signin() {
   return (
     <>
     <Header/>
-      <div className="flex items-center justify-end min-h-screen bg-center bg-no-repeat bg-cover " style={{ background: `url('../src/assets/bg2.jpg')`, opacity: 0.9 }}>
-        <div className="w-full h-full max-w-lg p-10 mr-40 bg-white bg-opacity-50 rounded-lg shadow-lg " >
+      <div className="flex items-center justify-end min-h-screen bg-cover bg-center bg-no-repeat " style={{ background: `url('../src/assets/bg2.jpg')`, opacity: 0.9 }}>
+        <div className="bg-white bg-opacity-50 p-10 rounded-lg shadow-lg max-w-lg w-full h-full mr-40 " >
 
-          <form onSubmit={handleSubmit} className="w-full max-w-lg p-8 bg-white bg-opacity-100 rounded-lg shadow-lg h-50">
+          <form onSubmit={handleSubmit} className="bg-white bg-opacity-100 p-8 rounded-lg shadow-lg max-w-lg w-full h-50">
             <div>
-              <h1 className="mb-6 text-4xl font-bold text-center text-blue-900">Login</h1>
+              <h1 className="text-4xl font-bold text-center mb-6 text-blue-900">Login</h1>
 
-              {error && <p className="mb-4 text-red-500">{error}</p>}
+              {error && <p className="text-red-500 mb-4">{error}</p>}
               
               <div className="mb-4">
                 <label htmlFor="email"
-                  className="block text-sm text-base font-medium text-blue-900"
+                  className="block text-sm font-medium text-blue-900 text-base"
                 >Email</label>
                 <input type="email" id="email"
-                  className="block w-full px-3 py-2 mt-1 border border-blue-900 border-opacity-50 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-blue-900 border-opacity-50 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Enter your User Name or Email" onChange={handleChange} />
               </div>
 
               <div >
                 <label htmlFor="password"
-                  className="block text-sm text-base font-medium text-blue-900"
+                  className="block text-sm font-medium text-blue-900  text-base"
                 >Password</label>
                 <input type="password" id="password"
-                  className="block w-full px-3 py-2 mt-1 border border-blue-900 border-opacity-50 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-blue-900 border-opacity-50 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Enter your password" onChange={handleChange} />
               </div>
                 
@@ -94,15 +96,15 @@ export default function Signin() {
                 />
                 <span className="text-sm text-blue-900">Remember me</span>
               </label>
-              <Link to={"/forget-password"} className="text-sm text-blue-900 hover:text-blue-500">Forgot Password?</Link>
+              <span className="text-sm text-blue-900 hover:text-blue-500">Forgot Password?</span>
             </div>
             <div className="flex justify-center">
-              <button className="flex justify-center w-64 px-4 py-2 text-sm text-lg font-bold text-white bg-blue-900 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" disabled={loading}>
+              <button className="w-64 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-blue-900 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-lg" disabled={loading}>
                 {loading ? 'Loading...' : 'Login'}
               </button>
             </div>
             <div className="mt-6 text-center">
-              <span className="text-sm text-blue-900 opacity-80">Don't have an account? <Link to='/Sign-up' className="text-base font-medium text-blue-900 hover:text-blue-600">Create an account</Link></span>
+              <span className="text-sm text-blue-900 opacity-80">Don't have an account? <Link to='/Sign-up' className="font-medium text-blue-900 hover:text-blue-600 text-base">Create an account</Link></span>
             </div>
           </form>
         </div>

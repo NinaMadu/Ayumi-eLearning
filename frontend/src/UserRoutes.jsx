@@ -17,6 +17,8 @@ import UserSettings from './pages/User/UserSettings';
 import Roadmap from './pages/User/Roadmap';
 import AssignmentDetails from './pages/User/AssignmentDetails';
 import Leaderboard from './pages/User/Leaderboard';
+import VerifyEmail from './pages/VerifyEmail';
+import ResendVerification from './pages/ResendVerification';
 
 
 const UserRoutes = () => {
@@ -39,6 +41,8 @@ const UserRoutes = () => {
         <Route path='/user/roadmap' element={<Roadmap/>} />        
         <Route path='/user/assignments/:courseId/:assignmentId' element={<AssignmentDetails />} />
         <Route path='/user/leaderboard' element={<Leaderboard />}/>
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/resend-verification" element={<ResendVerification />} />
 
       
       </Route>

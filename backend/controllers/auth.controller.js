@@ -72,52 +72,59 @@ export const signup = async (req, res, next) => {
 
 // ----------------- VERIFY EMAIL --------------------
 export const verifyEmail = async (req, res, next) => {
-  try {
-    const { token } = req.query;
-    if (!token) {
-      return next(errorHandler(400, "Verification token is required"));
+    try {
+      const { token } = req.query;
+  
+      if (!token) return next(errorHandler(400, "Verification token is required"));
+  
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  
+      const user = await User.findOne({ 
+        email: decoded.email,
+        verificationToken: token,
+        verificationTokenExpires: { $gt: new Date() }
+      });
+  
+      if (!user) {
+        return res.redirect(`${process.env.CLIENT_URL}/verify-email?success=false&message=Invalid or expired verification token`);
+      }
+  
+      // ✅ Mark user as active/verified
+      user.isActive = true;
+      await user.save();
+  
+      // ✅ Clear token and expiry
+      user.verificationToken = undefined;
+      user.verificationTokenExpires = undefined;
+  
+      await user.save();
+  
+      // ✅ Send confirmation email (optional)
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: "Your Account is Now Active!",
+        html: `
+          <h2>Welcome, ${user.firstName || 'User'}!</h2>
+          <p>Your account has been successfully verified and is now active.</p>
+          <p>You can now log in.</p>
+        `,
+      });
+  
+      // ✅ Redirect to frontend
+      res.redirect(`${process.env.CLIENT_URL}/verify-email?success=true`);
+  
+    } catch (error) {
+      let message = "Something went wrong. Please try again later.";
+      if (error.name === 'TokenExpiredError') {
+        message = "Verification token has expired";
+      } else if (error.name === 'JsonWebTokenError') {
+        message = "Invalid verification token";
+      }
+      res.redirect(`${process.env.CLIENT_URL}/verify-email?success=false&message=${encodeURIComponent(message)}`);
     }
-
-    // 1. Verify JWT token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // 2. Find user by email (case-insensitive)
-    const user = await User.findOne({ 
-      email: decoded.email.toLowerCase() 
-    });
-    if (!user) {
-      return res.redirect(`${process.env.CLIENT_URL}/verify-email?success=false&message=User not found`);
-    }
-
-    // 3. Check if token matches and is not expired
-    if (
-      user.verificationToken !== token.trim() || 
-      new Date(user.verificationTokenExpires) < new Date()
-    ) {
-      return res.redirect(`${process.env.CLIENT_URL}/verify-email?success=false&message=Invalid or expired token`);
-    }
-
-    // 4. Update user (atomic operation)
-    user.isActive = true;
-    user.verificationToken = undefined;
-    user.verificationTokenExpires = undefined;
-    await user.save();
-
-    // 5. Confirm activation
-    console.log(`User ${user.email} activated successfully`);
-    res.redirect(`${process.env.CLIENT_URL}/verify-email?success=true`);
-
-  } catch (error) {
-    console.error("Verification error:", error);
-    let message = "Verification failed";
-    if (error.name === 'TokenExpiredError') {
-      message = "Verification link expired";
-    } else if (error.name === 'JsonWebTokenError') {
-      message = "Invalid verification link";
-    }
-    res.redirect(`${process.env.CLIENT_URL}/verify-email?success=false&message=${encodeURIComponent(message)}`);
-  }
-};
+  };
+  
 // ----------------- RESEND VERIFICATION --------------------
 export const resendVerification = async (req, res, next) => {
   try {
@@ -201,14 +208,13 @@ export const signin = async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
   
-      // In your backend auth controller (auth.controller.js)
       if (!instructor && !validUser.isActive) {
-             return res.status(401).json({
-                message: "Account not activated. Please verify your email.",
-                needVerification: true,  // Add this flag
-                email: validUser.email   // Include the email
-            });
-     }
+        return res.status(401).json({
+          message: "Account not activated. Please verify your email.",
+          needVerification: true,
+          email: validUser.email
+        });
+      }
   
       const isPasswordValid = await bcryptjs.compare(password, validUser.password);
       if (!isPasswordValid) {

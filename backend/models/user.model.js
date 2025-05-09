@@ -39,28 +39,28 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
         },  
-        isActive:{
-            type:Boolean,
-            default:false,
+        isActive: {
+            type: Boolean,
+            default: true,
         },
-        isLoggedIn:{
-            type:Boolean,
-            default:false,
+        verificationToken: {
+            type: String,
         },
-        favorities:{
-            type:[mongoose.Schema.Types.ObjectId],
-            ref:"Course",
+        verificationTokenExpires: {
+            type: Date,
+        },
+        favorities: {
+            type: [mongoose.Schema.Types.ObjectId],
+            ref: "Course",
             default: [],
         },
-        enrolledCourses:{
-            type:[mongoose.Schema.Types.ObjectId],
-            ref:"Course",
+        enrolledCourses: {
+            type: [mongoose.Schema.Types.ObjectId],
+            ref: "Course",
             default: [],
         } 
-
     }, { timestamps: true }
 );
-
 
 const User = mongoose.model("User", userSchema);
 
