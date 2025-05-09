@@ -17,7 +17,7 @@ const initialState = {
     introVideo: '',
     reference: '',
     courseMaterial: '',
-    playlist: '',
+    playlist: [],
     loading: false,
     error: null,
 };
