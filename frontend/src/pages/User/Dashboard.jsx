@@ -6,6 +6,11 @@ import welcomeImage from "../../assets/welcome.jpg";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import Notification from "../../components/Notification";
+
+
+
 
 export const UDashboard = () => {
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -13,8 +18,24 @@ export const UDashboard = () => {
   const [popularCourses, setPopularCourses] = useState([]);
   const [recentCourses, setRecentCourses] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [showNotification, setShowNotification] = useState(false);
+  const [message, setMessage] = useState('');
+
+
 
   useEffect(() => {
+
+    if (location.state && location.state.successMessage) {
+    setMessage(location.state.successMessage);
+    setShowNotification(true);
+    // Clear the state so it's not shown again if user reloads
+    window.history.replaceState({}, document.title);
+    
+    } 
+
+
+
     const fetchEnrolledCourses = async () => {
       try {
         const res = await fetch(
@@ -79,12 +100,19 @@ export const UDashboard = () => {
 
   return (
     <UserLayout>
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col gap-6 lg:flex-row">
         {/* Main Dashboard Content */}
-        <div className="flex-1 bg-white p-6 rounded-xl shadow-lg">
+        {showNotification && (
+          <Notification
+            type="success"
+            message={message}
+            onClose={() => setShowNotification(false)}
+          />
+        )}
+        <div className="flex-1 p-6 bg-white shadow-lg rounded-xl">
           {/* Welcome Banner */}
           <div
-            className="relative mb-8 rounded-xl overflow-hidden"
+            className="relative mb-8 overflow-hidden rounded-xl"
             style={{
               height: "200px",
               backgroundImage: `url(${welcomeImage})`,
@@ -92,7 +120,7 @@ export const UDashboard = () => {
               backgroundPosition: "center",
             }}
           >
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
               <h2 className="text-4xl font-bold text-white">
                 Welcome Back, {currentUser.firstName || "User"}!
               </h2>
@@ -100,7 +128,7 @@ export const UDashboard = () => {
           </div>
 
           {/* Stats Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 gap-6 mb-8 sm:grid-cols-3">
             {[
               {
                 icon: <FaBook />,
@@ -149,7 +177,7 @@ export const UDashboard = () => {
                 <div className={`text-3xl ${stat.textColor} mb-2`}>
                   {stat.icon}
                 </div>
-                <p className="text-md font-medium">{stat.label}</p>
+                <p className="font-medium text-md">{stat.label}</p>
                 <p className="text-2xl font-bold">{stat.value}</p>
               </div>
             ))}
@@ -157,17 +185,17 @@ export const UDashboard = () => {
 
           {/* Enrolled Courses Section */}
           <div className="mt-4">
-            <h2 className="text-xl font-bold mb-4">My Learning</h2>
+            <h2 className="mb-4 text-xl font-bold">My Learning</h2>
             {enrolledCourses.length > 0 ? (
               <div className="space-y-4">
                 {enrolledCourses.map((course) => (
                   <div
                     key={course._id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden border p-4 flex items-center hover:transition-transform hover:scale-105"
+                    className="flex items-center p-4 overflow-hidden bg-white border rounded-lg shadow-md hover:transition-transform hover:scale-105"
                   >
                     {/* Thumbnail */}
                     <div
-                      className="w-24 h-24 bg-cover bg-center rounded-md mr-4"
+                      className="w-24 h-24 mr-4 bg-center bg-cover rounded-md"
                       style={{
                         backgroundImage: `url(${
                           course.introImage || welcomeImage
@@ -177,7 +205,7 @@ export const UDashboard = () => {
 
                     {/* Course Details */}
                     <div className="flex-1">
-                      <h3 className="text-lg font-bold text-gray-800 truncate mb-2">
+                      <h3 className="mb-2 text-lg font-bold text-gray-800 truncate">
                         {course.title}
                       </h3>
                       <p className="text-sm text-gray-500">
@@ -193,7 +221,7 @@ export const UDashboard = () => {
                     {/* Action Buttons */}
                     <div className="space-y-2 font-semibold">
                       <button
-                        className="bg-blue-800 text-white px-4 py-2 rounded-lg text-sm shadow hover:bg-blue-600 transition"
+                        className="px-4 py-2 text-sm text-white transition bg-blue-800 rounded-lg shadow hover:bg-blue-600"
                         onClick={() =>
                           navigate(`/user/course-content/${course._id}`)
                         }
@@ -213,19 +241,19 @@ export const UDashboard = () => {
 
           {/* Popular Courses Section */}
           <div className="mt-4">
-            <h2 className="text-xl font-bold mb-6 text-center">
+            <h2 className="mb-6 text-xl font-bold text-center">
               Most Popular Courses
             </h2>
             {popularCourses.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {popularCourses.map((course) => (
                   <div
                     key={course._id}
-                    className="bg-white rounded-xl shadow-lg border p-4 hover:transition-transform hover:scale-105"
+                    className="p-4 bg-white border shadow-lg rounded-xl hover:transition-transform hover:scale-105"
                   >
                     {/* Thumbnail */}
                     <div
-                      className="w-full h-48 bg-cover bg-center rounded-t-lg mb-4"
+                      className="w-full h-48 mb-4 bg-center bg-cover rounded-t-lg"
                       style={{
                         backgroundImage: `url(${
                           course.introImage || welcomeImage
@@ -235,14 +263,14 @@ export const UDashboard = () => {
 
                     {/* Course Details */}
                     <div className="flex-1">
-                      <h3 className="text-lg font-bold text-gray-800 truncate mb-2">
+                      <h3 className="mb-2 text-lg font-bold text-gray-800 truncate">
                         {course.title}
                       </h3>
-                      <p className="text-sm text-gray-500 mb-2">
+                      <p className="mb-2 text-sm text-gray-500">
                         <span className="font-medium">Category:</span>{" "}
                         {course.category || "N/A"}
                       </p>
-                      <p className="text-sm text-gray-500 mb-4">
+                      <p className="mb-4 text-sm text-gray-500">
                         <span className="font-medium">Duration:</span>{" "}
                         {course.customDuration || "N/A"} {course.durationUnit}
                       </p>
@@ -251,7 +279,7 @@ export const UDashboard = () => {
                     {/* Action Buttons */}
                     <div>
                       <button
-                        className="w-full bg-blue-500 text-white py-2 rounded-lg text-sm font-semibold shadow hover:bg-blue-600 transition"
+                        className="w-full py-2 text-sm font-semibold text-white transition bg-blue-500 rounded-lg shadow hover:bg-blue-600"
                         onClick={() =>
                           navigate(`/user/courseIntro/${course._id}`)
                         }
@@ -263,26 +291,26 @@ export const UDashboard = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600 text-center">
+              <p className="text-center text-gray-600">
                 There is no popular course available at the moment.
               </p>
             )}
           </div>
 
           <div className="mt-8">
-            <h2 className="text-xl font-bold mb-6 text-center">
+            <h2 className="mb-6 text-xl font-bold text-center">
               Recently Added Courses
             </h2>
             {recentCourses.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 ">
                 {recentCourses.map((course) => (
                   <div
                     key={course._id}
-                    className="bg-white rounded-xl shadow-lg border p-4 hover:transition-transform hover:scale-105 flex flex-col"
+                    className="flex flex-col p-4 bg-white border shadow-lg rounded-xl hover:transition-transform hover:scale-105"
                   >
                     {/* Thumbnail */}
                     <div
-                      className="w-full h-48 bg-cover bg-center rounded-t-lg mb-4"
+                      className="w-full h-48 mb-4 bg-center bg-cover rounded-t-lg"
                       style={{
                         backgroundImage: `url(${
                           course.introImage || welcomeImage
@@ -292,14 +320,14 @@ export const UDashboard = () => {
 
                     {/* Course Details */}
                     <div className="flex-1">
-                      <h3 className="text-lg font-bold text-gray-800 truncate mb-2">
+                      <h3 className="mb-2 text-lg font-bold text-gray-800 truncate">
                         {course.title}
                       </h3>
-                      <p className="text-sm text-gray-500 mb-2">
+                      <p className="mb-2 text-sm text-gray-500">
                         <span className="font-medium">Category:</span>{" "}
                         {course.category || "N/A"}
                       </p>
-                      <p className="text-sm text-gray-500 mb-4">
+                      <p className="mb-4 text-sm text-gray-500">
                         <span className="font-medium">Duration:</span>{" "}
                         {course.customDuration || "N/A"} {course.durationUnit}
                       </p>
@@ -308,7 +336,7 @@ export const UDashboard = () => {
                     {/* Action Buttons */}
                     <div>
                       <button
-                        className="w-full bg-custom-red text-white py-2 rounded-lg text-sm font-semibold shadow hover:bg-red-400 transition"
+                        className="w-full py-2 text-sm font-semibold text-white transition rounded-lg shadow bg-custom-red hover:bg-red-400"
                         onClick={() =>
                           navigate(`/user/courseIntro/${course._id}`)
                         }
@@ -320,7 +348,7 @@ export const UDashboard = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-600 text-center">
+              <p className="text-center text-gray-600">
                 No recently added courses available at the moment.
               </p>
             )}

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
+import Notification from '../components/Notification';
+
 
 export default function Signup() {
   const [error, setError] = useState(null);
@@ -17,6 +19,10 @@ export default function Signup() {
   });
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [message, setMessage] = useState('');
+  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -27,6 +33,8 @@ export default function Signup() {
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match!");
+      setMessage("Passwords do not match!");
+      setShowError(true);
       return;
     }
 
@@ -40,10 +48,25 @@ export default function Signup() {
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
+        if(data.success == false){
+          setLoading(false);
+          setError(data.message);
+          setMessage(data.message);
+          setShowError(true);
+          return;
+        }
 
-      if (!res.ok) {
-        throw new Error(data.message || 'Registration failed');
+        setLoading(false);
+        setError(null);
+        // setError(error.message);
+        navigate("/sign-in", { state: { successMessage: "Signup successful!" } });
+
+
+      } catch (error) {
+        setLoading(false);
+        setError(error.message);
+        setMessage(error.message);
+        setShowError(true);
       }
 
       setLoading(false);
@@ -60,19 +83,26 @@ export default function Signup() {
         password: "",
         confirmPassword: "",
       });
-
-    } catch (error) {
-      setLoading(false);
-      setError(error.message);
-    }
+    
   };
 
   return (
-    <>
+    <div>
       <Header />
       <div className="flex items-center justify-front min-h-screen bg-cover bg-center bg-no-repeat bg-opacity-90" style={{ backgroundImage: "url('/src/assets/bg1.jpg')", opacity: 0.9 }}>
         <div className="bg-white bg-opacity-50 p-10 rounded-lg shadow-lg max-w-3xl w-full h-full ml-20 mt-20">
-          <form onSubmit={handleSubmit} className="bg-white bg-opacity-100 p-8 rounded-lg shadow-lg max-w-3xl w-full h-50">
+         
+    
+    
+        {showError && (
+            <Notification
+              type="fail"
+              message={message}
+              onClose={() => setShowError(false)}
+            />
+          )}
+        
+         <form onSubmit={handleSubmit} className="bg-white bg-opacity-100 p-8 rounded-lg shadow-lg max-w-3xl w-full h-50">
             <h1 className="text-4xl font-bold text-center mb-6 text-blue-900">Create an account</h1>
 
             {error && (
@@ -213,6 +243,6 @@ export default function Signup() {
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 }

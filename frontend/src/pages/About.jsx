@@ -27,6 +27,7 @@ export default function About() {
 
   useEffect(() => {
     console.log("Current user:", currentUser);
+    // console.log("Current user:", currentUser.isInstructor);
     setIsInstructor(currentUser?.isInstructor || false);
     // console.log("isInstructor:", isInstructor);
     const observer = new IntersectionObserver(
