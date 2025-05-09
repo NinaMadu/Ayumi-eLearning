@@ -17,6 +17,8 @@ import {
 import axios from "axios"; // Import axios for API calls
 import AdminLayout from "../../../components/AdminLayout";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const QuizSecondEditPage = () => {
   const [formData, setFormData] = useState({
     questionType: "",
@@ -37,7 +39,7 @@ const QuizSecondEditPage = () => {
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/quiz/${quizId}`);
+        const response = await axios.get(`${API_BASE_URL}/api/quiz/${quizId}`);
         dispatch(setQuestions(response.data.quiz.questions || [])); // Set questions in Redux
       } catch (error) {
         console.error("Error fetching quiz data:", error);

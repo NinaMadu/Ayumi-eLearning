@@ -6,6 +6,9 @@ import ConfirmationBox from '../components/ConfirmationBox.jsx';
 import SuccessBox from '../components/SuccessBox.jsx';
 import UserLayout from './UserLayout.jsx';
 
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const Profile = () => {
   const [user, setUser] = useState({
     firstName: '',
@@ -28,7 +31,7 @@ const Profile = () => {
   const fetchUserProfile = async () => {
     if (currentUser && currentUser.email) {
       try {
-        const response = await axios.get(`http://localhost:5000/api/profile/${currentUser.email}`);
+        const response = await axios.get(`${API_BASE_URL}/api/profile/${currentUser.email}`);
         setUser(response.data);
         setInitialUser(response.data); // Set initial user data
       } catch (error) {
@@ -74,7 +77,7 @@ const Profile = () => {
 
           // Now update the user profile with the new avatar URL
           try {
-            await axios.put('http://localhost:5000/api/profile/update', { ...user, avatar: avatarUrl });
+            await axios.put(`${API_BASE_URL}/api/profile/update`, { ...user, avatar: avatarUrl });
             setSuccessMessage('Profile updated successfully!');
             setShowSuccessBox(true);
             fetchUserProfile();
@@ -87,7 +90,7 @@ const Profile = () => {
     } else {
       // If no new image, just update the profile
       try {
-        await axios.put('http://localhost:5000/api/profile/update', user);
+        await axios.put(`${API_BASE_URL}/api/profile/update`, user);
         setShowSuccessBox(true);
         fetchUserProfile(); // Refresh the user data after updating
       } catch (error) {

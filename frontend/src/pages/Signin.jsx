@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { signInStart, signInSuccess, signInFailure } from '../redux/userSlice.js'
 import Header from '../components/Header.jsx';
 
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Signin() {
   
@@ -12,7 +12,7 @@ export default function Signin() {
   const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  
 
   useEffect(() => {
     dispatch(signInFailure(null)); 

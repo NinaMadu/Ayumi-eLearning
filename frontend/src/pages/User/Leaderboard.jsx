@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Trophy, Crown, User } from "lucide-react";
 import UserLayout from "../../components/UserLayout";
 
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
 
@@ -9,7 +12,7 @@ const Leaderboard = () => {
     const fetchLeaderboard = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/quiz-attempts/leaderboard"
+          `${API_BASE_URL}/api/quiz-attempts/leaderboard`
         );
         const data = await response.json();
         setLeaderboard(data.leaderboard);

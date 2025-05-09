@@ -7,6 +7,8 @@ import { setCourseData, resetCourseData } from '../../../redux/courseSlice';
 import useCancelConfirmation from '../../../hooks/useCancelConfirmation';
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const CourseEditSecond = () => {
   const { triggerCancel, confirmationBox } = useCancelConfirmation();
   const navigate = useNavigate();
@@ -23,7 +25,7 @@ const CourseEditSecond = () => {
     } else {
       const fetchCourseData = async () => {
         try {
-          const response = await axios.get(`http://localhost:5000/api/course/${formData._id}`);
+          const response = await axios.get(`${API_BASE_URL}/api/course/${formData._id}`);
           dispatch(setCourseData(response.data.course));
         } catch (error) {
           console.error('Error fetching course data:', error);

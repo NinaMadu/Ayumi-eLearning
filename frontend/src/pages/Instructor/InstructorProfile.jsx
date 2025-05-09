@@ -6,6 +6,8 @@ import ConfirmationBox from '../../components/ConfirmationBox.jsx';
 import SuccessBox from '../../components/SuccessBox.jsx';
 import AdminLayout from '../../components/AdminLayout.jsx';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const InstructorProfile = () => {
   const [instructor, setInstructor] = useState({
     name: '',
@@ -31,7 +33,7 @@ const InstructorProfile = () => {
     if (currentUser && currentUser.email) {
       try {
         // Fetch the instructor profile based on email
-        const response = await axios.get(`http://localhost:5000/api/instructorProfile/${currentUser.email}`);
+        const response = await axios.get(`${API_BASE_URL}/api/instructorProfile/${currentUser.email}`);
         setInstructor(response.data);
         setInitialInstructor(response.data); // Set the initial data to reset the form
       } catch (error) {
@@ -93,7 +95,7 @@ const InstructorProfile = () => {
 
           try {
             // Update the instructor profile in the backend
-            await axios.put('http://localhost:5000/api/instructorProfile/update', { ...instructor, avatar: avatarUrl });
+            await axios.put(`${API_BASE_URL}/api/instructorProfile/update`, { ...instructor, avatar: avatarUrl });
 
             setSuccessMessage('Profile updated successfully!');
             setShowSuccessBox(true);
@@ -106,7 +108,7 @@ const InstructorProfile = () => {
     } else {
       // If no new image is selected, just update the profile
       try {
-        await axios.put('http://localhost:5000/api/instructorProfile/update', instructor);
+        await axios.put(`${API_BASE_URL}/api/instructorProfile/update`, instructor);
         setShowSuccessBox(true);
         fetchInstructorProfile(); // Refresh instructor profile after update
       } catch (error) {

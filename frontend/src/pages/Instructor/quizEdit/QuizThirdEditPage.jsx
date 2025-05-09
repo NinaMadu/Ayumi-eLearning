@@ -17,6 +17,9 @@ import axios from "axios";
 import useCancelConfirmation from "../../../hooks/useCancelConfirmation";
 import useSuccessMessage from "../../../hooks/useSuccessMessage";
 
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const QuizThirdEditPage = () => {
   const { triggerSuccess, successBox } = useSuccessMessage();
   const { triggerCancel, confirmationBox } = useCancelConfirmation();
@@ -35,7 +38,7 @@ const QuizThirdEditPage = () => {
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/quiz/${quizId}`);
+        const response = await axios.get(`${API_BASE_URL}/api/quiz/${quizId}`);
         const quiz = response.data.quiz;
 
         // Populate Redux state with fetched quiz data
@@ -94,7 +97,7 @@ const QuizThirdEditPage = () => {
     try {
       console.log("Submitting quiz data:", quizData);
       const response = await axios.put(
-        `http://localhost:5000/api/quiz/${quizId}`,
+        `${API_BASE_URL}/api/quiz/${quizId}`,
         quizData,
         {
           headers: {
