@@ -13,12 +13,25 @@
 // export default router;
 
 
+// import express from 'express';
+// import { createPaymentIntent } from '../controllers/payment.controller.js';
+
+// const router = express.Router();
+
+// // Route to create a payment intent
+// router.post('/create-payment-intent', createPaymentIntent);
+
+// export default router;
+
+
+// routes/payment.route.js
 import express from 'express';
-import { createPaymentIntent } from '../controllers/payment.controller.js';
+import { createPaymentIntent, savePayment, getUserPayments } from '../controllers/payment.controller.js';
 
 const router = express.Router();
 
-// Route to create a payment intent
 router.post('/create-payment-intent', createPaymentIntent);
+router.post('/save-payment', savePayment);
+router.get('/user/:userId', getUserPayments);
 
 export default router;

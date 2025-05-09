@@ -4,207 +4,250 @@ import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 
+dotenv.config();
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+// ----------------- SIGNUP --------------------
 export const signup = async (req, res, next) => {
-  const { firstName, lastName, email, password, bDay, gender, phone } =
-    req.body;
-  const hashedPassword = bcryptjs.hashSync(password, 10);
-  const newUser = new User({
-    firstName,
-    lastName,
-    email,
-    password: hashedPassword,
-    bDay,
-    gender,
-    phone,
-  });
   try {
+    const { firstName, lastName, email, password, bDay, gender, phone } = req.body;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return next(errorHandler(409, "Email already in use. Please use a different email."));
+    }
+
+    const hashedPassword = await bcryptjs.hash(password, 10);
+    const verificationToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+    const newUser = new User({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      bDay,
+      gender,
+      phone,
+      verificationToken,
+      verificationTokenExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+
     await newUser.save();
-    res.status(201).json("User created successfully");
-  } catch (error) {
-    if (error.name === "ValidationError") {
-      next(errorHandler(400, "Invalid input data. Please check your entries."));
-    } else if (error.code === 11000) {
-      next(
-        errorHandler(
-          409,
-          "Your email already used. Please use a different email."
-        )
-      );
-    } else {
-      next(errorHandler(500, "Something went wrong. Please try again later."));
-    }
-  }
-};
 
-export const adminSignup = async (req, res, next) => {
-  const { name, email, password } = req.body;
+    const verificationUrl = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`;
 
-  const hashedPassword = bcryptjs.hashSync(password, 10);
-
-  const newAdmin = new Instructor({
-    name,
-    email,
-    password: hashedPassword,
-    bio: "Admin account",
-  });
-
-  try {
-    await newAdmin.save();
-    res.status(201).json("Admin account created successfully");
-  } catch (error) {
-    if (error.name === "ValidationError") {
-      next(errorHandler(400, "Invalid input data. Please check your entries."));
-    } else if (error.code === 11000) {
-      next(
-        errorHandler(
-          409,
-          "Email is already in use. Please use a different email."
-        )
-      );
-    } else {
-      next(errorHandler(500, "Something went wrong. Please try again later."));
-    }
-  }
-};
-
-export const signin = async (req, res, next) => {
-  const { email, password } = req.body;
-
-  try {
-    let validUser;
-    let isInstructor = false;
-
-    validUser = await Instructor.findOne({ email });
-    if (validUser) {
-      isInstructor = true;
-    } else {
-      validUser = await User.findOne({ email });
-    }
-
-    if (!validUser) return next(errorHandler(404, "User not found"));
-
-    if (!isInstructor && !validUser.isActive) {
-      return res
-        .status(403)
-        .json({ message: "Account is deactivated. Please contact support." });
-    }
-
-    const validPassword = bcryptjs.compareSync(password, validUser.password);
-    if (!validPassword) return next(errorHandler(401, "Invalid password"));
-
-    if (validUser) {
-      validUser.isActive = true; // Update instance property
-      validUser.isLoggedIn = true;
-      await validUser.save(); // Save the specific user instance
-    }
-
-    const token = jwt.sign(
-      { id: validUser._id, isInstructor },
-      process.env.JWT_SECRET
-    );
-
-    const { password: pass, ...rest } = validUser._doc;
-
-    res
-      .cookie("access_token", token, { httpOnly: true })
-      .status(200)
-      .json({ ...rest, isInstructor });
-
-    // if (!validUser|| !validUser.isActive) {
-    //     return res.status(403).json({ message: "Account is deactivated or user not found" });
-    //   }
-  } catch (error) {
-    return next(
-      errorHandler(500, "An unexpected error occurred. Please try again later.")
-    );
-  }
-};
-
-export const signOut = async (req, res, next) => {
-  try {
-    const { userId } = req.body;
-
-    if (!userId) {
-      return res.status(400).json({ message: "User ID is required" });
-    }
-
-    const validUser =
-      (await User.findById(userId)) || (await Instructor.findById(userId));
-
-    if (!validUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Update user status to logged out
-    validUser.isLoggedIn = false;
-    await validUser.save();
-
-    // Clear the access token cookie
-    res.clearCookie("access_token");
-
-    // Send success response
-    res.status(200).json({ message: "User has been logged out!" });
-  } catch (error) {
-    console.error("Signout error:", error.message);
-    return next(
-      errorHandler(500, "An unexpected error occurred while logging out.")
-    );
-  }
-};
-
-export const forgetPassword = async (req, res, next) => {
-  const { email } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    // Generate Reset Token (expires in 1 hour)
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    // Configure Nodemailer
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    // Reset Link
-    const resetURL = `http://localhost:5173/reset-password/${token}`;
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: user.email,
-      subject: "Password Reset Request",
-      html: `<p>Click <a href="${resetURL}">here</a> to reset your password. This link expires in 1 hour.</p>`,
+      to: email,
+      subject: "Verify Your Email Address",
+      html: `
+        <h2>Welcome, ${firstName}!</h2>
+        <p>Please verify your email address to activate your account.</p>
+        <a href="${verificationUrl}" style="padding:10px 20px; background-color:#1a365d; color:white; text-decoration:none; border-radius:5px;">Verify Email</a>
+        <p>This link will expire in 24 hours.</p>
+      `,
     };
 
     await transporter.sendMail(mailOptions);
 
-    res.json({ message: "Password reset email sent!" });
+    res.status(201).json({ 
+      success: true, 
+      message: "User created successfully. Verification email sent." 
+    });
+
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    next(errorHandler(500, "Something went wrong. Please try again later."));
   }
 };
 
-export const resetPassword = async (req, res, next) => {
-  const { token } = req.params;
-  const { newPassword } = req.body;
 
+// ----------------- VERIFY EMAIL --------------------
+export const verifyEmail = async (req, res, next) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const { token } = req.query;
+    if (!token) {
+      return next(errorHandler(400, "Verification token is required"));
+    }
 
-    const salt = await bcryptjs.genSalt(10);
-    user.password = await bcryptjs.hash(newPassword, salt);
+    // 1. Verify JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // 2. Find user by email (case-insensitive)
+    const user = await User.findOne({ 
+      email: decoded.email.toLowerCase() 
+    });
+    if (!user) {
+      return res.redirect(`${process.env.CLIENT_URL}/verify-email?success=false&message=User not found`);
+    }
+
+    // 3. Check if token matches and is not expired
+    if (
+      user.verificationToken !== token.trim() || 
+      new Date(user.verificationTokenExpires) < new Date()
+    ) {
+      return res.redirect(`${process.env.CLIENT_URL}/verify-email?success=false&message=Invalid or expired token`);
+    }
+
+    // 4. Update user (atomic operation)
+    user.isActive = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpires = undefined;
     await user.save();
 
-    res.json({ message: "Password reset successful" });
+    // 5. Confirm activation
+    console.log(`User ${user.email} activated successfully`);
+    res.redirect(`${process.env.CLIENT_URL}/verify-email?success=true`);
+
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    console.error("Verification error:", error);
+    let message = "Verification failed";
+    if (error.name === 'TokenExpiredError') {
+      message = "Verification link expired";
+    } else if (error.name === 'JsonWebTokenError') {
+      message = "Invalid verification link";
+    }
+    res.redirect(`${process.env.CLIENT_URL}/verify-email?success=false&message=${encodeURIComponent(message)}`);
+  }
+};
+// ----------------- RESEND VERIFICATION --------------------
+export const resendVerification = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return next(errorHandler(404, "User not found"));
+    if (user.isActive) return next(errorHandler(400, "Account is already active"));
+
+    const verificationToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+    user.verificationToken = verificationToken;
+    user.verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    await user.save();
+
+    const verificationUrl = `${process.env.CLIENT_URL}/verify-email?token=${verificationToken}`;
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Verify Your Email Address",
+      html: `
+        <h2>Hello, ${user.firstName}!</h2>
+        <p>Here’s your new verification link:</p>
+        <a href="${verificationUrl}" style="padding:10px 20px; background-color:#1a365d; color:white; text-decoration:none; border-radius:5px;">Verify Email</a>
+        <p>This link will expire in 24 hours.</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ success: true, message: "Verification email resent successfully." });
+
+  } catch (error) {
+    next(errorHandler(500, "Something went wrong. Please try again later."));
+  }
+};
+
+// ----------------- ADMIN SIGNUP --------------------
+export const adminSignup = async (req, res, next) => {
+  try {
+    const { name, email, password } = req.body;
+
+    const hashedPassword = await bcryptjs.hash(password, 10);
+
+    const newAdmin = new Instructor({
+      name,
+      email,
+      password: hashedPassword,
+      bio: "Admin account",
+    });
+
+    await newAdmin.save();
+    res.status(201).json({ success: true, message: "Admin account created successfully" });
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      next(errorHandler(400, "Invalid input data. Please check your entries."));
+    } else if (error.code === 11000) {
+      next(errorHandler(409, "Email is already in use. Please use a different email."));
+    } else {
+      next(errorHandler(500, "Something went wrong. Please try again later."));
+    }
+  }
+};
+
+// ----------------- SIGN IN --------------------
+export const signin = async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
+  
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+  
+      const instructor = await Instructor.findOne({ email });
+      const user = instructor ? null : await User.findOne({ email });
+  
+      const validUser = instructor || user;
+  
+      if (!validUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      // In your backend auth controller (auth.controller.js)
+      if (!instructor && !validUser.isActive) {
+             return res.status(401).json({
+                message: "Account not activated. Please verify your email.",
+                needVerification: true,  // Add this flag
+                email: validUser.email   // Include the email
+            });
+     }
+  
+      const isPasswordValid = await bcryptjs.compare(password, validUser.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Invalid password" });
+      }
+  
+      const isInstructor = validUser.constructor.modelName === "Instructor";
+      const token = jwt.sign(
+        { id: validUser._id, isInstructor, email: validUser.email },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      );
+  
+      const userData = validUser.toObject();
+      delete userData.password;
+  
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "Strict",
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        })
+        .status(200)
+        .json({ ...userData, isInstructor, accessToken: token });
+  
+    } catch (error) {
+      console.error("Signin error:", error.message || error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  };
+  
+
+// ----------------- SIGN OUT --------------------
+export const signOut = async (req, res, next) => {
+  try {
+    res.clearCookie("access_token", { httpOnly: true, secure: true, sameSite: "Strict" });
+    res.status(200).json({ message: "User has been logged out!" });
+  } catch (error) {
+    return next(errorHandler(500, "An unexpected error occurred while logging out."));
   }
 };
