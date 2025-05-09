@@ -7,6 +7,9 @@ import AdminLayout from '../../../components/AdminLayout';
 import useCancelConfirmation from '../../../hooks/useCancelConfirmation';
 import axios from 'axios';
 
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const CourseEditFirst = () => {
   const { triggerCancel, confirmationBox } = useCancelConfirmation();
   const navigate = useNavigate();
@@ -45,7 +48,7 @@ const CourseEditFirst = () => {
 
       const fetchCourseData = async () => {
         try {
-          const response = await axios.get(`http://localhost:5000/api/course/${courseId}`);
+          const response = await axios.get(`${API_BASE_URL}/api/course/${courseId}`);
           const mappedData = mapCourseDataToForm(response.data.course);
           dispatch(setCourseData({ ...mappedData, _id: courseId })); 
         } catch (error) {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaUser, FaBook, FaCog, FaSignOutAlt, FaChevronCircleLeft, FaChevronCircleRight, FaTachometerAlt, FaCreditCard, FaChartBar } from 'react-icons/fa';
+import { FaUser, FaBook, FaCog, FaSignOutAlt, FaChevronCircleLeft, FaChevronCircleRight, FaTachometerAlt, FaCreditCard, FaChartBar, FaBookOpen } from 'react-icons/fa';
 import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import { useNavigate } from 'react-router-dom';
@@ -17,9 +17,9 @@ const AdminSidemenu = () => {
     { title: "Dashboard", icon: <FaTachometerAlt />, path: "/instructor/dashboard" },
     { title: "Users", icon: <FaUser />, path: "/instructor/user-management" },
     { title: "Courses", icon: <FaBook />, path: "/instructor/create-course" },
+    { title: "Lessons", icon: <FaBookOpen />, path: "/instructor/video-management-menu" },
     { title: "Quizzes", icon: <LibraryBooksOutlinedIcon />, path: "/instructor/create-quiz" },
     { title: "Notices", icon: <AnnouncementIcon />, path: "/instructor/notice-management" },
-    { title: "Payment", icon: <FaCreditCard />, path: "/instructor/payment-management" },
     { title: "Statistics", icon: <FaChartBar />, path: "/instructor/statistics" },
   ];
 

@@ -9,6 +9,9 @@ import { signOutUserStart, signOutUserSuccess, signInFailure } from '../../redux
 import LogoutConfirmation from '../../components/LogoutConfirmation';
 import axios from 'axios';
 
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const InstructorHeader = () => {
   const [open, setOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -27,7 +30,7 @@ const InstructorHeader = () => {
   const fetchInstructorProfile = async () => {
     if (currentUser) {
       try {
-        const response = await axios.get(`http://localhost:5000/api/instructorProfile/${currentUser.email}`);
+        const response = await axios.get(`${API_BASE_URL}/api/instructorProfile/${currentUser.email}`);
         setInstructor(response.data);
       } catch (error) {
         console.error('Error fetching instructor profile:', error);
@@ -42,7 +45,7 @@ const InstructorHeader = () => {
   const handleLogout = async () => {
     dispatch(signOutUserStart());
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/signout`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

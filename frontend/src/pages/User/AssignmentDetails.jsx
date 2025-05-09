@@ -7,6 +7,9 @@ import UserLayout from "../../components/UserLayout";
 import { useDropzone } from "react-dropzone";
 import { useSelector } from "react-redux";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
 const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
   const [submission, setSubmission] = useState(null);
   const [file, setFile] = useState(null);
@@ -16,11 +19,13 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
   const [fileUploading, setFileUploading] = useState(0);
   const navigate = useNavigate();
 
+  
+
   useEffect(() => {
     const fetchSubmission = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/submissions/${currentUser._id}/${courseId}/${assignmentId}`
+          `${API_BASE_URL}/api/submissions/${currentUser._id}/${courseId}/${assignmentId}`
         );
         if (res.ok) {
           const data = await res.json();
@@ -81,7 +86,7 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
   
             // Always use POST since we don't have update functionality
             const response = await fetch(
-              "http://localhost:5000/api/submissions/add",
+              `${API_BASE_URL}/api/submissions/add`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -117,7 +122,7 @@ const SubmissionSection = ({ assignmentId, courseId, currentUser }) => {
     
     try {
       const res = await fetch(
-        `http://localhost:5000/api/submissions/${submission._id}`,
+        `${API_BASE_URL}/api/submissions/${submission._id}`,
         { method: "DELETE" }
       );
       
@@ -251,7 +256,7 @@ const AssignmentDetails = () => {
     const fetchAssignment = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/assignments/${assignmentId}`
+          `${API_BASE_URL}/api/assignments/${assignmentId}`
         );
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);

@@ -7,6 +7,9 @@ import AdminLayout from "../../../components/AdminLayout";
 import axios from "axios";
 import useCancelConfirmation from "../../../hooks/useCancelConfirmation";
 
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const QuizFirstEditPage = () => {
   const { triggerCancel, confirmationBox } = useCancelConfirmation();
   const navigate = useNavigate();
@@ -42,7 +45,7 @@ const QuizFirstEditPage = () => {
         try {
           dispatch(resetQuizData()); // Reset existing data before fetching
           const response = await axios.get(
-            `http://localhost:5000/api/quiz/${quizId}`
+            `${API_BASE_URL}/api/quiz/${quizId}`
           );
           const mappedData = mapQuizDataToForm(response.data.quiz);
           dispatch(updateQuizData(mappedData)); // Dispatch fetched data to Redux

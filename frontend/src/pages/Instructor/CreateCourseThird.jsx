@@ -11,6 +11,8 @@ import axios from 'axios';
 import useCancelConfirmation from '../../hooks/useCancelConfirmation';
 import useSuccessMessage from '../../hooks/useSuccessMessage';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const CreateCourseThird = () => {
   const { triggerSuccess, successBox } = useSuccessMessage();
   const { triggerCancel, confirmationBox } = useCancelConfirmation();
@@ -126,7 +128,7 @@ const CreateCourseThird = () => {
           console.log('File available at', downloadURL);
   
           // Now submit the form data with the Firebase image URL
-          const response = await axios.post('http://localhost:5000/api/course/add', {
+          const response = await axios.post(`${API_BASE_URL}/api/course/add`, {
             title: formData.title,
             description: formData.description,
             category: formData.category,

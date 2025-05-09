@@ -15,6 +15,8 @@ import axios from "axios";
 import useCancelConfirmation from "../../../hooks/useCancelConfirmation";
 import useSuccessMessage from "../../../hooks/useSuccessMessage";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const QuizThirdPage = () => {
   const { triggerSuccess, successBox } = useSuccessMessage();
   const { triggerCancel, confirmationBox } = useCancelConfirmation();
@@ -70,7 +72,7 @@ const QuizThirdPage = () => {
     try {
       console.log("Submitting quiz data:", quizData);
       const response = await axios.post(
-        "http://localhost:5000/api/quiz/add",
+        `${API_BASE_URL}/api/quiz/add`,
         quizData,
         {
           headers: {

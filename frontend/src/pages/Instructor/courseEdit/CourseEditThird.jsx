@@ -11,6 +11,9 @@ import axios from 'axios';
 import useCancelConfirmation from '../../../hooks/useCancelConfirmation';
 import useSuccessMessage from '../../../hooks/useSuccessMessage';
 
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const CourseEditThird = () => {
   const { triggerSuccess, successBox } = useSuccessMessage();
   const { triggerCancel, confirmationBox } = useCancelConfirmation();
@@ -183,7 +186,7 @@ const CourseEditThird = () => {
   // Function to submit the form data
   const submitForm = async (downloadURL) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/course/${courseId}`, {
+      const response = await axios.put(`${API_BASE_URL}/api/course/${courseId}`, {
         courseId: formData._id, // Use the course ID for the update
         title: formData.title,
         description: formData.description,

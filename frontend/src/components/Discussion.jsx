@@ -107,13 +107,13 @@ const Discussion = ({ courseId, currentUserId }) => {
                 },
                 body: JSON.stringify({ userId: currentUser._id }), // Send current user ID
             });
-    
+
             if (!response.ok) {
                 throw new Error("Failed to toggle like");
             }
-    
+
             const data = await response.json();
-    
+
             // Update messages state after liking/unliking
             setMessages((prevMessages) =>
                 prevMessages.map((msg) =>
@@ -124,7 +124,7 @@ const Discussion = ({ courseId, currentUserId }) => {
             console.error("Error toggling like:", error);
         }
     };
-    
+
 
     return (
         <div>
@@ -139,75 +139,81 @@ const Discussion = ({ courseId, currentUserId }) => {
                             onChange={(e) => setSearchText(e.target.value)}
                             className="rounded-2xl bg-gray-100 py-3 px-5 w-full"
                         />
-                    </div>                    
+                    </div>
                 </div>
 
                 <div className="flex flex-row justify-between bg-white">
                     <div className="w-full px-5 flex flex-col justify-between">
                         <div className="flex flex-col mt-5">
-                        {filteredMessages.length > 0 ? (
-    filteredMessages.map((message) => {
-        const isCurrentUser = message.user._id === currentUser._id;
-        return (
-            <div key={message._id} className="flex flex-col mb-4">
-                {/* Main Message */}
-                <div className={`flex items-center ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
-                    {!isCurrentUser && (
-                        <img src={message.user.avatar} className="object-cover h-8 w-8 rounded-full" alt="Sender" />
-                    )}
-                    <div
-                        className={`ml-2 max-w-xs break-words ${isCurrentUser
-                            ? 'bg-green-400 text-white rounded-tl-xl rounded-tr-3xl rounded-bl-xl p-3'
-                            : 'bg-blue-400 text-white rounded-tl-3xl rounded-tr-xl p-3'
-                        }`}
-                    >
-                        <div className="text-sm font-semibold">{message.user.firstName}</div>
-                        <div>{message.message}</div>
-                    </div>
-                    {isCurrentUser && (
-                        <img src={message.user.avatar} className="object-cover h-8 w-8 rounded-full" alt="Sender" />
-                    )}
-                    <div className="flex space-x-2 items-center">
-                    <button onClick={() => handleReaction(message._id)} className="text-blue-500">
-    👍 {message.likes.length} {/* Display like count */}
-</button>
-                       
-                        <button
-                            onClick={() => handleReply(message)}
-                            className="text-gray-600 ml-2"
-                        >
-                            💬 Reply
-                        </button>
-                    </div>
-                </div>
+                            {filteredMessages.length > 0 ? (
+                                filteredMessages.map((message) => {
+                                    if (!message.user) return null;
 
-                {/* Replies (Now positioned BELOW the main message) */}
-                {message.replies?.length > 0 && (
-    <div className={`mt-2 flex ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
-        {/* Border wrapper */}
-        <div className={`border-gray-300 flex flex-col space-y-2 
+                                    const isCurrentUser =
+                                        message?.user && currentUser?._id
+                                            ? message.user._id === currentUser._id
+                                            : false;
+
+                                    return (
+                                        <div key={message._id} className="flex flex-col mb-4">
+                                            {/* Main Message */}
+                                            <div className={`flex items-center ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
+                                                {!isCurrentUser && (
+                                                    <img src={message.user.avatar} className="object-cover h-8 w-8 rounded-full" alt="Sender" />
+                                                )}
+                                                <div
+                                                    className={`ml-2 max-w-xs break-words ${isCurrentUser
+                                                        ? 'bg-green-400 text-white rounded-tl-xl rounded-tr-3xl rounded-bl-xl p-3'
+                                                        : 'bg-blue-400 text-white rounded-tl-3xl rounded-tr-xl p-3'
+                                                        }`}
+                                                >
+                                                    <div className="text-sm font-semibold">{message.user.firstName}</div>
+                                                    <div>{message.message}</div>
+                                                </div>
+                                                {isCurrentUser && (
+                                                    <img src={message.user.avatar} className="object-cover h-8 w-8 rounded-full" alt="Sender" />
+                                                )}
+                                                <div className="flex space-x-2 items-center">
+                                                    <button onClick={() => handleReaction(message._id)} className="text-blue-500">
+                                                        👍 {message.likes.length} {/* Display like count */}
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => handleReply(message)}
+                                                        className="text-gray-600 ml-2"
+                                                    >
+                                                        💬 Reply
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Replies (Now positioned BELOW the main message) */}
+                                            {message.replies?.length > 0 && (
+                                                <div className={`mt-2 flex ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
+                                                    {/* Border wrapper */}
+                                                    <div className={`border-gray-300 flex flex-col space-y-2 
             ${isCurrentUser ? 'border-r-2 pr-6 items-end' : 'border-l-2 pl-6 items-start'}`}>
-            
-            {message.replies.map((reply) => (
-                <div key={reply._id} className={`mb-2 flex ${isCurrentUser ? 'justify-end' : 'justify-start'} items-center`}>
-                    
-                    <div className="bg-gray-200 p-2 rounded-xl max-w-sm">
-                        <div className="text-xs font-semibold">{reply.user.firstName}</div>
-                        <div className="text-sm">{reply.message}</div>
-                    </div>
-                    
-                    <img src={reply.user.avatar} className="object-cover h-6 w-6 rounded-full" alt="Reply Sender" />
-                </div>
-            ))}
-        </div>
-    </div>
-)}
-            </div>
-        );
-    })
-) : (
-    <p className="text-center text-gray-500 mt-5">No messages yet.</p>
-)}
+
+                                                        {message.replies.map((reply) => (
+                                                            <div key={reply._id} className={`mb-2 flex ${isCurrentUser ? 'justify-end' : 'justify-start'} items-center`}>
+
+                                                                <div className="bg-gray-200 p-2 rounded-xl max-w-sm">
+                                                                    <div className="text-xs font-semibold">{reply.user.firstName}</div>
+                                                                    <div className="text-sm">{reply.message}</div>
+                                                                </div>
+
+                                                                <img src={reply.user.avatar} className="object-cover h-6 w-6 rounded-full" alt="Reply Sender" />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <p className="text-center text-gray-500 mt-5">No messages yet.</p>
+                            )}
                         </div>
 
                         {/* Replying Section */}

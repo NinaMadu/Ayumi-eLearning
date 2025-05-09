@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { LockClosedIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/solid';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const ResetPassword = () => {
     const { token } = useParams();
     const navigate = useNavigate();
@@ -25,7 +27,7 @@ const ResetPassword = () => {
         setIsSubmitting(true);
         
         try {
-            const res = await fetch(`http://localhost:5000/api/auth/reset-password/${token}`, {
+            const res = await fetch(`${API_BASE_URL}/api/auth/reset-password/${token}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ newPassword: formData.newPassword })
