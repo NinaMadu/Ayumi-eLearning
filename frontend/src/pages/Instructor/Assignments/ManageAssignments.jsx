@@ -129,8 +129,9 @@ const ManageAssignments = () => {
                   {assignment.title}
                 </h3>
                 <p className="text-sm text-gray-600 mt-1">
-                  <strong>Course:</strong> {assignment.courseId.title}
-                </p>
+  <strong>Course:</strong> {assignment.courseId?.title || "Untitled Course"}
+</p>
+
                 <p className="text-sm text-gray-600 mt-1">
                   <strong>Deadline:</strong> {new Date(assignment.deadline).toLocaleString()}
                 </p>

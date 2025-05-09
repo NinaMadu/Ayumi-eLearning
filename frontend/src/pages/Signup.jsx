@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Header from '../components/Header';
-
+import bg1 from '../assets/bg1.jpg';
 
 export default function Signup() {
 
@@ -59,7 +59,7 @@ export default function Signup() {
   return (
     <>
     <Header/>
-    <div className="flex items-center justify-front min-h-screen bg-cover bg-center bg-no-repeat bg-opacity-90" style={{ backgroundImage: "url('/src/assets/bg1.jpg')",opacity:0.9 }} >
+    <div className="flex items-center justify-front min-h-screen bg-cover bg-center bg-no-repeat bg-opacity-90" style={{ backgroundImage: `url(${bg1})`,opacity:0.9 }} >
       <div  class="bg-white bg-opacity-50 p-10 rounded-lg shadow-lg max-w-3xl w-full h-full ml-20 mt-20" >
 
       <form onSubmit={handleSubmit} class="bg-white bg-opacity-100 p-8 rounded-lg shadow-lg max-w-3xl w-full h-50">

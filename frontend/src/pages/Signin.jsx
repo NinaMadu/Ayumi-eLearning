@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { signInStart, signInSuccess, signInFailure } from '../redux/userSlice.js'
 import Header from '../components/Header.jsx';
 
-
+import bg2 from '../assets/bg2.jpg';
 
 export default function Signin() {
   
@@ -56,7 +56,7 @@ export default function Signin() {
   return (
     <>
     <Header/>
-      <div className="flex items-center justify-end min-h-screen bg-center bg-no-repeat bg-cover " style={{ background: `url('../src/assets/bg2.jpg')`, opacity: 0.9 }}>
+      <div className="flex items-center justify-end min-h-screen bg-center bg-no-repeat bg-cover " style={{ backgroundImage: `url(${bg2})`, opacity: 0.9 }}>
         <div className="w-full h-full max-w-lg p-10 mr-40 bg-white bg-opacity-50 rounded-lg shadow-lg " >
 
           <form onSubmit={handleSubmit} className="w-full max-w-lg p-8 bg-white bg-opacity-100 rounded-lg shadow-lg h-50">
