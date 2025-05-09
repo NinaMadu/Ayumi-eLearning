@@ -12,12 +12,12 @@ import Header from "../components/Header";
 
 // Import images
 import logo from "../assets/logo.png";
-import Pic1 from "../assets/Pic1.jpeg";
-import Pic2 from "../assets/Pic2.jpeg";
-import Pic3 from "../assets/Pic3.jpeg";
-import Pic4 from "../assets/Pic4.jpg";
-import Pic5 from "../assets/Pic5.jpg";
-import Pic6 from "../assets/Pic6.jpg";
+import Pic1 from "../assets/Pic12.jpeg";
+import Pic2 from "../assets/Pic11.jpeg";
+import Pic3 from "../assets/Pic10.jpeg";
+import Pic4 from "../assets/Pic9.jpeg";
+import Pic5 from "../assets/Pic7.jpeg";
+import Pic6 from "../assets/Pic8.jpeg";
 
 
 // Section component with scroll-triggered animation
